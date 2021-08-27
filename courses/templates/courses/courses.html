@@ -1,0 +1,105 @@
+{#{% extends "navbar.html" %}#}
+{% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'courses/css/pure-checkbox.css' %}" />
+{# TODO check we need it #}
+{#<link rel="stylesheet" type="text/css" href="{% static 'courses/mathquill-0.10.1/mathquill.css' %}"/>#}
+{#<script src="{% static 'courses/mathquill-0.10.1/mathquill.js' %}"></script>#}
+
+<link rel="stylesheet" type="text/css" href="{% static 'resources/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'classroom/style.css' %}" />
+
+{# djeedit #}
+{#<link rel="stylesheet" href="{% static 'djeddit/css/theme.css' %}">#}
+{#<link rel="stylesheet" href="{% static 'djeddit/css/callout.css' %}">#}
+{# react-comments-django? #}
+{#<link rel="stylesheet" href="{% static 'djeddit/css/theme.css' %}">#}
+{#<link rel="stylesheet" href="{% static 'djeddit/css/callout.css' %}">#}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+{# editor TODO replace with webpack minification  #}
+<link rel="stylesheet" type="text/css" href="{% static 'courses/css/course.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'courses/css/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'courses/css/studio.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'courses/css/split-pane.css' %}" />
+
+{#  reack slick  #}
+<link rel="stylesheet" type="text/css" charset="UTF-8" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
+
+{# editor end TODO replace with webpack minification  #}
+
+<!-- Browser FS -->
+{# TODO replace with native Browser FS ? #}
+<script type="text/javascript"
+    {% if debug %}
+        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}"
+    {% else %}
+        src="/proxy/static/courses/js/codesandbox-apps/browserfs/release/browserfs.min.js"
+    {% endif %}
+>
+</script>
+
+<script type="text/javascript">
+    if (BrowserFS) {
+        window.process = {
+          env: {
+            VSCODE_DEV: false
+          },
+          nextTick: function(cb) {
+            return requestAnimationFrame(cb);
+          },
+          once: BrowserFS.BFSRequire('process').once,
+          removeListener: function () {}
+        };
+        window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+      }
+</script>
+
+<link data-name="vs/editor/editor.main"
+      rel="preload" as="style"
+    {# TODO it took 650kb, move it to the editor part #}
+    {% if debug %}
+      href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css' %}"
+    {% else %}
+      href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.css"
+    {% endif %}
+>
+</link>
+{#<link rel="preload"#}
+{#      as="script"#}
+{#    {% if debug %}#}
+{#        href="{% static 'courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js' %}"#}
+{#    {% else %}#}
+{#        href="/proxy/static/courses/js/codesandbox-apps/vscode-editor/release/min/vs/editor/codesandbox.editor.main.js"#}
+{#    {% endif %}#}
+{#>#}
+{#</link>#}
+
+{% endblock extrahead %}
+
+{% block body_content %}
+
+<script type="text/javascript">
+{# TODO move to json file #}
+  var REACT_COMMENTS_DJANGO_CONFIG = {
+    API_PROFILE_URL: '/api/v1/profiles/me/',
+    EMBEDDED_MODE: true,
+    {#  fixme we need to get basename (e.g. beta/) from SPA 'history' config #}
+    {#  see courses/static/courses/js/utils/config.jsx #}
+    ROOT_URL: '/beta/discussion/',
+    API_URL_POSTFIX: 'react-comments/',
+    DISPLAY_USERNAME_FIELD: 'display_name',
+    ANON_AS_USER_OBJECT: true
+  }
+</script>
+<div id="main-app">
+    {% render_bundle 'main' %}
+</div>
+{% endblock %}
+
+
+

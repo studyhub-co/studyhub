@@ -1,0 +1,224 @@
+/* TODO remove unused static files */
+/* homepage for anonymous */
+
+
+/* Move to the main style.css if we use this in another then home SPA pages */
+@font-face {
+    font-family: 'Tw Cen MT hinted';
+    src: url('typeface/hinted-TwCenMT-Regular.eot'),
+    url('typeface/hinted-TwCenMT-Regular.eot?#iefix') format('embedded-opentype'),
+    url('typeface/hinted-TwCenMT-Regular.woff') format('woff'),
+    url('typeface/hinted-TwCenMT-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*html {*/
+/*    height: 100%;*/
+/*    min-height: 100%;*/
+/*}*/
+
+.front-page a.socialaccount_provider.facebook {
+    text-decoration: none !important;
+}
+
+.front-page #front-page {
+    height: 100vh;
+    background: url('images/Prague.jpg') center;
+    /*background: url('images/background.png') center;*/
+    background-size: cover;
+    z-index: -1;
+}
+
+.front-page .navlink{
+    color: white;
+    text-decoration:none !important;
+}
+
+.front-page .navlink:hover{
+    color: white;
+}
+
+.front-page .navbutton{
+    background: rgba(193, 179, 179, 0.25);
+    color: white;
+    font-family: "Tw Cen MT hinted";
+    font-weight: 200;
+    font-size: 18px;
+    border-radius: 20px;
+    border: 2px solid white;
+    padding: 0px 30px;
+    margin-top: 4px;
+    transition: 0.3s;
+}
+
+.front-page .navbutton:active {
+    background: rgba(255,255,255,.2);
+    box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.front-page .navbutton:hover {
+    box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.front-page .navbutton:focus {
+    outline:none;
+}
+
+.front-page .card-body{
+    color:black;
+    transition:.2s;
+}
+.front-page .card-body:hover{
+    color: #6880b8;
+}
+
+.front-page .card{
+    transition:.2s;
+}
+
+.front-page .card:hover{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.front-page .jumbotron {
+    background-color: transparent;
+}
+
+.front-page .jumbotron h1 {
+    color: #f7f7f7;
+    font-size: 100px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    font-family: "Tw Cen MT hinted";
+    font-weight: bold;
+}
+
+.front-page .jumbotron p {
+    font-size: 40px;
+    color: #fff;
+    text-align: center;
+    text-shadow: 1px 1px 28px #AAA;
+}
+
+.front-page #getStartedButton {
+    background: rgba(0,0,0,0.25);
+    color: white;
+    font-family: "Tw Cen MT hinted";
+    font-weight: 200;
+    font-size: 24px;
+    border-radius: 20px;
+    border: 2px solid white;
+    padding: 0px 30px;
+    margin: 100px auto auto;
+    transition: 0.3s;
+}
+
+.front-page #getStartedButton:active {
+    background: rgba(255,255,255,.2);
+    box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.front-page #getStartedButton:hover {
+    box-shadow: 0 0 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    font-size: 25px;
+    background: rgba(0, 0, 0, 0.61);
+}
+
+.front-page #getStartedButton:focus {
+    outline:none;
+}
+
+
+@media all and (max-width: 1000px) {
+    .front-page .jumbotron h1 {
+        font-size: 75px;
+    }
+    .front-page .jumbotron p {
+        font-size: 30px;
+    }
+}
+
+@media all and (max-width: 600px) {
+    .front-page .jumbotron h1 {
+        font-size: 50px;
+    }
+    .front-page .jumbotron p {
+        font-size: 20px;
+    }
+}
+
+@media all and (max-width: 210px) {
+    .front-page .jumbotron h1 {
+        font-size: 30px;
+    }
+    .front-page .jumbotron p {
+        font-size: 12px;
+    }
+}
+
+.front-page .scroll-down {
+  cursor: pointer;
+  opacity: 1;
+  -webkit-transition: all .5s ease-in 3s;
+  transition: all .5s ease-in 3s;
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  margin-left: -16px;
+  display: block;
+  width: 32px;
+  height: 32px;
+  border: 2px solid #FFF;
+  background-size: 14px auto;
+  border-radius: 50%;
+  z-index: 2;
+  -webkit-animation: bounce 2s infinite 2s;
+  animation: bounce 2s infinite 2s;
+  -webkit-transition: all .2s ease-in;
+  transition: all .2s ease-in;
+}
+
+.front-page .scroll-down:before {
+    position: absolute;
+    top: calc(50% - 8px);
+    left: calc(50% - 6px);
+    transform: rotate(-45deg);
+    display: block;
+    width: 12px;
+    height: 12px;
+    content: "";
+    border: 2px solid white;
+    border-width: 0px 0 2px 2px;
+}
+
+@keyframes bounce {
+  0%,
+  100%,
+  20%,
+  50%,
+  80% {
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(-10px);
+    -ms-transform: translateY(-10px);
+    transform: translateY(-10px);
+  }
+  60% {
+    -webkit-transform: translateY(-5px);
+    -ms-transform: translateY(-5px);
+    transform: translateY(-5px);
+  }
+}
+
+/**,*/
+/*:after,*/
+/*:before {*/
+/*  box-sizing: border-box;*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*}*/

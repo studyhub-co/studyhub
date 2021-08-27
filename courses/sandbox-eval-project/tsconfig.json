@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./src/**/*.*"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "embed/*": ["./src/embed/*"],
+      "sandbox/*": ["./src/sandbox/*"]
+    },
+    "lib": [
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.promise"
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{% load static %}
+<html>
+<head>
+    <title>Leaflet.heat demo</title>
+    <link rel="stylesheet" href="{% static 'blog/leaflet/leaflet.css' %}" />
+    <script src="{% static 'blog/leaflet/leaflet.js' %}"></script>
+    <style>
+        #map { width: 800px; height: 600px; }
+        body { font: 16px/1.4 "Helvetica Neue", Arial, sans-serif; }
+        .ghbtns { position: relative; top: 4px; margin-left: 5px; }
+        a { color: #0077ff; }
+    </style>
+</head>
+<body>
+
+
+<div id="map"></div>
+
+
+
+<script src="{% static 'blog/leaflet/leaflet-heat.js' %}"></script>
+
+<script>
+    var addressPoints = {{ addressPoints | safe }};
+
+    var map = L.map('map', {attributionControl: false}).setView(['39.8282', '-94.5795'], 4);
+
+    var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '<a href="http://osm.org/copyright">Nicolas Scozzaro</a>'
+    }).addTo(map);
+
+    addressPoints = addressPoints.map(function (p) { return [p[0], p[1]]; });
+
+    var heat = L.heatLayer(addressPoints, {radius: 25, maxZoom:11, minOpacity:0}).addTo(map);
+
+</script>
+</body>
+</html>

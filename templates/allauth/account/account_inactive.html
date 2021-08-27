@@ -1,0 +1,20 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Account Inactive" %}{% endblock %}
+
+{% block content %}
+<div class="auth-modal" id="login-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">{% trans "Account Inactive" %}</h4>
+        </div>
+
+        <div class="modal-body">
+        <p>{% trans "This account is inactive." %}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
