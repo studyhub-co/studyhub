@@ -18,23 +18,34 @@ python -m venv venv
 
 **Windows**
 
-Python py-mini-racer application do not support Windows. So recommended to run in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual).
+Python py-mini-racer application do not support Windows. So recommended to run in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual). Once you have distribution installed don't forget to run it from Start menu for the first time to complete your newly installed Linux distribution is to create an account, including a User Name and Password. 
 
-#### Install requirements
+--------------
 
-Instead of the console you can use your favorite IDE to cover the next steps.  
+Instead of the console, you can use your favorite IDE to cover the next steps.
+
+#### Get source code
 
 ```commandline
 git clone https://github.com/studyhub-co/studyhub.git
 cd studyhub
 ```
 
+#### Install requirements
+
 **Windows**
+
+```commandline
+wsl sudo apt -y update
+wsl sudo apt -y upgrade
+wsl sudo apt -y install python3-pip
+wsl pip3 install -r requirements.dev.txt
+```
 
 **macOS**
 
 ```commandline
-pip install -r requirements.txt
+pip install -r requirements.dev.txt
 ```
 
 ### Database
