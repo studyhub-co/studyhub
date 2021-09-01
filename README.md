@@ -4,9 +4,16 @@
 
 ### Backend
 
-Requires [Python 3.8.*](https://www.python.org/downloads/), git ([Windows](https://git-scm.com/download/win), [macOS](https://git-scm.com/download/mac)). 
+Requires [Python 3.8.*](https://www.python.org/downloads/), git ([Windows](https://git-scm.com/download/win), [macOS](https://git-scm.com/download/mac)).
+If you are using Windows and WSL, python requires only inside WSL instance (see below).   
 
 #### Interpreter environment
+
+Instead of the console, you can use your favorite IDE to cover the next steps. All commands runs from project's root directory.
+
+**Windows**
+
+Python py-mini-racer application do not support Windows. So recommended to run in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Steps to install [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual). Once you have distribution installed don't forget to run it from Start menu for the first time to complete your newly installed Linux distribution is to create an account, including a User Name and Password.  
 
 **macOS**
 
@@ -15,14 +22,6 @@ Recommended to run in a [virtual environment](https://docs.python.org/3.8/librar
 ```
 python -m venv venv
 ```
-
-**Windows**
-
-Python py-mini-racer application do not support Windows. So recommended to run in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual). Once you have distribution installed don't forget to run it from Start menu for the first time to complete your newly installed Linux distribution is to create an account, including a User Name and Password. 
-
---------------
-
-Instead of the console, you can use your favorite IDE to cover the next steps.
 
 #### Get source code
 
@@ -38,7 +37,7 @@ cd studyhub
 ```commandline
 wsl sudo apt -y update
 wsl sudo apt -y upgrade
-wsl sudo apt -y install python3-pip
+wsl sudo apt -y install python3-pip libmysqlclient-dev
 wsl pip3 install -r requirements.dev.txt
 ```
 
@@ -48,15 +47,17 @@ wsl pip3 install -r requirements.dev.txt
 pip install -r requirements.dev.txt
 ```
 
-### Database
+#### Database
 
-#### Requires [PostgreSQL](https://www.postgresql.org/) (>= 10.5)
+##### Requires [PostgreSQL](https://www.postgresql.org/) (>= 10.15)
 
-* install PostgreSQL:
+1. Install PostgreSQL:
 
 **Windows**
 
-Download installer from: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+1. Download installer from: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+2. Install
+3. Add "c:\Program Files\PostgreSQL\13\bin\" to PATH environment variable
 
 **macOS**
 
@@ -64,25 +65,16 @@ Download installer from: https://www.enterprisedb.com/downloads/postgres-postgre
 brew install postgresql
 ```
 
-* create a db:
+2. Create a database:
 
 You can use [pgadmin](https://www.pgadmin.org/download/) or
-
-**Windows**
-
-Add "c:\Program Files\PostgreSQL\13\bin\" to PATH environment variable
-
-**macOS**
-
-
-both OS: 
 
 ```
 createuser -U postgres studyhub
 createdb -U postgres -O studyhub studyhub
 ```
 
-* connect to `studyhub` database with `postgres` user and create EXTENSION
+3. Connect to `studyhub` database with `postgres` user and create EXTENSION :
 
 ```
 psql -U postgres studyhub 
@@ -90,28 +82,69 @@ studyhub# CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 studyhub# \q
 ```
 
-#### Requires [Mysql](https://dev.mysql.com/downloads/installer/) (>= 5.7)
+4. Activate your virtual environment
+
+You need to add virtual environment variables: 
+
+set DJANGO_SETTINGS_MODULE=settings.local_settings  
+set DJANGO_DB_USER=studyhub  
+set DJANGO_DB_PASS=studyhub  
+set DJANGO_SECRET=  
+set DJANGO_DB_NAME=  
+set DJANGO_DB_TYPE=django.db.backends.postgresql  
+set DJANGO_DB_PORT=5432  
+set MYSQL_PROBLEM_TYPE_HOST=  
+set MYSQL_PROBLEM_TYPE_USER=  
+set MYSQL_PROBLEM_TYPE_USER_PASSWORD=  
+
+**Windows**
+
+```
+copy set_env_vars.cmd set_env_vars.local.cmd
+notepad set_env_vars.local.cmd
+```
+
+**macOS**
+
+TODO
+
+5. create database schema
+
+**Windows**
+
+```commandline
+scripts\wsl_manage_py.cmd migrate
+```
+
+**macOS**
+
+```
+./manage.py migrate
+```
+
+##### Requires [Mysql](https://dev.mysql.com/downloads/installer/) (>= 5.7)
 
 Mysql problem type requires Mysql database instance. 
 
 TODO mysql
 
-* Activate your virtual environment
-
-* Setup the db:
-```
-./manage.py migrate
-```
+***
 
 ### Front-end
 
-* install yarn:
-```
-brew install npm
-brew install yarn
-```
+1. Install [Node.js](https://nodejs.org/en/download/)
 
-* get packages (from root directory):
+2. Install yarn
+
+```commandline
+npm install -g yarn
+````
+
+3. Unpack VSCode extensions: 
+courses\static\courses\js\codesandbox-apps\vscode-extensions\out\extensions.zip
+courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions.zip
+
+* get packages:
 ```
 yarn install
 yarn clear_types # remove duplicated react types
