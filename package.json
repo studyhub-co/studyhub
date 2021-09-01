@@ -1,7 +1,7 @@
 {
-  "name": "physics-is-beautiful",
+  "name": "studyhub",
   "version": "1.0.0",
-  "description": "## Installation",
+  "description": "studyhub",
   "main": "index.js",
   "private": true,
   "workspaces": {
@@ -11,7 +11,7 @@
     ]
   },
   "scripts": {
-    "watch": "npm run clear && npm run dev",
+    "watch": "yarn clear && yarn dev",
     "dev": "./node_modules/.bin/webpack --config webpack.dev.js --watch --mode development",
     "clear": "rimraf ./static/js/bundles/*",
     "clear_types": "rimraf ./node_modules/@types/hoist-non-react-statics/node_modules/@types/react && rimraf ./node_modules/@types/styled-components/node_modules/@types/react && rimraf ./node_modules/@types/react-textarea-autosize/node_modules/@types/react && rimraf ./node_modules/@types/react-router/node_modules/@types/react && rimraf ./node_modules/@types/react-router-dom/node_modules/@types/react && rimraf ./node_modules/@types/react-dom/node_modules/@types/react",

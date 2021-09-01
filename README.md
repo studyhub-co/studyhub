@@ -66,36 +66,33 @@ brew install postgresql
 
 * create a db:
 
+You can use [pgadmin](https://www.pgadmin.org/download/) or
+
 **Windows**
-
-Download and install [pgadmin](https://www.pgadmin.org/download/pgadmin-4-windows/) 
-
-or
 
 Add "c:\Program Files\PostgreSQL\13\bin\" to PATH environment variable
 
-```commandline
-createuser -U postgres studyhub
-createdb -U postgres -O studyhub studyhub
-``` 
-
 **macOS**
 
-Download and install [pgadmin](https://www.pgadmin.org/download/pgadmin-4-macos/)
 
-or
+both OS: 
 
 ```
-createdb studyhub
+createuser -U postgres studyhub
+createdb -U postgres -O studyhub studyhub
 ```
 
 * connect to `studyhub` database with `postgres` user and create EXTENSION
 
 ```
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+psql -U postgres studyhub 
+studyhub# CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+studyhub# \q
 ```
 
 #### Requires [Mysql](https://dev.mysql.com/downloads/installer/) (>= 5.7)
+
+Mysql problem type requires Mysql database instance. 
 
 TODO mysql
 
@@ -105,7 +102,6 @@ TODO mysql
 ```
 ./manage.py migrate
 ```
-
 
 ### Front-end
 
@@ -141,11 +137,11 @@ yarn build:sandbox_pib_dev
 * Build the front-end
 development watch mode
 ```
-yarn run dev
+yarn watch
 ```
 or (prepare production bundle)
 ```
-yarn run prod
+yarn prod
 ```
 
 * Create an admin account by running `/manage.py createsuperuser`
