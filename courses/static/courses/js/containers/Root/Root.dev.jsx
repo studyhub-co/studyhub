@@ -5,7 +5,7 @@ import { ConnectedRouter } from 'connected-react-router'
 import PropTypes from 'prop-types'
 
 import routes from '../../routes'
-import DevTools from './DevTools'
+// import DevTools from './DevTools'
 import App from '../../app'
 
 export default class Root extends React.Component {
@@ -19,7 +19,7 @@ export default class Root extends React.Component {
                 {routes}
               </ConnectedRouter>
             </App>
-            <DevTools />
+            {/*<DevTools />*/}
           </div>
         </Provider>
       </div>

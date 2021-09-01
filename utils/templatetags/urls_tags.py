@@ -3,7 +3,7 @@ from django.urls import reverse
 
 register = template.Library()
 
-
+# it seems no need in PSA version TODO remove
 @register.simple_tag(takes_context=True)
 def current_url_starts_with(context, *args, **kwargs):
     """ Check if the browse is currently at this supplied url"""
@@ -11,9 +11,9 @@ def current_url_starts_with(context, *args, **kwargs):
         current_url = context['request'].path
         supplied_url = reverse(url, kwargs=kwargs)
 
-        # fix for /curriculum/* (curricula application) and /curriculum/profile/* (editor application)
-        if url == 'main_curricula:curriculum' and current_url.startswith('/curriculum/profile/'):
-            return ''
+        # # fix for /curriculum/* (curricula application) and /curriculum/profile/* (editor application)
+        # if url == 'main_curricula:curriculum' and current_url.startswith('/curriculum/profile/'):
+        #     return ''
 
         if current_url.startswith(supplied_url):
             return ' active'

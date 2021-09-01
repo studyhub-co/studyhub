@@ -7,7 +7,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 // import { routerMiddleware } from 'react-router-redux'
 
 import rootReducer from '../reducers'
-import DevTools from '../containers/Root/DevTools'
+// import DevTools from '../containers/Root/DevTools'
 
 // import { connectRouter, routerMiddleware } from 'connected-react-router'
 
@@ -24,7 +24,7 @@ export default function configureStore (initialState, history) {
   // comment this for using inline dev tools, need comment compose below DevTools works only in one place
   const middlewareWithDevTools = compose(
     middleware,
-    DevTools.instrument()
+    // DevTools.instrument()
   )
 
   // use redux-devtools-extension (chrome)

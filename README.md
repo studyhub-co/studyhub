@@ -50,7 +50,7 @@ pip install -r requirements.dev.txt
 
 ### Database
 
-Requires [PostgreSQL](https://www.postgresql.org/) (>= 10.5)
+#### Requires [PostgreSQL](https://www.postgresql.org/) (>= 10.5)
 
 * install PostgreSQL:
 
@@ -68,14 +68,20 @@ brew install postgresql
 
 **Windows**
 
-Download and install pgadmin https://www.pgadmin.org/download/pgadmin-4-windows/
+Download and install [pgadmin](https://www.pgadmin.org/download/pgadmin-4-windows/) 
 
 or
 
+Add "c:\Program Files\PostgreSQL\13\bin\" to PATH environment variable
+
+```commandline
+createuser -U postgres studyhub
+createdb -U postgres -O studyhub studyhub
+``` 
 
 **macOS**
 
-Download and install pgadmin https://www.pgadmin.org/download/pgadmin-4-macos/
+Download and install [pgadmin](https://www.pgadmin.org/download/pgadmin-4-macos/)
 
 or
 
@@ -88,6 +94,20 @@ createdb studyhub
 ```
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
+
+#### Requires [Mysql](https://dev.mysql.com/downloads/installer/) (>= 5.7)
+
+TODO mysql
+
+* Activate your virtual environment
+
+* Setup the db:
+```
+./manage.py migrate
+```
+
+
+### Front-end
 
 * install yarn:
 ```
@@ -126,13 +146,6 @@ yarn run dev
 or (prepare production bundle)
 ```
 yarn run prod
-```
-
-* Activate your virtual environment
-
-* Setup the db:
-```
-./manage.py migrate
 ```
 
 * Create an admin account by running `/manage.py createsuperuser`
@@ -204,3 +217,15 @@ Run `eb deploy` once the environment is up to get the latest version of dev runn
 * We respect the rules set out by pep8 with the exception of a 100 character line limit.
 * We use the flake8 python script for linting.
 * For frontend code we use eslint for linting. See .eslintrc.json and .prettierrc files for details.
+
+### Development tools
+
+#### embedded 
+
+* [Django Debug Toolbar](https://django-debug-toolbar.readthedocs.io/en/latest/)
+
+#### external
+
+* [React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)
+* [Redux DevTools Extension](https://github.com/zalmoxisus/redux-devtools-extension)
+

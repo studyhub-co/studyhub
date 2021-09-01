@@ -22,7 +22,7 @@ export default function configureStore (initialState, history) {
   // comment this for using inline dev tools, need comment compose below DevTools works only in one place
   const middlewareWithDevTools = compose(
     middleware,
-    DevTools.instrument()
+    // DevTools.instrument()
   )
 
   // use redux-devtools-extension (chrome)

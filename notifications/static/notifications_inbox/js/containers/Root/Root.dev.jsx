@@ -4,12 +4,12 @@ import { Provider } from 'react-redux'
 import PropTypes from 'prop-types'
 
 // import routes from '../../routes'
-import DevTools from './DevTools'
+// import DevTools from './DevTools'
 import App from '../../app'
 import { IndexView } from '../../containers'
 
 export default class Root extends React.Component {
-  render () {
+  render() {
     return (
       <div>
         <Provider store={this.props.store}>
@@ -17,10 +17,10 @@ export default class Root extends React.Component {
             <App>
               <IndexView />
               {/*<ConnectedRouter history={this.props.history}>*/}
-                {/*{routes}*/}
+              {/*{routes}*/}
               {/*</ConnectedRouter>*/}
             </App>
-            <DevTools />
+            {/*<DevTools />*/}
           </div>
         </Provider>
       </div>

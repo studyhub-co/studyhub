@@ -6,6 +6,8 @@ import sys
 
 if __name__ == "__main__":
     # not sure we need this
+    # it is better to use external tools to set ENV variables
+    # TODO remove
     # dotenv.read_dotenv()
     if sys.argv[1] == 'test':
         os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.test_settings'
