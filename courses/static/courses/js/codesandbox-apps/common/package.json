@@ -6,6 +6,7 @@
     "url": "",
     "directory": "Codesandbox/common"
   },
+  "license": "GPL-3.0",
   "files": [
     "lib"
   ],

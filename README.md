@@ -176,13 +176,13 @@ npm install --no-package-lock --no-save lerna
 
 * get npm packages in every yarn workspace, remove duplicated react typescript types.
 ```commandline
-lerna bootstrap --npm-client=yarn
+node_modules\.bin\lerna bootstrap --npm-client=yarn
 yarn clear_types
 ```
 
 
 ```commandline
-
+lerna run build
 ```
 
 ```

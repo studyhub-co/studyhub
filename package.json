@@ -19,14 +19,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nscozzaro/physics-is-beautiful.git"
+    "url": "git+https://github.com/studyhub-co/studyhub.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nscozzaro/physics-is-beautiful/issues"
+    "url": "https://github.com/studyhub-co/studyhub/issues"
   },
-  "homepage": "https://github.com/nscozzaro/physics-is-beautiful#readme",
+  "homepage": "https://github.com/studyhub-co/studyhub#readme",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
