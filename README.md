@@ -88,11 +88,11 @@ studyhub# \q
 
 You need to add virtual environment variables: 
 
-set DJANGO_SETTINGS_MODULE=settings.local_settings  
+set DJANGO_SETTINGS_MODULE=settings.local_settings
+set DJANGO_DB_NAME=studyhub  
 set DJANGO_DB_USER=studyhub  
-set DJANGO_DB_PASS=studyhub  
+set DJANGO_DB_PASS=  
 set DJANGO_SECRET=  
-set DJANGO_DB_NAME=  
 set DJANGO_DB_TYPE=django.db.backends.postgresql  
 set DJANGO_DB_PORT=5432  
 set MYSQL_PROBLEM_TYPE_HOST=  
