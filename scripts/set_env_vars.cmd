@@ -1,3 +1,4 @@
+@echo off
 set DJANGO_SETTINGS_MODULE=settings.local_settings
 set DJANGO_DB_NAME=studyhub
 set DJANGO_DB_USER=studyhub

@@ -9,11 +9,11 @@ If you are using Windows and WSL, python requires only inside WSL instance (see 
 
 #### Interpreter environment
 
-Instead of the console, you can use your favorite IDE to cover the next steps. All commands runs from project's root directory.
+Instead of the console, you can use your favorite IDE to cover the next steps. All commands run from the project's root directory.
 
 **Windows**
 
-Python py-mini-racer application do not support Windows. So recommended to run in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Steps to install [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual). Once you have distribution installed don't forget to run it from Start menu for the first time to complete your newly installed Linux distribution is to create an account, including a User Name and Password.  
+Python py-mini-racer application do not support Windows. So recommended running in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Steps to install [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual). Once you have distribution installed don't forget to run it from Start menu for the first time to complete your newly installed Linux distribution is to create an account, including a User Name and Password.  
 
 **macOS**
 
@@ -58,25 +58,26 @@ pip install -r requirements.dev.txt
 **Windows**
 
 - Download installer from: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
-- Install
-- Add "c:\Program Files\PostgreSQL\13\bin\" to PATH environment variable
+- Install (You can install PgAdmin to manage database with this installer).
+- Add "c:\Program Files\PostgreSQL\{version}\bin\" to PATH environment variable ({version} = your version of PostrgreSQL installed)
 
 **macOS**
 
+Install postgresql and pgadmin4 (optional). 
+
 ```
 brew install postgresql
+brew install --cask pgadmin4
 ```
 
-2. Create a database:
-
-You can use [pgadmin](https://www.pgadmin.org/download/) or
+2. Create a database (you can use PgAdmin instead command line below):
 
 ```
 createuser -U postgres studyhub
 createdb -U postgres -O studyhub studyhub
 ```
 
-3. Connect to `studyhub` database with `postgres` user and create EXTENSION :
+3. Connect to `studyhub` database with `postgres` user and create an EXTENSION:
 
 ```
 psql -U postgres studyhub 
@@ -84,20 +85,7 @@ studyhub# CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 studyhub# \q
 ```
 
-4. Activate your virtual environment
-
-You need to add virtual environment variables: 
-
-set DJANGO_SETTINGS_MODULE=settings.local_settings
-set DJANGO_DB_NAME=studyhub  
-set DJANGO_DB_USER=studyhub  
-set DJANGO_DB_PASS=  
-set DJANGO_SECRET=  
-set DJANGO_DB_TYPE=django.db.backends.postgresql  
-set DJANGO_DB_PORT=5432  
-set MYSQL_PROBLEM_TYPE_HOST=  
-set MYSQL_PROBLEM_TYPE_USER=  
-set MYSQL_PROBLEM_TYPE_USER_PASSWORD=  
+4. Activate your virtual environment variables
 
 **Windows**
 
@@ -120,7 +108,7 @@ scripts\wsl_manage_py.cmd migrate
 
 **macOS**
 
-```
+```commandline
 ./manage.py migrate
 ```
 
@@ -128,7 +116,31 @@ scripts\wsl_manage_py.cmd migrate
 
 Mysql problem type requires Mysql database instance. 
 
-TODO mysql
+1) Download and choose Developer type due installation process.
+Select "Use Legacy Authentication Method". 
+2) Create Mysql problem type database:
+
+```commandline
+mysqlsh
+MySQL JS> \c root@localhost
+MySQL JS> \sql
+MySQL SQL> CREATE DATABASE studyhub;
+MySQL SQL> CREATE USER 'studyhub'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+MySQL SQL> GRANT ALL PRIVILEGES ON studyhub.* TO 'studyhub'@'localhost';
+MySQL SQL> \q
+```
+
+3) Edit Mysql settings environment variables 
+
+**Windows**
+
+```commandline
+notepad scripts\set_env_vars.local.cmd
+```
+
+**macOS**
+
+...
 
 ***
 
@@ -142,14 +154,38 @@ TODO mysql
 npm install -g yarn
 ````
 
-3. Unpack VSCode extensions: 
-courses\static\courses\js\codesandbox-apps\vscode-extensions\out\extensions.zip
-courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions.zip
+3. Unpack VSCode editor extensions:
 
-* get packages:
+**Windows**
+
+```commandline
+"C:\Program Files\Git\usr\bin\unzip" courses\static\courses\js\codesandbox-apps\vscode-extensions\out\extensions.zip -d courses\static\courses\js\codesandbox-apps\vscode-extensions\out\
 ```
-yarn install
-yarn clear_types # remove duplicated react types
+
+**macOS**
+
+```commandline
+unzip courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions.zip  -d courses/static/courses/js/codesandbox-apps/vscode-extensions/out/
+```
+
+* install lerna
+
+```commandline
+npm install --no-package-lock --no-save lerna
+```
+
+* get npm packages in every yarn workspace, remove duplicated react typescript types.
+```commandline
+lerna bootstrap --npm-client=yarn
+yarn clear_types
+```
+
+
+```commandline
+
+```
+
+```
 cd ./courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/
 npm install
 npm run build
