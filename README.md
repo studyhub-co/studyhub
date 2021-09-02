@@ -37,8 +37,9 @@ cd studyhub
 ```commandline
 wsl sudo apt -y update
 wsl sudo apt -y upgrade
-wsl sudo apt -y install python3-pip libmysqlclient-dev
-wsl pip3 install -r requirements.dev.txt
+wsl sudo apt -y install python3.8 python3.8-dev libmysqlclient-dev
+wsl python3.8 -m pip install --upgrade pip
+wsl python3.8 -m pip install -r requirements.dev.txt
 ```
 
 **macOS**
