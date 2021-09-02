@@ -35,9 +35,10 @@ cd studyhub
 **Windows**
 
 ```commandline
+
 wsl sudo apt -y update
 wsl sudo apt -y upgrade
-wsl sudo apt -y install python3.8 python3.8-dev libmysqlclient-dev
+wsl sudo apt -y install python3-pip python3.8 python3.8-dev libmysqlclient-dev
 wsl python3.8 -m pip install --upgrade pip
 wsl python3.8 -m pip install -r requirements.dev.txt
 ```
@@ -56,9 +57,9 @@ pip install -r requirements.dev.txt
 
 **Windows**
 
-1. Download installer from: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
-2. Install
-3. Add "c:\Program Files\PostgreSQL\13\bin\" to PATH environment variable
+- Download installer from: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+- Install
+- Add "c:\Program Files\PostgreSQL\13\bin\" to PATH environment variable
 
 **macOS**
 
@@ -101,8 +102,8 @@ set MYSQL_PROBLEM_TYPE_USER_PASSWORD=
 **Windows**
 
 ```
-copy set_env_vars.cmd set_env_vars.local.cmd
-notepad set_env_vars.local.cmd
+copy scripts\set_env_vars.cmd scripts\set_env_vars.local.cmd
+notepad scripts\set_env_vars.local.cmd
 ```
 
 **macOS**
