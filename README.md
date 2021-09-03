@@ -146,7 +146,7 @@ notepad scripts\set_env_vars.local.cmd
 
 ### Front-end
 
-1. Install [Node.js](https://nodejs.org/en/download/)
+1. Install [Node.js](https://nodejs.org/en/download/) + npm v6 (included)
 
 2. Install yarn
 
@@ -171,18 +171,26 @@ unzip courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extension
 * install lerna
 
 ```commandline
-npm install --no-package-lock --no-save lerna
+npm install -g lerna
 ```
 
 * get npm packages in every yarn workspace, remove duplicated react typescript types.
+
 ```commandline
-node_modules\.bin\lerna bootstrap --npm-client=yarn
+lerna bootstrap --npm-client=yarn
 yarn clear_types
 ```
 
+* build all workspace modules
 
 ```commandline
 lerna run build
+```
+
+* start compile bundles and watch for source code changes    
+
+```commandline
+yarn watch
 ```
 
 ```
@@ -190,10 +198,6 @@ cd ./courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/
 npm install
 npm run build
 npm run dist
-cd ./courses/static/courses/js/codesandbox-apps/common/
-yarn install
-cd ./courses/static/courses/js/codesandbox-apps/codesandbox-api/
-yarn build
 cd ./courses/static/courses/js/codesandbox-apps/vscode-textmate/
 npm run install install-dependencies
 npm run compile

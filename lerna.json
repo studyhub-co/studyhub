@@ -2,7 +2,8 @@
   "npmClient": "yarn",
   "packages": [
     "courses/static/courses/js/codesandbox-apps/common",
-    "courses/static/courses/js/codesandbox-apps/codesandbox-api"
+    "courses/static/courses/js/codesandbox-apps/codesandbox-api",
+    "courses/static/courses/js/codesandbox-apps/codesandbox-browserfs"
   ],
   "version": "1.0.0",
   "useWorkspaces": true

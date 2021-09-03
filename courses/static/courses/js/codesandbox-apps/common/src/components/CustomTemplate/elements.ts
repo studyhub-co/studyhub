@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components';
-import { Overlay } from '../SandboxCard/elements';
+import styled, { css } from 'styled-components'
+import { Overlay } from '../SandboxCard/elements'
 
 export const Border = styled.div<{ color?: string }>`
   ${({ color = `none` }) => css`
@@ -9,7 +9,7 @@ export const Border = styled.div<{ color?: string }>`
     height: 4px;
     background: ${color};
   `}
-`;
+`
 
 export const TemplateTitle = styled.span`
   display: block;
@@ -19,7 +19,7 @@ export const TemplateTitle = styled.span`
   font-size: 12px;
   font-weight: 500;
   text-align: left;
-`;
+`
 
 export const TemplateSubTitle = styled.span`
   ${({ theme }) => css`
@@ -36,7 +36,7 @@ export const TemplateSubTitle = styled.span`
     text-overflow: ellipsis;
     box-sizing: border-box;
   `}
-`;
+`
 
 export const MyTemplate = styled.button<{ overlayHeight?: number }>`
   ${({ theme, overlayHeight }) => css`
@@ -73,4 +73,4 @@ export const MyTemplate = styled.button<{ overlayHeight?: number }>`
       }
     }
   `}
-`;
+`
