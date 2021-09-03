@@ -23,7 +23,8 @@ from django.contrib.sitemaps.views import sitemap
 from resources.sitemaps import ResourcesViewSitemap, TextBookProblemsViewSitemap, TextBookSolutionsViewSitemap
 from curricula.sitemaps import CurriculaViewSitemap
 
-from .views import discussion_app, codesandbox_static_proxy_view
+# from .views import discussion_app, \
+from .views import codesandbox_static_proxy_view
 
 sitemaps = {
     'resources': ResourcesViewSitemap,

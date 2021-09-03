@@ -354,7 +354,7 @@ DJEDDIT_RELATED_FIELDS = {
     'course_material': 'course_material'
 }
 
-DJEDDIT_STATIC_FILES_URL_PREFIX = 'js/npm/@vermus/django-react-djeddit-client/dist'
+# DJEDDIT_STATIC_FILES_URL_PREFIX = 'js/npm/@vermus/django-react-djeddit-client/dist'
 
 SYSTEM_USER_ID = 2
 

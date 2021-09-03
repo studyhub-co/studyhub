@@ -9,7 +9,7 @@ import Container from 'react-bootstrap/Container'
 
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 
-import { ThreadComponent } from '@vermus/django-react-djeddit-client/'
+// import { ThreadComponent } from '@vermus/django-react-djeddit-client/'
 
 import {DEFAULT_MATHJAX_OPTIONS} from '../constants'
 import {Answer} from './answers/correct_answers/correct_answer'
@@ -114,10 +114,10 @@ export class Footer extends React.Component {
               <MarkdownMathRender source={this.props.solutionText} />
           }
           {correctAnswer}
-          <ThreadComponent
-            anonAsUserObject={Boolean(true)}
-            threadId={this.props.thread}
-          />
+          {/*<ThreadComponent*/}
+          {/*  anonAsUserObject={Boolean(true)}*/}
+          {/*  threadId={this.props.thread}*/}
+          {/*/>*/}
         </Modal.Body>
       </Modal>
 

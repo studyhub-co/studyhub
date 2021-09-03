@@ -177,20 +177,27 @@ npm install -g lerna
 * get npm packages in every yarn workspace, remove duplicated react typescript types.
 
 ```commandline
-lerna bootstrap --npm-client=yarn
-yarn clear_types
+lerna bootstrap --npm-client=yarn && yarn clear_types
 ```
 
 * build all workspace modules
 
 ```commandline
 lerna run build
+lerna run dist
 ```
 
-* start compile bundles and watch for source code changes    
+* start compile bundles and watch for source code changes (SPA)
 
 ```commandline
 yarn watch
+```
+
+* start compile bundles and watch for source code changes (JS application that run sandboxes)
+```commandline
+cd ./courses/sandbox-eval-project/
+yarn install
+yarn build:sandbox_pib_dev
 ```
 
 ```
