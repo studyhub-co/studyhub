@@ -3,7 +3,8 @@
   "packages": [
     "courses/static/courses/js/codesandbox-apps/common",
     "courses/static/courses/js/codesandbox-apps/codesandbox-api",
-    "courses/static/courses/js/codesandbox-apps/codesandbox-browserfs"
+    "courses/static/courses/js/codesandbox-apps/codesandbox-browserfs",
+    "courses/static/courses/js/codesandbox-apps/vscode-textmate"
   ],
   "version": "1.0.0",
   "useWorkspaces": true
