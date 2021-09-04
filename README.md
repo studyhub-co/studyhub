@@ -5,7 +5,8 @@
 ### Backend
 
 Requires [Python 3.8.*](https://www.python.org/downloads/), git ([Windows](https://git-scm.com/download/win), [macOS](https://git-scm.com/download/mac)).
-If you are using Windows and WSL, python requires only inside WSL instance (see below).   
+If you are using Windows and WSL, python requires inside WSL instance (see below) and Win OS (Requires by node-gyp in vscode-textmate application) both.
+Install Visual C++ Build Environment: [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools) (using "Visual C++ build tools" workload).    
 
 #### Interpreter environment
 
@@ -35,7 +36,6 @@ cd studyhub
 **Windows**
 
 ```commandline
-
 wsl sudo apt -y update
 wsl sudo apt -y upgrade
 wsl sudo apt -y install python3-pip python3.8 python3.8-dev libmysqlclient-dev
@@ -148,7 +148,7 @@ notepad scripts\set_env_vars.local.cmd
 
 1. Install [Node.js](https://nodejs.org/en/download/) + npm v6 (included)
 
-2. Install yarn
+2. Install yarn.
 
 ```commandline
 npm install -g yarn
@@ -195,6 +195,7 @@ yarn watch
 
 * start compile bundles and watch for source code changes (JS application that run sandboxes)
 Run the new terminal.
+
 ```commandline
 cd ./courses/sandbox-eval-project/
 yarn install
@@ -202,9 +203,6 @@ yarn watch
 ```
 
 ```
-cd ./courses/static/courses/js/codesandbox-apps/vscode-textmate/
-npm run install install-dependencies
-npm run compile
 cd ./courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/node-services
 yarn install
 yarn build
@@ -253,6 +251,7 @@ The model hierarchy is:
 * Lesson
 * Material
 
+
 ## Deployment (Server side installation)
 
 You can use any hosting services that support python: VPS, orchestration service, etc. But we have some built-in applications that rely on AWS.  
@@ -277,6 +276,11 @@ To Deploy:
 
 * `eb deploy`
 It will deploy to the proper environment depending on what branch you are on.
+
+or (prepare production bundle)
+```
+yarn prod
+```
 
 ## Launching the Dev Environment
 
@@ -311,7 +315,4 @@ Run `eb deploy` once the environment is up to get the latest version of dev runn
 * [Redux DevTools Extension](https://github.com/zalmoxisus/redux-devtools-extension)
 
 
-or (prepare production bundle)
-```
-yarn prod
-```
+

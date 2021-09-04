@@ -4,7 +4,8 @@
     "courses/static/courses/js/codesandbox-apps/common",
     "courses/static/courses/js/codesandbox-apps/codesandbox-api",
     "courses/static/courses/js/codesandbox-apps/codesandbox-browserfs",
-    "courses/static/courses/js/codesandbox-apps/vscode-textmate"
+    "courses/static/courses/js/codesandbox-apps/vscode-textmate",
+    "courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/node-services"
   ],
   "version": "1.0.0",
   "useWorkspaces": true
