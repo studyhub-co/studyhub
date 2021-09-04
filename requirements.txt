@@ -1,6 +1,6 @@
 antlr4-python3-runtime==4.9.2
 #boto==2.46.1
-boto3==1.18.31
+boto3==1.18.36
 django-ses==2.2.1
 Django==2.2.24
 django-allauth==0.44.0
