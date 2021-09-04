@@ -202,19 +202,13 @@ yarn install
 yarn watch
 ```
 
-```
-cd ./courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/node-services
-yarn install
-yarn build
-```
-
 ### Run development server
 
 * Create an admin account 
 
 **Windows**
 
-`scripts\wsl_manage_py.cmd createsuperuser`
+`scripts\wsl_manage_py.cmd createsuшсperuser`
 
 **macOS**
 
