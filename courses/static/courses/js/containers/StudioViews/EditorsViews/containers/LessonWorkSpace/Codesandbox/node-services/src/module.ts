@@ -226,7 +226,8 @@ export default class Module {
 
     if (request === 'util') {
       // Direct import to get the right version for VIM extensions
-      return require('../node_modules/util');
+      // return require('../node_modules/util'); local version
+      return require('../../../../../../../../../../../../node_modules/util'); // yarn workspace version
     }
 
     if (request === 'os') {
