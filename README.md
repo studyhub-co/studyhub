@@ -194,48 +194,51 @@ yarn watch
 ```
 
 * start compile bundles and watch for source code changes (JS application that run sandboxes)
+Run the new terminal.
 ```commandline
 cd ./courses/sandbox-eval-project/
 yarn install
-yarn build:sandbox_pib_dev
+yarn watch
 ```
 
 ```
-cd ./courses/static/courses/js/codesandbox-apps/codesandbox-browserfs/
-npm install
-npm run build
-npm run dist
 cd ./courses/static/courses/js/codesandbox-apps/vscode-textmate/
 npm run install install-dependencies
 npm run compile
 cd ./courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/node-services
 yarn install
 yarn build
-cd ./courses/sandbox-eval-project/
-yarn install
-yarn build:sandbox_pib_dev
 ```
 
-* Build the front-end
-development watch mode
-```
-yarn watch
-```
-or (prepare production bundle)
-```
-yarn prod
-```
+### Run development server
 
-* Create an admin account by running `/manage.py createsuperuser`
+* Create an admin account 
+
+**Windows**
+
+`scripts\wsl_manage_py.cmd createsuperuser`
+
+**macOS**
+
+`/manage.py createsuperuser`
 
 * Run:
+
+**Windows**
+
+```commandline
+scripts\wsl_manage_py.cmd runserver
 ```
+
+**macOS**
+
+```commandline
 ./manage.py runserver
 ```
-* You should find the site running on `http://localhost:8000`
-* To login to the admin account go to `http://localhost:8000/admin`
-* pib will look for a default curriculum named `Default Curriculum`, so in the admin create a curriculum titled `Default Curriculum`
-* Then create a unit, module, lesson, and question, then navigate to /curriculum/ to see what you created!
+
+* You should find the site running on http://localhost:8000
+* Login and go to http://localhost:8000/studio/ to create a unit, module, lesson, and materials.
+* Navigate to http://localhost:8000/ to see what you created!
 
 ## Structure
 Django apps:
@@ -307,3 +310,8 @@ Run `eb deploy` once the environment is up to get the latest version of dev runn
 * [React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)
 * [Redux DevTools Extension](https://github.com/zalmoxisus/redux-devtools-extension)
 
+
+or (prepare production bundle)
+```
+yarn prod
+```
