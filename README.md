@@ -14,7 +14,8 @@ Instead of the console, you can use your favorite IDE to cover the next steps. A
 
 **Windows**
 
-Python py-mini-racer application do not support Windows. So recommended running in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Steps to install [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual). Once you have distribution installed don't forget to run it from Start menu for the first time to complete your newly installed Linux distribution is to create an account, including a User Name and Password.  
+Python py-mini-racer application do not support Windows. So recommended running in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Steps to install [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual). Once you have distribution installed don't forget to run it from Start menu for the first time to complete your newly installed Linux distribution is to create an account, including a User Name and Password.
+Also, add "c:\Program Files\Git\usr\bin\" to PATH environment variable.  
 
 **macOS**
 
@@ -208,11 +209,15 @@ yarn watch
 
 **Windows**
 
-`scripts\wsl_manage_py.cmd createsuшсperuser`
+```commandline
+scripts\wsl_manage_py.cmd createsuperuser
+```
 
 **macOS**
 
-`/manage.py createsuperuser`
+```commandline
+/manage.py createsuperuser
+```
 
 * Run:
 
