@@ -14,15 +14,7 @@ from ..utils import UUIDTaggedItem
 class CourseQuerySet(models.QuerySet):
 
     def get_default(self, user=None):
-        # try to find course in last classrooms
-        # if user and user.profile.as_student_classrooms.count() > 0:
-        #     TODO it seems we have not student classrooms order now
-        #     TODO 'the last' should mean - the last classroom that a student took a part?
-        #     if user.profile.as_student_classrooms.last().course:
-        #         return user.profile.as_student_classrooms.last().course
-        #     return user.profile.as_student_classrooms.last().curriculum
-
-        # we moved from classroom last to profile.selected_course
+        # default is system default or user last used course
         if user and user.profile.selected_course:
             return user.profile.selected_course
 

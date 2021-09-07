@@ -450,7 +450,11 @@ class CourseViewSet(ModelViewSet):
             user = None
             if self.request.user.is_authenticated:
                 user = self.request.user
-            return Course.objects.get_default(user=user)
+            default_course = Course.objects.get_default(user=user)
+            # TODO https://github.com/studyhub-co/studyhub/issues/50
+            # if not default_course:
+            #     raise NotFound("default course not found")
+            return default_course
         elif self.request.user.is_authenticated:
             course = super(CourseViewSet, self).get_object()
             # save profile.selected_course
