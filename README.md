@@ -113,6 +113,10 @@ scripts\wsl_manage_py.cmd migrate
 ./manage.py migrate
 ```
 
+6. Import initial problems types source code data.
+
+TODO 
+
 ##### Requires [Mysql](https://dev.mysql.com/downloads/installer/) (>= 5.7)
 
 Mysql problem type requires Mysql database instance. 
@@ -275,7 +279,7 @@ brew install awsebcli
  pib_prod_db with pib_prod_user owner
 2) MySQL Community
 
-* Create four Amazon S3 buckets:
+* Create four Amazon S3 public buckets:
 
 'assets' for storing STATIC files (production EBS instance) 
 'media' for storing MEDIA files (production EBS instance)
@@ -285,7 +289,7 @@ brew install awsebcli
 
 * Add [Environment variables](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-softwaresettings.html?icmpid=docs_elasticbeanstalk_console):
 
-Add and setup common (for production and development version) environment variables from
+Add and setup common (for production and development version) environment variables in Configuration EBS instance section from
 ```commandline
 ./scripts/set_env_vars.cmd
 ```
@@ -308,10 +312,10 @@ RAVEN_DSN
 * on git `develop` branch run `eb use pib-dev-v2`
 * on git `master` branch run `eb use pib-prod-v2`
 
-* prepare eval project bundle
+* prepare eval project bundle # TODO replace with dynamic paths 
 ```commandline
 cd ./courses/sandbox-eval-project
-yarn build:sandbox_pib
+yarn build:sandbox
 ```
 
 * prepare SPA bundle
