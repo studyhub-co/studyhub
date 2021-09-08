@@ -41,13 +41,12 @@ AWS_SES_REGION_ENDPOINT = 'email.us-east-1.amazonaws.com'
 AWS_S3_BUCKET_AUTH = False
 
 # django-s3-storage media
-AWS_S3_PUBLIC_URL = os.getenv('AWS_STORAGE_PUBLIC_URL')
-AWS_S3_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_PUBLIC_URL = os.getenv('AWS_S3_PUBLIC_URL')
+AWS_S3_BUCKET_NAME = os.getenv('AWS_S3_BUCKET_NAME')
 
 # django-s3-storage static
 AWS_S3_BUCKET_NAME_STATIC = os.getenv('AWS_S3_BUCKET_NAME_STATIC')
-AWS_S3_PUBLIC_URL_STATIC = os.getenv('AWS_STORAGE_PUBLIC_URL_STATIC')
-
+AWS_S3_PUBLIC_URL_STATIC = os.getenv('AWS_S3_PUBLIC_URL_STATIC')
 
 DEFAULT_FILE_STORAGE = 'django_s3_storage.storage.S3Storage'
 STATICFILES_STORAGE = 'django_s3_storage.storage.StaticS3Storage'

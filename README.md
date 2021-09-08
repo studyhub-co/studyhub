@@ -250,51 +250,76 @@ The model hierarchy is:
 * Lesson
 * Material
 
-
-## Deployment (Server side installation)
+## Deployment (Amazon web services example)
 
 You can use any hosting services that support python: VPS, orchestration service, etc. But we have some built-in applications that rely on AWS.  
 So, for now, Amazon EBS + RDS + S3 is the best choice to host the project. 
 
-To Setup:
-
-* install AWS CLI (http://docs.aws.amazon.com/cli/latest/userguide/installing.html):
+* install [AWS CLI](http://docs.aws.amazon.com/cli/latest/userguide/installing.html):
 ```
 brew install awscli
 ```
-* install AWS EB CLI (http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html):
+* install [AWS EB CLI](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html):
 ```
 brew install awsebcli
 ```
-* run `aws configure` 
-* run `eb init` (you'll need the access id/key
-* on git `develop` branch run `eb use pib-dev`
-* on git `master` branch run `eb use pib-prod`
+* run `aws configure`
 
-To Deploy:
+* Create Amazon EBS environments (using [web console](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.managing.html) or [AWS CLI](https://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/create-environment.html)), e.g.:  
+"pib-dev-v2" for dev branch deploying  
+"pib-prod-v2" for production branch deploying (you can clone it from 'pib-dev-v2')
 
-* `eb deploy`
-It will deploy to the proper environment depending on what branch you are on.
+* Create two Amazon RDS databases instances with engines: 
+1) PostgreSQL. Connect to PostgreSQL DBMS instance and create two roles/databases, e.g.:  
+ pib_dev_db with pib_dev_user owner  
+ pib_prod_db with pib_prod_user owner
+2) MySQL Community
 
-or (prepare production bundle)
+* Create four Amazon S3 buckets:
+
+'assets' for storing STATIC files (production EBS instance) 
+'media' for storing MEDIA files (production EBS instance)
+
+'assets-dev' for storing STATIC files (development EBS instance)  
+'media-dev' for storing MEDIA files (development EBS instance)
+
+* Add [Environment variables](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-softwaresettings.html?icmpid=docs_elasticbeanstalk_console):
+
+Add and setup common (for production and development version) environment variables from
+```commandline
+./scripts/set_env_vars.cmd
+```
+
+Add production related environment variables:
+```commandline
+AWS_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY
+AWS_HEALTH_LOCAL_ALLOWED_HOST
+# MEDIA files bucket:
+AWS_S3_BUCKET_NAME
+AWS_S3_PUBLIC_URL
+# STATIC files bucket:
+AWS_S3_BUCKET_NAME_STATIC
+AWS_S3_PUBLIC_URL_STATIC
+RAVEN_DSN
+```
+
+* run `eb init` (you'll need the access id/key)
+* on git `develop` branch run `eb use pib-dev-v2`
+* on git `master` branch run `eb use pib-prod-v2`
+
+* prepare eval project bundle
+```commandline
+cd ./courses/sandbox-eval-project
+yarn build:sandbox_pib
+```
+
+* prepare SPA bundle
 ```
 yarn prod
 ```
 
-## Launching the Dev Environment
-
-To save money, the dev environment will not always be up. To launch the dev environment, from the `develop` branch, run the following command:
-
-```
-eb create --branch_default --cfg pib-dev --timeout 40
-```
-
-Follow the directions, and use "pib-dev" instead of the default "physicsisbeautiful-dev".
-
-This will take several minutes to run. If the command fails, you can try to run, `eb deploy` from the `develop` branch. Otherwise you may need to go on the aws console (Elastic Beanstalk) and rebuild the environment. The only other piece is that if you change the dns from `pib-dev.us-east-1.elasticbeanstalk.com` then you will need to go to the Google Domains and modify the DNS for `dev.physicsisbeautiful.com` to point at the new URL of the new dev environment.
-
-Run `eb deploy` once the environment is up to get the latest version of dev running in the environment.
-
+* `eb deploy` (it will deploy to the proper environment depending on what branch you are on).
 
 ## Development
 
