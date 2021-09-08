@@ -33,12 +33,16 @@
 {# editor end TODO replace with webpack minification  #}
 
 <!-- Browser FS -->
-{# TODO replace with native Browser FS ? #}
 <script type="text/javascript"
+{#    {% if debug %}#}
+{#        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}"#}
+{#    {% else %}#}
+{#        src="/proxy/static/courses/js/codesandbox-apps/browserfs/release/browserfs.min.js"#}
+{#    {% endif %}#}
     {% if debug %}
-        src="{% static 'courses/js/codesandbox-apps/browserfs/release/browserfs.min.js' %}"
+        src="{% static 'courses/js/codesandbox-apps/codesandbox-browserfs/build/browserfs.min.js' %}"
     {% else %}
-        src="/proxy/static/courses/js/codesandbox-apps/browserfs/release/browserfs.min.js"
+        src="/proxy/static/courses/js/codesandbox-apps/codesandbox-browserfs/build/browserfs.min.js"
     {% endif %}
 >
 </script>

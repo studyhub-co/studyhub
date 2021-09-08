@@ -153,7 +153,7 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'templates', 'allauth'),  # not sure that we need it
-            os.path.join(BASE_DIR, 'node_modules', '@vermus', 'django-react-djeddit-client', 'dist'),  # TODO remove
+            # os.path.join(BASE_DIR, 'node_modules', '@vermus', 'django-react-djeddit-client', 'dist'),  # TODO remove
             os.path.join(BASE_DIR, 'courses', 'sandbox-eval-project', 'www', 'courses', 'js'), # 'codesandbox-apps', 'eval'
         ],
         'APP_DIRS': True,
@@ -248,15 +248,15 @@ STATICFILES_FINDERS = [
     # by default
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'npm.finders.NpmFinder'
+    # 'npm.finders.NpmFinder'
 ]
 
 # No need anymore (discussion part is embed to SPA), TODO remove
-NPM_ROOT_PATH = BASE_DIR
-NPM_STATIC_FILES_PREFIX = os.path.join('js', 'npm')
-NPM_FILE_PATTERNS = {
-    os.path.join('@vermus', 'django-react-djeddit-client'): [os.path.join('dist', '*')]
-}
+# NPM_ROOT_PATH = BASE_DIR
+# NPM_STATIC_FILES_PREFIX = os.path.join('js', 'npm')
+# NPM_FILE_PATTERNS = {
+#     os.path.join('@vermus', 'django-react-djeddit-client'): [os.path.join('dist', '*')]
+# }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = 'Physics is Beautiful <no-reply@physicsisbeautiful.com>'
