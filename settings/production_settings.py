@@ -4,20 +4,18 @@ import os
 
 DEBUG = False
 
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split()
 
-# TODO move to Environment variable
-ALLOWED_HOSTS = [
-    'physicsisbeautiful.com',
-    'www.physicsisbeautiful.com',
-    'dev.physicsisbeautiful.com',
-    # 'pib-dev.us-east-1.elasticbeanstalk.com',
-    'pib-dev-v2.us-east-1.elasticbeanstalk.com',
-    '.compute-1.amazonaws.com',
-]
 
-## this ip can changes every deploy
-# if os.getenv('AWS_HEALTH_LOCAL_ALLOWED_HOST', None):
-#     ALLOWED_HOSTS.append(os.getenv('AWS_HEALTH_LOCAL_ALLOWED_HOST'))
+# ALLOWED_HOSTS = [
+#     'physicsisbeautiful.com',
+#     'www.physicsisbeautiful.com',
+#     'dev.physicsisbeautiful.com',
+#     # 'pib-dev.us-east-1.elasticbeanstalk.com',
+#     'pib-dev-v2.us-east-1.elasticbeanstalk.com',
+#     '.compute-1.amazonaws.com',
+# ]
+
 
 # add ip to allow ebs health checker to work
 import socket

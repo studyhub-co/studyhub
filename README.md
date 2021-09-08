@@ -298,7 +298,7 @@ Add production related environment variables:
 ```commandline
 AWS_ACCESS_KEY
 AWS_SECRET_ACCESS_KEY
-AWS_HEALTH_LOCAL_ALLOWED_HOST
+ALLOWED_HOSTS # space separated django ALLOWED_HOSTS aliases 
 # MEDIA files bucket:
 AWS_S3_BUCKET_NAME
 AWS_S3_PUBLIC_URL
