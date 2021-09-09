@@ -1,7 +1,5 @@
 import os
 
-from django_s3_storage.storage import S3Error
-
 from djeddit.models import Thread as DJThread
 from react_comments_django.models import Thread
 
@@ -30,7 +28,7 @@ def copy_question(lesson, question):
         setattr(new_material, field.name, new_field_value)
 
     # copy thread (already exist due migration comments data was in 0015_auto_20210415_1102)
-    new_material.thread = Thread.objects.get(id=question.thread.id)
+    # new_material.thread = Thread.objects.get(id=question.thread.id)
 
     new_material.name = question.text if len(question.text) > 3 else question.text + ' material'
     new_material.lesson = lesson
@@ -66,7 +64,7 @@ def copy_question(lesson, question):
                 material_question_image.image.save(new_image_name, new_image[0], save=True)
                 # material_question_image.save()
                 material_question_image_path = material_question_image.image.url
-        except (FileNotFoundError, S3Error):
+        except (FileNotFoundError, ValueError):
             # generate a report for administrators with information about not found files
             module_dir = os.path.dirname(__file__)
             log_file = os.path.join(module_dir, 'images_not_found.log')

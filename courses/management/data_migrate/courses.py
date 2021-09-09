@@ -27,7 +27,7 @@ def copy_curricula(curricula):
     tags = curricula.tags.names()
     new_course.tags.set(*tags, clear=True)
     # set() classrooms
-    new_course.classroom_set.set(curricula.classroom_set.all(), clear=True)
+    # new_course.classroom_set.set(curricula.classroom_set.all(), clear=True)
     # set() collaborators
     new_course.collaborators.set(curricula.collaborators.all(), clear=True)
     # copy dashboards

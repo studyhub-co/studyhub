@@ -46,7 +46,7 @@ def copy_lesson(module, lesson):
     new_lesson.tags.set(*tags, clear=True)
 
     # set() classroom's assignment
-    new_lesson.assignment_set.set(lesson.assignment_set.all(), clear=True)
+    # new_lesson.assignment_set.set(lesson.assignment_set.all(), clear=True)
 
     if lesson.lesson_type == 0:  # default
         # copy questions
