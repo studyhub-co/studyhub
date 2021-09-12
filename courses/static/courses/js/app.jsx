@@ -7,9 +7,9 @@ import PropTypes from 'prop-types'
 
 import NavBar from './components/NavBar/index'
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 
-const theme = createMuiTheme({
+const theme = createTheme({
   typography: {
     fontFamily: 'Museosansrounded, sans-serif',
   },

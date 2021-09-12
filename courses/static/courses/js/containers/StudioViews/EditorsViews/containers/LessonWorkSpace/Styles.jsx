@@ -2,11 +2,11 @@ import React from 'react'
 
 import styled from 'styled-components'
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 
 export default function ThemeWraper(props) {
   const theme = React.useMemo(() =>
-    createMuiTheme({
+    createTheme({
       palette: {
         type: 'light',
       },
