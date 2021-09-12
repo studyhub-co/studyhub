@@ -11,7 +11,7 @@ from django.contrib.sites.models import Site
 
 from shortuuidfield import ShortUUIDField
 
-# from curricula.models import Curriculum, Lesson
+from curricula.models import Curriculum, Lesson
 from courses.models import Course, Lesson as CoursesLesson
 from profiles.models import Profile
 
@@ -37,7 +37,7 @@ class Classroom(models.Model):
     students = models.ManyToManyField(Profile, through='ClassroomStudent',
                                       related_name='as_student_classrooms')
 
-    # curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
+    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
     # delete classroom if course related to classroom deleted # TODO remove null true3
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     code = models.CharField(unique=True, max_length=6)
@@ -91,8 +91,9 @@ def generate_classroom_code(sender, instance, *args, **kwargs):
 
 class Assignment(models.Model):
     uuid = ShortUUIDField(unique=True)
-    # lessons = models.ManyToManyField(Lesson)
-    lessons = models.ManyToManyField(CoursesLesson)
+    lessons = models.ManyToManyField(Lesson)
+    # we need different name to able to set from lessons clone
+    courses_lessons = models.ManyToManyField(CoursesLesson)
     created_on = models.DateTimeField(auto_now_add=True)
     deleted_on = models.DateTimeField(blank=True, null=True)
     updated_on = models.DateTimeField(auto_now=True)  # assigned On date
@@ -144,7 +145,7 @@ class AssignmentProgressManager(models.Manager):
                 assignment_progress.delayed_on = None
 
             # save all lessons completed in Course into classroom progress
-            assignment_progress.completed_lessons.set(
+            assignment_progress.completed_courses_lessons.set(
                 student_completed_lessons.intersection(need_complete_lessons)
             )
 
@@ -196,8 +197,10 @@ class AssignmentProgressManager(models.Manager):
 class AssignmentProgress(models.Model):
     assignment = models.ForeignKey(Assignment, related_name='assignment_progress', on_delete=models.CASCADE)
     uuid = ShortUUIDField(unique=True)
-    # completed_lessons = models.ManyToManyField(Lesson, related_name='assignment_progress_completed_lessons')
-    completed_lessons = models.ManyToManyField(CoursesLesson, related_name='assignment_progress_completed_lessons')
+    # old data
+    completed_lessons = models.ManyToManyField(Lesson, related_name='assignment_progress_completed_lessons')
+    completed_courses_lessons = models.ManyToManyField(CoursesLesson,
+                                                       related_name='assignment_progress_completed_courses_lessons')
     updated_on = models.DateTimeField(auto_now=True)
     # assigned_on = assignment.start_on
     start_on = models.DateTimeField(blank=True, null=True)  # 1st lesson has been requested by student

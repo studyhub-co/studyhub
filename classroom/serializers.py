@@ -65,7 +65,7 @@ class AssignmentStudentsSerializer(PublicProfileSerializer):
 
     def get_count_completed_lessons(self, obj):
         if hasattr(obj, 'as_students_current_assignment_progress') and len(obj.as_students_current_assignment_progress) > 0:
-            return obj.as_students_current_assignment_progress[0].completed_lessons.count()
+            return obj.as_students_current_assignment_progress[0].completed_courses_lessons.count()
         else:
             return 0
 
@@ -229,7 +229,7 @@ class AssignmentListSerializer(serializers.ModelSerializer):
         # Changed in Django 2.0:
         # The filter argument was added to aggregates.
         if hasattr(obj, 'assignment_student_progress') and len(obj.assignment_student_progress) > 0:
-            return obj.assignment_student_progress[0].completed_lessons.count()
+            return obj.assignment_student_progress[0].completed_courses_lessons.count()
         else:
             return 0
 

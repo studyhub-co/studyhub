@@ -166,7 +166,7 @@ class AssignmentStudentRow extends React.Component {
             </Col>
             <Col sm={2} md={2} className={'vcenter'}>
               <div className={textColorClassName}>
-                {this.props.assignment.count_completed_lessons} of{' '}
+                {this.props.assignment.count_completed_courses_lessons} of{' '}
                 {this.props.assignment.count_lessons} completed
               </div>
             </Col>

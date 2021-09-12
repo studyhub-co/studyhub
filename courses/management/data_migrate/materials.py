@@ -27,7 +27,9 @@ def copy_question(lesson, question):
 
         setattr(new_material, field.name, new_field_value)
 
-    # copy thread (already exist due migration comments data was in 0015_auto_20210415_1102)
+    # we copy djeedit to react comments 1 to 1 (with ids) in 0015_auto_20210415_1102 migration
+    # copy thread id
+    new_material.thread_id = question.thread_id
     # new_material.thread = Thread.objects.get(id=question.thread.id)
 
     new_material.name = question.text if len(question.text) > 3 else question.text + ' material'

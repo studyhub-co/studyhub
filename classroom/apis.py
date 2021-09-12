@@ -199,7 +199,7 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         try:
             ap = assignment.assignment_progress.get(student__user=request.user)
-            completed_lessons = ap.completed_lessons.all()
+            completed_lessons = ap.completed_courses_lessons.all()
             for lesson in assignment.lessons.all():
                 if not completed_lessons.exists():
                     first_uncompleted_lesson = lesson
@@ -361,7 +361,8 @@ class AssignmentViewSet(SeparateListObjectSerializerMixin, ModelViewSet):
 
         try:
             completed_lessons = \
-                AssignmentProgress.objects.get(student__user=request.user, assignment=assignment).completed_lessons.all().\
+                AssignmentProgress.objects.get(student__user=request.user, assignment=assignment).\
+                completed_courses_lessons.all().\
                 annotate(ann_status=Value('completed', CharField()))
 
             # mark completed lessons

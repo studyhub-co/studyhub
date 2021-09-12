@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='assignmentprogress',
             name='completed_courses_lessons',
-            field=models.ManyToManyField(related_name='assignment_progress_completed_lessons', to='courses.Lesson'),
+            field=models.ManyToManyField(related_name='assignment_progress_completed_courses_lessons', to='courses.Lesson'),
         ),
 
     ]

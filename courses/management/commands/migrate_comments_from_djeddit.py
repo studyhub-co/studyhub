@@ -88,8 +88,13 @@ SELECT content,
             new_thread.topic = new_topic
             new_thread.save()
 
-    # update id sequence for thread
+    # update id sequences
     cursor.execute("""SELECT setval('react_comments_django_thread_id_seq', (SELECT MAX(id) FROM react_comments_django_thread));""")
+    cursor.execute(
+        """SELECT setval('react_comments_django_topic_id_seq', (SELECT MAX(id) FROM react_comments_django_topic));""")
+    cursor.execute(
+        """SELECT setval('react_comments_django_userpostvote_id_seq', (SELECT MAX(id) FROM react_comments_django_userpostvote));""")
+
 
     # copy users votes
     for djvote in DJUserPostVote.objects.all():

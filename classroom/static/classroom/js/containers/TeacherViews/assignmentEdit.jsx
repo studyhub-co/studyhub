@@ -35,11 +35,11 @@ const DEFAULT_STATE = {
   // dueTime: 36000,
   sendEmail: false,
   assignmentIsValid: false,
-  assignmentName: ''
+  assignmentName: '',
 }
 
 class AssignmentEdit extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.handleStartOn = this.handleStartOn.bind(this)
     this.handleDueOn = this.handleDueOn.bind(this)
@@ -53,87 +53,101 @@ class AssignmentEdit extends React.Component {
     this.state = Object.assign({}, DEFAULT_STATE)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     console.log('coursesFetchExpandedCourse')
-    this.props.coursesActions.coursesFetchExpandedCourse(this.props.classroomTeacher.course.uuid)
+    this.props.coursesActions.coursesFetchExpandedCourse(
+      this.props.classroomTeacher.course.uuid,
+    )
   }
 
-  componentWillUnmount () {
-    this.setState({_ispopulated: false})
+  componentWillUnmount() {
+    this.setState({ _ispopulated: false })
   }
 
-  setIsPopulated () {
-    this.setState({_ispopulated: true})
+  setIsPopulated() {
+    this.setState({ _ispopulated: true })
   }
 
   // deprecated TODO replace with componentDidUpdate
-  componentWillReceiveProps (props) {
-    var newLessonsTreeData = []
+  componentWillReceiveProps(props) {
+    let newLessonsTreeData = []
     if (props.courseExpanded) {
-      if (props.courseExpanded.units.length > 0 &&
-        this.state.lessonsTreeData.length === 0) {
+      if (
+        props.courseExpanded.units.length > 0 &&
+        this.state.lessonsTreeData.length === 0
+      ) {
         // populate with modulesTreeData
         newLessonsTreeData = this.addChildren(props.courseExpanded.units)
       }
       if (this.props.createNew) {
-        this.setState(Object.assign({}, DEFAULT_STATE, {lessonsTreeData: newLessonsTreeData}),
-          this.setIsPopulated) // reset tree selection
+        this.setState(
+          Object.assign({}, DEFAULT_STATE, {
+            lessonsTreeData: newLessonsTreeData,
+          }),
+          this.setIsPopulated,
+        ) // reset tree selection
       } else {
-        this.setState({lessonsTreeData: newLessonsTreeData}, this.reloadFromAssignment)
+        this.setState(
+          { lessonsTreeData: newLessonsTreeData },
+          this.reloadFromAssignment,
+        )
       }
     }
   }
 
-  reloadFromAssignment () {
+  reloadFromAssignment() {
     if (this.props.assignment && !this.props.createNew) {
       // Edit assignment
       var startDate = new Date(this.props.assignment.start_on)
       var dueDate = new Date(this.props.assignment.due_on)
 
-      this.setState({
-        // startDate: this.props.assignment.start_on,
-        startDate: startDate,
-        startTime: startDate,
-        // startTime: startDate.getHours() * 60 * 60,
-        // dueDate: this.props.assignment.due_on,
-        dueTime: dueDate,
-        dueDate: dueDate,
-        sendEmail: this.props.assignment.send_email,
-        // dueTime: dueDate.getHours() * 60 * 60,
-        assignmentName: this.props.assignment.name
-      }, this.copyNodesFromAssignmentValidate) // copy selected lessons from assignment
+      this.setState(
+        {
+          // startDate: this.props.assignment.start_on,
+          startDate: startDate,
+          startTime: startDate,
+          // startTime: startDate.getHours() * 60 * 60,
+          // dueDate: this.props.assignment.due_on,
+          dueTime: dueDate,
+          dueDate: dueDate,
+          sendEmail: this.props.assignment.send_email,
+          // dueTime: dueDate.getHours() * 60 * 60,
+          assignmentName: this.props.assignment.name,
+        },
+        this.copyNodesFromAssignmentValidate,
+      ) // copy selected lessons from assignment
     }
   }
 
-  handleStartOn (value) {
-    this.setState({startDate: value}, this.validateAssignment)
+  handleStartOn(value) {
+    this.setState({ startDate: value }, this.validateAssignment)
   }
-  handleDueOn (value) {
-    this.setState({dueDate: value}, this.validateAssignment)
-  }
-
-  handleStartTimeChange (value) {
-    this.setState({startTime: value}, this.validateAssignment)
+  handleDueOn(value) {
+    this.setState({ dueDate: value }, this.validateAssignment)
   }
 
-  handleDueTimeChange (value) {
-    this.setState({dueTime: value}, this.validateAssignment)
+  handleStartTimeChange(value) {
+    this.setState({ startTime: value }, this.validateAssignment)
   }
 
-  handleSendEmailChange (e) {
-    this.setState({sendEmail: !this.state.sendEmail})
+  handleDueTimeChange(value) {
+    this.setState({ dueTime: value }, this.validateAssignment)
   }
 
-  copyValidateTree () {
+  handleSendEmailChange(e) {
+    this.setState({ sendEmail: !this.state.sendEmail })
+  }
+
+  copyValidateTree() {
     this.copyCheckStateNodesToTree(this.state.lessonsTreeData)
     this.validateAssignment()
   }
 
-  handleNameChange (e) {
+  handleNameChange(e) {
     this.setState({ assignmentName: e.target.value }, this.validateAssignment)
   }
 
-  onLessonTreeChange (currentNode, selectedNodes) {
+  onLessonTreeChange(currentNode, selectedNodes) {
     this.setState({ selectedLessons: selectedNodes }, this.copyValidateTree)
   }
 
@@ -141,7 +155,7 @@ class AssignmentEdit extends React.Component {
    * copy selected nodes from selectedLessons (from multiselect) to lessonsTreeData
    * @param treeNodes
    */
-  copyCheckStateNodesToTree (treeNodes) {
+  copyCheckStateNodesToTree(treeNodes) {
     for (var x = 0; x < treeNodes.length; x++) {
       treeNodes[x].checked = false // unchek by default
       for (var y = 0; y < this.state.selectedLessons.length; y++) {
@@ -159,44 +173,56 @@ class AssignmentEdit extends React.Component {
   /**
    *  copy cheked nodes to selectedLessons
    */
-  copyNodesFromAssignmentValidate () {
+  copyNodesFromAssignmentValidate() {
     var selectedLessons = []
-    for (var x = 0; x < this.props.assignment.lessons.length; x++) {
-      var checkedLesson = this.props.assignment.lessons[x]
+    for (var x = 0; x < this.props.assignment.courses_lessons.length; x++) {
+      var checkedLesson = this.props.assignment.courses_lessons[x]
       selectedLessons.push({
         label: checkedLesson.name,
         value: checkedLesson.uuid,
         checked: true,
-        disabled: false
+        disabled: false,
       })
     }
-    this.setState({
-      selectedLessons: selectedLessons
-    }, () => { this.validateAssignment(); this.setIsPopulated() })
+    this.setState(
+      {
+        selectedLessons: selectedLessons,
+      },
+      () => {
+        this.validateAssignment()
+        this.setIsPopulated()
+      },
+    )
   }
 
-  validateAssignment () {
+  validateAssignment() {
     // TODO add validation errors info for user
     let dueDateTime = new Date(this.state.dueDate)
     if (this.state.dueTime) {
-      dueDateTime.setHours(this.state.dueTime.getHours(), this.state.dueTime.getMinutes())
+      dueDateTime.setHours(
+        this.state.dueTime.getHours(),
+        this.state.dueTime.getMinutes(),
+      )
     }
 
-    if (!this.state.startDate ||
-        !this.state.dueDate ||
-        this.state.startTime == null ||
-        this.state.dueTime == null ||
-        !this.state.assignmentName ||
-        this.state.selectedLessons.length === 0 ||
-        this.state.startDate > this.state.dueDate || // if start date > due date
-        dueDateTime < new Date()) { // if due date+time < date+time now
-      this.setState({assignmentIsValid: false})
+    if (
+      !this.state.startDate ||
+      !this.state.dueDate ||
+      this.state.startTime == null ||
+      this.state.dueTime == null ||
+      !this.state.assignmentName ||
+      this.state.selectedLessons.length === 0 ||
+      this.state.startDate > this.state.dueDate || // if start date > due date
+      dueDateTime < new Date()
+    ) {
+      // if due date+time < date+time now
+      this.setState({ assignmentIsValid: false })
     } else {
-      this.setState({assignmentIsValid: true})
+      this.setState({ assignmentIsValid: true })
     }
   }
 
-  saveAssignment () {
+  saveAssignment() {
     var lessonsUuids = []
 
     for (var x = 0; x < this.state.selectedLessons.length; x++) {
@@ -204,10 +230,16 @@ class AssignmentEdit extends React.Component {
     }
 
     var startDateTime = new Date(this.state.startDate)
-    startDateTime.setHours(this.state.startTime.getHours(), this.state.startTime.getMinutes())
+    startDateTime.setHours(
+      this.state.startTime.getHours(),
+      this.state.startTime.getMinutes(),
+    )
 
     var dueDateTime = new Date(this.state.dueDate)
-    dueDateTime.setHours(this.state.dueTime.getHours(), this.state.dueTime.getMinutes())
+    dueDateTime.setHours(
+      this.state.dueTime.getHours(),
+      this.state.dueTime.getMinutes(),
+    )
 
     var assignmentJson = {
       name: this.state.assignmentName,
@@ -215,41 +247,70 @@ class AssignmentEdit extends React.Component {
       due_on: dueDateTime.toISOString(),
       classroom_uuid: this.props.classroomTeacher.uuid,
       lessons_uuids: lessonsUuids,
-      send_email: this.state.sendEmail
+      send_email: this.state.sendEmail,
     }
-    if (this.props.assignment && this.props.assignment.uuid && !this.props.createNew) {
+    if (
+      this.props.assignment &&
+      this.props.assignment.uuid &&
+      !this.props.createNew
+    ) {
       // update
       assignmentJson.uuid = this.props.assignment.uuid
-      this.props.assignmentActions.assignmentPartialUpdateAssignment(assignmentJson, true)
+      this.props.assignmentActions.assignmentPartialUpdateAssignment(
+        assignmentJson,
+        true,
+      )
     } else {
       // save
-      this.props.assignmentActions.assignmentCreateAssignment(assignmentJson, true)
+      this.props.assignmentActions.assignmentCreateAssignment(
+        assignmentJson,
+        true,
+      )
     }
     // close Window
-    if (typeof this.props.onSave === 'function') { this.props.onSave() }
+    if (typeof this.props.onSave === 'function') {
+      this.props.onSave()
+    }
   }
 
-  addChildren (children) {
-    var data = []
-    for (var i = 0; i < children.length; i++) {
-      if (children[i].hasOwnProperty('modules') || children[i].hasOwnProperty('lessons')) {
-        var childrenAttr
-        if (children[i].hasOwnProperty('modules')) { childrenAttr = 'modules' }
-        if (children[i].hasOwnProperty('lessons')) { childrenAttr = 'lessons' }
-        var newchildren = this.addChildren(children[i][childrenAttr])
+  addChildren(children) {
+    let data = []
+    for (let i = 0; i < children.length; i++) {
+      if (
+        children[i].hasOwnProperty('modules') ||
+        children[i].hasOwnProperty('courses_lessons')
+      ) {
+        let childrenAttr
+        if (children[i].hasOwnProperty('modules')) {
+          childrenAttr = 'modules'
+        }
+        if (children[i].hasOwnProperty('courses_lessons')) {
+          childrenAttr = 'courses_lessons'
+        }
+        let newchildren = this.addChildren(children[i][childrenAttr])
         data.push({
           label: children[i].name,
           value: children[i].uuid,
           children: newchildren,
           expanded: true,
-          disabled: true
+          disabled: true,
         })
       } else {
         // lesson
-        var checked = false
-        if (this.props.assignment && this.props.assignment.uuid && !this.props.createNew) {
-          for (var y = 0; y < this.props.assignment.lessons.length; y++) {
-            if (this.props.assignment.lessons[y].uuid === children[i].uuid) {
+        let checked = false
+        if (
+          this.props.assignment &&
+          this.props.assignment.uuid &&
+          !this.props.createNew
+        ) {
+          for (
+            let y = 0;
+            y < this.props.assignment.courses_lessons.length;
+            y++
+          ) {
+            if (
+              this.props.assignment.courses_lessons[y].uuid === children[i].uuid
+            ) {
               checked = true
               break
             }
@@ -259,138 +320,151 @@ class AssignmentEdit extends React.Component {
           label: children[i].name,
           value: children[i].uuid,
           checked: checked,
-          disabled: false })
+          disabled: false,
+        })
       }
     }
     return data
   }
 
-  render () {
+  render() {
     return (
-      <div>{ this.state._ispopulated
-        ? <Container fluid>
-          <Row className={'vcenter'}>
-            <Col sm={3} md={3} className={'text-right'}>
-              Name
-            </Col>
-            <Col sm={9} md={9}>
-              <FormControl
-                type='text'
-                value={this.state.assignmentName}
-                placeholder='Enter name'
-                onChange={this.handleNameChange}
-              />
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col sm={3} md={3} className={'text-right'}>
-              Assignment
-            </Col>
-            <Col sm={9} md={9}>
-              <DropdownTreeSelect
-                onChange={this.onLessonTreeChange}
-                data={this.state.lessonsTreeData}
-                placeholderText={'Pick a goal skill'} />
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col sm={3} md={3} className={'text-right'}>
-              Start on
-            </Col>
-            <Col sm={6} md={6}>
-              {/*<DatePicker onChange={this.handleStartOn} value={this.state.startDate} />*/}
-              <DatePicker className='form-control' onChange={this.handleStartOn} selected={this.state.startDate} />
-            </Col>
-            <Col sm={3} md={3}>
-              {/*<TimePicker*/}
+      <div>
+        {this.state._ispopulated ? (
+          <Container fluid>
+            <Row className={'vcenter'}>
+              <Col sm={3} md={3} className={'text-right'}>
+                Name
+              </Col>
+              <Col sm={9} md={9}>
+                <FormControl
+                  type="text"
+                  value={this.state.assignmentName}
+                  placeholder="Enter name"
+                  onChange={this.handleNameChange}
+                />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col sm={3} md={3} className={'text-right'}>
+                Assignment
+              </Col>
+              <Col sm={9} md={9}>
+                <DropdownTreeSelect
+                  onChange={this.onLessonTreeChange}
+                  data={this.state.lessonsTreeData}
+                  placeholderText={'Pick a goal skill'}
+                />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col sm={3} md={3} className={'text-right'}>
+                Start on
+              </Col>
+              <Col sm={6} md={6}>
+                {/*<DatePicker onChange={this.handleStartOn} value={this.state.startDate} />*/}
+                <DatePicker
+                  className="form-control"
+                  onChange={this.handleStartOn}
+                  selected={this.state.startDate}
+                />
+              </Col>
+              <Col sm={3} md={3}>
+                {/*<TimePicker*/}
                 {/*onChange={this.handleStartTimeChange}*/}
                 {/*start='01:00'*/}
                 {/*end='24:00'*/}
                 {/*step={60}*/}
                 {/*value={this.state.startTime} />*/}
-              <DatePicker
-                className='form-control'
-                selected={this.state.startTime}
-                onChange={this.handleStartTimeChange}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={60}
-                dateFormat='HH:mm'
-                timeFormat='HH:mm'
-                timeCaption='Time'
-              />
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col sm={3} md={3} className={'text-right'}>
-              Due on
-            </Col>
-            <Col sm={6} md={6}>
-              {/*<DatePicker onChange={this.handleDueOn} value={this.state.dueDate} />*/}
-              <DatePicker className='form-control' onChange={this.handleDueOn} selected={this.state.dueDate} />
-            </Col>
-            <Col sm={3} md={3}>
-              {/*<TimePicker*/}
+                <DatePicker
+                  className="form-control"
+                  selected={this.state.startTime}
+                  onChange={this.handleStartTimeChange}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={60}
+                  dateFormat="HH:mm"
+                  timeFormat="HH:mm"
+                  timeCaption="Time"
+                />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col sm={3} md={3} className={'text-right'}>
+                Due on
+              </Col>
+              <Col sm={6} md={6}>
+                {/*<DatePicker onChange={this.handleDueOn} value={this.state.dueDate} />*/}
+                <DatePicker
+                  className="form-control"
+                  onChange={this.handleDueOn}
+                  selected={this.state.dueDate}
+                />
+              </Col>
+              <Col sm={3} md={3}>
+                {/*<TimePicker*/}
                 {/*onChange={this.handleDueTimeChange}*/}
                 {/*start='01:00'*/}
                 {/*end='24:00'*/}
                 {/*step={60}*/}
                 {/*value={this.state.dueTime} />*/}
-              <DatePicker
-                className='form-control'
-                selected={this.state.dueTime}
-                onChange={this.handleDueTimeChange}
-                showTimeSelect
-                showTimeSelectOnly
-                timeIntervals={60}
-                dateFormat='HH:mm'
-                timeFormat='HH:mm'
-                timeCaption='Time'
-              />
-            </Col>
-          </Row>
-          <br />
-          <Row className={'vcenter'}>
-            <Col sm={3} md={3} className={'text-right'}>
-              Email
-            </Col>
-            <Col sm={9} md={9}>
-              <FormCheck>
-                <FormCheck.Input
-                  onClick={this.handleSendEmailChange}
-                  type={'checkbox'}
-                  defaultChecked={this.state.sendEmail}
+                <DatePicker
+                  className="form-control"
+                  selected={this.state.dueTime}
+                  onChange={this.handleDueTimeChange}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={60}
+                  dateFormat="HH:mm"
+                  timeFormat="HH:mm"
+                  timeCaption="Time"
                 />
-                <FormCheck.Label>
-                  Send email notification</FormCheck.Label>
-              </FormCheck>
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col sm={12} md={12} className={'text-center'}>
-              <button
-                className={'classroom-common-button' + (this.state.assignmentIsValid ? '' : ' disabled-button')}
-                disabled={!this.state.assignmentIsValid}
-                onClick={this.saveAssignment}>
-                Schedule assignment
-              </button>
-            </Col>
-          </Row>
-        </Container>
-        : <Container fluid>
-          <Row>
-            <Col sm={12} md={12} style={{margin: '0 40% 0 40%'}}>
-              <RingLoader
-                color={'#1caff6'}
-                loading={this.state.loading}
-              />
-            </Col>
-          </Row>
-        </Container>}
+              </Col>
+            </Row>
+            <br />
+            <Row className={'vcenter'}>
+              <Col sm={3} md={3} className={'text-right'}>
+                Email
+              </Col>
+              <Col sm={9} md={9}>
+                <FormCheck>
+                  <FormCheck.Input
+                    onClick={this.handleSendEmailChange}
+                    type={'checkbox'}
+                    defaultChecked={this.state.sendEmail}
+                  />
+                  <FormCheck.Label>Send email notification</FormCheck.Label>
+                </FormCheck>
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col sm={12} md={12} className={'text-center'}>
+                <button
+                  className={
+                    'classroom-common-button' +
+                    (this.state.assignmentIsValid ? '' : ' disabled-button')
+                  }
+                  disabled={!this.state.assignmentIsValid}
+                  onClick={this.saveAssignment}
+                >
+                  Schedule assignment
+                </button>
+              </Col>
+            </Row>
+          </Container>
+        ) : (
+          <Container fluid>
+            <Row>
+              <Col sm={12} md={12} style={{ margin: '0 40% 0 40%' }}>
+                <RingLoader color={'#1caff6'} loading={this.state.loading} />
+              </Col>
+            </Row>
+          </Container>
+        )}
       </div>
     )
   }
@@ -399,7 +473,7 @@ class AssignmentEdit extends React.Component {
 AssignmentEdit.propTypes = {
   coursesActions: PropTypes.shape({
     coursesFetchExpandedCourse: PropTypes.func.isRequired,
-    dataReceiveExpandedCourse: PropTypes.func.isRequired
+    dataReceiveExpandedCourse: PropTypes.func.isRequired,
   }).isRequired,
   // courseExpanded: PropTypes.object,
   courseExpanded: PropTypes.object,
@@ -407,27 +481,27 @@ AssignmentEdit.propTypes = {
   assignmentActions: PropTypes.shape({
     assignmentCreateAssignment: PropTypes.func.isRequired,
     assignmentFetchAssignmentList: PropTypes.func.isRequired,
-    assignmentPartialUpdateAssignment: PropTypes.func.isRequired
+    assignmentPartialUpdateAssignment: PropTypes.func.isRequired,
   }).isRequired,
   onSave: PropTypes.func,
   assignment: PropTypes.object,
-  createNew: PropTypes.bool.isRequired
+  createNew: PropTypes.bool.isRequired,
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   console.log(state)
   return {
     classroomTeacher: state.classroom.classroomTeacherClassroom,
-    courseExpanded: state.classroom.courseExpanded
+    courseExpanded: state.classroom.courseExpanded,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     dispatch,
     coursesActions: bindActionCreators(coursesCreators, dispatch),
     // coursesActions: bindActionCreators(coursesCreators, dispatch),
-    assignmentActions: bindActionCreators(assignmentCreators, dispatch)
+    assignmentActions: bindActionCreators(assignmentCreators, dispatch),
   }
 }
 

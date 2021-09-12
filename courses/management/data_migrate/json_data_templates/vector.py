@@ -56,7 +56,9 @@ def populate_json_data(**kwargs):
         data = f.read()
 
     # escape values / fixme
-    question_text = json.dumps(mq(kwargs['question_text']))
+    # question_text = json.dumps(mq(kwargs['question_text']))
+    # we use mathjax in questions, so no escaping
+    question_text = json.dumps(kwargs['question_text'])
     question_vectors = json.dumps(kwargs['question_vectors'])
     answer_vectors = json.dumps(kwargs['answer_vectors'])
     answer_text_only = json.dumps(kwargs['answer_text_only'])

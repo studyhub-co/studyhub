@@ -130,20 +130,20 @@ export class AssignmentView extends React.Component {
           <Row className={className}>
             <Col sm={1} md={1} style={{maxWidth: '35%'}}>
               {this.props.assignment &&
-              this.props.assignment.lessons.length > 0 &&
-              this.props.assignment.lessons[0].image
+              this.props.assignment.courses_lessons.length > 0 &&
+              this.props.assignment.courses_lessons[0].image
                 ? <Image
                   className={'pointer'}
                   width={'100%'}
-                  src={this.props.assignment.lessons[0].image}
+                  src={this.props.assignment.courses_lessons[0].image}
                 />
                 : null}
             </Col>
             <Col sm={6} md={6}>
               <div className={'blue-title pointer'}>{this.props.assignment ? this.props.assignment.name : null}</div>
               <div className={'gray-text small-text'}>
-                {this.props.assignment ? this.props.assignment.lessons.length : null}&nbsp;
-                lesson{this.props.assignment && this.props.assignment.lessons.length > 1 ? 's' : null}
+                {this.props.assignment ? this.props.assignment.courses_lessons.length : null}&nbsp;
+                lesson{this.props.assignment && this.props.assignment.courses_lessons.length > 1 ? 's' : null}
               </div>
             </Col>
             <Col sm={5} md={5} className={'text-right'}>

@@ -7,6 +7,7 @@ from .. import BaseItemModel, get_earliest_gap
 from ...settings import LESSON_COMPLETE_BOUNDARY
 from ..utils import UUIDTaggedItem
 
+
 class Lesson(BaseItemModel):
 
     class Meta:
