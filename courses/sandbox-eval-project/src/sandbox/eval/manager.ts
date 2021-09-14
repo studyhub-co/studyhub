@@ -536,6 +536,22 @@ export default class Manager {
       currentPath.replace('/node_modules/', ''),
     )
 
+    // There's a case where an aliased dependency requests itself. Eg. @babel/runtime/7.13.1 has an import
+    // of @babel/runtime. We know that this dependency needs to be @babel/runtime/7.13.1, so we do an explicit
+    // check for this here.
+    if (currentDependencyName.startsWith(dependencyName + '/')) {
+      // Okay, we now know for sure that the current dependency is aliased, and the imported dependency is the same
+      const aliasedVersion = getAliasVersion(
+        currentPath.replace('/node_modules/', ''),
+      )
+      if (aliasedVersion) {
+        return path.replace(
+          dependencyName,
+          dependencyName + '/' + aliasedVersion,
+        )
+      }
+    }
+
     if (
       this.manifest.dependencyAliases[currentDependencyName] &&
       this.manifest.dependencyAliases[currentDependencyName][dependencyName]

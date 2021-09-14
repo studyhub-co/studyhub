@@ -1,4 +1,4 @@
-export default function getDependencyName(path: string) {
+export function getDependencyName(path: string) {
   const dependencyParts = path.split('/')
   let dependencyName = dependencyParts.shift()
 

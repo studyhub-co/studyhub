@@ -1,4 +1,4 @@
-import getDependencyName from './get-dependency-name';
+import { getDependencyName } from './get-dependency-name';
 
 describe('getDependencyName', () => {
   it('can find a simple dependency name', () => {
