@@ -5,7 +5,7 @@ import os
 DEBUG = False
 
 # ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split()
-env_hosts = os.environ.get('ALLOWED_HOSTS', '').split(',')
+env_hosts = os.environ.get('ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = [x for x in env_hosts.split(',') if x]
 
 # ALLOWED_HOSTS = [

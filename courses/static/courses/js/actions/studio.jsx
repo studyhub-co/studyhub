@@ -18,7 +18,7 @@ import { MATERIAL_FETCHING } from '../constants'
 export const API_PREFIX = '/api/v1/studio/'
 const API_PROFILE_PREFIX = '/api/v1/profiles/'
 
-var getCookie = Cookies.get
+const getCookie = Cookies.get
 
 // TODO move constants to /constants
 

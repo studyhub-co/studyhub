@@ -61,9 +61,11 @@ class MaterialTypeModulesViewSet(mixins.RetrieveModelMixin,
             detail=False,
             permission_classes=[IsMaterialProblemTypeAuthor, ], )
     def mcreate(self, request, *args, **kwargs):
-        data = {'data' : {
-            'directories':[],
-            'modules': [], }
+        data = {
+            'data': {
+                'directories': [],
+                'modules': [],
+            }
         }
         # mass create modules directories
         if 'directories' in request.data:
@@ -132,17 +134,19 @@ class MaterialTypeModulesViewSet(mixins.RetrieveModelMixin,
         request.data['sandbox'] = kwargs['material_problem_type_uuid']
         try:
             request.data['name'] = request.data['title']
-        except:
+        except KeyError:
             pass
 
-        try:
-            mpt_directory = MaterialProblemTypeSandboxDirectory.objects.get(
-                shortid=request.data['directory_shortid'],
-                sandbox__uuid=self.kwargs['material_problem_type_uuid']
-            )
-            request.data['directory'] = mpt_directory.uuid
-        except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
-            request.data['directory'] = None
+        if 'directory_shortid' in request.data:
+            # only change dir if 'directory_shortid' is presented
+            try:
+                mpt_directory = MaterialProblemTypeSandboxDirectory.objects.get(
+                    shortid=request.data['directory_shortid'],
+                    sandbox__uuid=self.kwargs['material_problem_type_uuid']
+                )
+                request.data['directory'] = mpt_directory.uuid
+            except (MaterialProblemTypeSandboxDirectory.DoesNotExist, KeyError):
+                request.data['directory'] = None
 
         return super().update(request, *args, **kwargs)
 
