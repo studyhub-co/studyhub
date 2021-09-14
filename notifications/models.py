@@ -41,7 +41,7 @@ def assert_soft_delete():
 
 
 class NotificationQuerySet(models.query.QuerySet):
-    ''' Notification QuerySet '''
+    """ Notification QuerySet """
     def unsent(self):
         return self.filter(emailed=False)
 

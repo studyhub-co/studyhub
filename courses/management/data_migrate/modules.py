@@ -1,6 +1,8 @@
 from ...models.structure.module import Module
 from ...models.badges import ModuleAwards
 
+from notifications.models import Notification
+
 from .lessons import copy_lesson
 
 
@@ -35,6 +37,16 @@ def copy_module(unit, module):
         module_awards.append(new_award)
 
     ModuleAwards.objects.bulk_create(module_awards)
+
+    # replace notification target object
+    from django.contrib.contenttypes.models import ContentType
+    module_content_type = ContentType.objects.get_for_model(module.__class__)
+    notifications = Notification.objects.filter(action_object_content_type=module_content_type,
+                                                action_object_id=module.id)
+
+    new_module_content_type = ContentType.objects.get_for_model(new_module.__class__)
+    notifications.update(action_object_content_type=new_module_content_type,
+                         action_object=new_module)
 
     # copy tags
     tags = module.tags.names()

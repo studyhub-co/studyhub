@@ -2,6 +2,8 @@ from ...models.structure.lesson import Lesson
 from ...models.badges import LessonAwards
 from ...models.material import Material, MaterialProblemType
 
+from notifications.models import Notification
+
 from .materials import copy_question
 
 
@@ -40,6 +42,16 @@ def copy_lesson(module, lesson):
         module_awards.append(new_award)
 
     LessonAwards.objects.bulk_create(module_awards)
+
+    # replace notification target object
+    from django.contrib.contenttypes.models import ContentType
+    lesson_content_type = ContentType.objects.get_for_model(lesson.__class__)
+    notifications = Notification.objects.filter(action_object_content_type=lesson_content_type,
+                                                action_object_id=lesson.id)
+
+    new_lesson_content_type = ContentType.objects.get_for_model(new_lesson.__class__)
+    notifications.update(action_object_content_type=new_lesson_content_type,
+                         action_object=new_lesson)
 
     # copy tags
     tags = lesson.tags.names()
