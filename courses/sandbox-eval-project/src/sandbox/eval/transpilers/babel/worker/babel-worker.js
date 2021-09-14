@@ -6,6 +6,7 @@ import macrosPlugin from 'babel-plugin-macros';
 import delay from '@codesandbox/common/lib/utils/delay';
 
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
+// import getDependencyName from '../../../utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';

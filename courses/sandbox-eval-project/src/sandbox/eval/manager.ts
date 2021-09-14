@@ -12,16 +12,16 @@ import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error'
 import { Module } from './entities/module'
 import TranspiledModule, {
   ChildModule,
-  SerializedTranspiledModule
+  SerializedTranspiledModule,
 } from './transpiled-module'
 import Preset from './presets'
 import { SCRIPT_VERSION } from '..'
 import fetchModule, {
   setCombinedMetas,
-  combinedMetas
+  combinedMetas,
 } from './npm/fetch-npm-module'
 import coreLibraries from './npm/get-core-libraries'
-import getDependencyName from './utils/get-dependency-name'
+import { getDependencyName, getAliasVersion } from './utils/get-dependency-name'
 import TestRunner from './tests/jest-lite'
 import dependenciesToQuery from '../npm/dependencies-to-query'
 import { packageFilter } from './utils/resolve-utils'
@@ -33,36 +33,36 @@ import { splitQueryFromPath } from './utils/query-path'
 declare const BrowserFS: any
 
 type Externals = {
-  [name: string]: string;
-};
+  [name: string]: string
+}
 
 export type ModuleObject = {
-  [path: string]: Module;
-};
+  [path: string]: Module
+}
 
 export type Manifest = {
   contents: {
-    [path: string]: { content: string; requires: Array<string> };
-  };
-  dependencies: Array<{ name: string; version: string }>;
+    [path: string]: { content: string; requires: Array<string> }
+  }
+  dependencies: Array<{ name: string; version: string }>
   dependencyDependencies: {
     [name: string]: {
-      semver: string;
-      resolved: string;
-      parents: string[];
-    };
-  };
+      semver: string
+      resolved: string
+      parents: string[]
+    }
+  }
   dependencyAliases: {
     [name: string]: {
-      [depName: string]: string;
-    };
-  };
-};
+      [depName: string]: string
+    }
+  }
+}
 
 interface IFileResolver {
-  protocol: Protocol;
-  isFile: (path: string) => Promise<boolean>;
-  readFile: (path: string) => Promise<string>;
+  protocol: Protocol
+  isFile: (path: string) => Promise<boolean>
+  readFile: (path: string) => Promise<string>
 }
 
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process']
@@ -70,77 +70,77 @@ const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process']
 const SKIPPED_BROWSER_FIELD_DEPENDENCIES = ['babel-core', '@babel/core'].reduce(
   (result, next) => ({
     ...result,
-    [`/node_modules/${next}/package.json`]: true
+    [`/node_modules/${next}/package.json`]: true,
   }),
-  {}
+  {},
 )
 const SHIMMED_MODULE: Module = {
   path: pathUtils.join('/node_modules', 'empty', 'index.js'),
   code: `// empty`,
-  requires: []
+  requires: [],
 }
 
 const getShimmedModuleFromPath = (currentPath: string, path: string) => ({
   ...SHIMMED_MODULE,
-  path: pathUtils.join(pathUtils.dirname(currentPath), path)
+  path: pathUtils.join(pathUtils.dirname(currentPath), path),
 })
 // const debug = _debug('cs:compiler:manager')
 const debug = console.log
 
-export type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
-type Stage = 'transpilation' | 'evaluation';
+export type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose'
+type Stage = 'transpilation' | 'evaluation'
 
 type TManagerOptions = {
   /**
    * Whether the parent window has its own file resolver that can be used by the manager to resolve files
    */
-  hasFileResolver: boolean;
-};
+  hasFileResolver: boolean
+}
 
 export default class Manager {
-  id: string;
+  id: string
   transpiledModules: {
     [path: string]: {
-      module: Module;
+      module: Module
       tModules: {
-        [query: string]: TranspiledModule;
-      };
-    };
-  };
+        [query: string]: TranspiledModule
+      }
+    }
+  }
 
-  envVariables: { [envName: string]: string } = {};
-  preset: Preset;
-  externals: Externals;
-  modules: ModuleObject;
-  manifest: Manifest;
-  dependencies: Object;
-  webpackHMR: boolean;
-  hardReload: boolean;
-  hmrStatus: HMRStatus = 'idle';
-  hmrStatusChangeListeners: Set<(status: HMRStatus) => void>;
-  testRunner: TestRunner;
-  isFirstLoad: boolean;
+  envVariables: { [envName: string]: string } = {}
+  preset: Preset
+  externals: Externals
+  modules: ModuleObject
+  manifest: Manifest
+  dependencies: Object
+  webpackHMR: boolean
+  hardReload: boolean
+  hmrStatus: HMRStatus = 'idle'
+  hmrStatusChangeListeners: Set<(status: HMRStatus) => void>
+  testRunner: TestRunner
+  isFirstLoad: boolean
 
-  fileResolver: IFileResolver | undefined;
+  fileResolver: IFileResolver | undefined
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
-  transpileJobs: { [transpiledModuleId: string]: true };
-  transpiledModulesByHash: { [hash: string]: TranspiledModule };
+  transpileJobs: { [transpiledModuleId: string]: true }
+  transpiledModulesByHash: { [hash: string]: TranspiledModule }
 
   // All paths are resolved at least twice: during transpilation and evaluation.
   // We can improve performance by almost 2x in this scenario if we cache the lookups
-  cachedPaths: { [path: string]: { [path: string]: string } };
+  cachedPaths: { [path: string]: { [path: string]: string } }
 
-  configurations: ParsedConfigurationFiles;
+  configurations: ParsedConfigurationFiles
 
-  stage: Stage;
+  stage: Stage
 
-  constructor (
+  constructor(
     id: string,
     preset: Preset,
     modules: { [path: string]: Module },
     options: TManagerOptions,
-    cb?: Function
+    cb?: Function,
   ) {
     this.id = id
     this.preset = preset
@@ -170,14 +170,14 @@ export default class Manager {
       {
         fs: 'CodeSandboxFS',
         options: {
-          manager: this.bfsWrapper
-        }
+          manager: this.bfsWrapper,
+        },
       },
       () => {
         if (cb) {
           cb()
         }
-      }
+      },
     )
 
     if (options.hasFileResolver) {
@@ -185,14 +185,14 @@ export default class Manager {
     }
   }
 
-  setupFileResolver () {
+  setupFileResolver() {
     const protocol = new Protocol('file-resolver', () => true, window.parent)
     this.fileResolver = {
       protocol,
       isFile: (path: string) =>
         protocol.sendMessage<boolean>({ m: 'isFile', p: path }),
       readFile: (path: string) =>
-        protocol.sendMessage<string>({ m: 'readFile', p: path })
+        protocol.sendMessage<string>({ m: 'readFile', p: path }),
     }
   }
 
@@ -209,10 +209,10 @@ export default class Manager {
     },
     updateModule: (module: Module) => {
       this.updateModule(module)
-    }
-  };
+    },
+  }
 
-  resetAllModules () {
+  resetAllModules() {
     this.getTranspiledModules().forEach(t => {
       t.resetTranspilation()
       t.resetCompilation()
@@ -242,7 +242,7 @@ export default class Manager {
     return hasCallback
       ? callback(null, Boolean(returnValue))
       : Boolean(returnValue)
-  };
+  }
 
   readFileSync = (p: string, cb: Function | undefined, c?: Function) => {
     const callback = c || cb
@@ -269,24 +269,24 @@ export default class Manager {
       return callback(err)
     }
     throw err
-  };
+  }
 
   setStage = (stage: Stage) => {
     this.stage = stage
-  };
+  }
 
-  setManifest (manifest?: Manifest) {
+  setManifest(manifest?: Manifest) {
     this.manifest = manifest || {
       contents: {},
       dependencies: [],
       dependencyDependencies: {},
-      dependencyAliases: {}
+      dependencyAliases: {},
     }
 
     Object.keys(this.manifest.contents).forEach(path => {
       const module: Module = {
         path,
-        code: this.manifest.contents[path].content
+        code: this.manifest.contents[path].content,
       }
 
       if (SKIPPED_BROWSER_FIELD_DEPENDENCIES[path]) {
@@ -308,12 +308,12 @@ export default class Manager {
     const debug = console.log
   }
 
-  evaluateModule (
+  evaluateModule(
     module: Module,
     { force, testGlobals }: { force?: boolean; testGlobals?: boolean } = {
       force: false,
-      testGlobals: false
-    }
+      testGlobals: false,
+    },
   ) {
     if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload
@@ -336,7 +336,7 @@ export default class Manager {
       const exports = this.evaluateTranspiledModule(
         transpiledModule,
         undefined,
-        { force, testGlobals }
+        { force, testGlobals },
       )
 
       this.setHmrStatus('idle')
@@ -348,13 +348,13 @@ export default class Manager {
     }
   }
 
-  evaluateTranspiledModule (
+  evaluateTranspiledModule(
     transpiledModule: TranspiledModule,
     initiator?: TranspiledModule,
     {
       force = false,
-      testGlobals = false
-    }: { force?: boolean; testGlobals?: boolean } = {}
+      testGlobals = false,
+    }: { force?: boolean; testGlobals?: boolean } = {},
   ) {
     if (force && transpiledModule.compilation) {
       transpiledModule.compilation = null
@@ -363,13 +363,13 @@ export default class Manager {
     return transpiledModule.evaluate(this, { force, testGlobals }, initiator)
   }
 
-  addModule (module: Module) {
+  addModule(module: Module) {
     this.transpiledModules[module.path] = this.transpiledModules[
       module.path
     ] || { module, tModules: {} }
   }
 
-  addTranspiledModule (module: Module, query: string = ''): TranspiledModule {
+  addTranspiledModule(module: Module, query: string = ''): TranspiledModule {
     if (!this.transpiledModules[module.path]) {
       this.addModule(module)
     }
@@ -382,7 +382,7 @@ export default class Manager {
     return transpiledModule
   }
 
-  getTranspiledModuleByHash (hash: string) {
+  getTranspiledModuleByHash(hash: string) {
     return this.transpiledModulesByHash[hash]
   }
 
@@ -393,7 +393,7 @@ export default class Manager {
    * @param {Module} module
    * @param {string} query A webpack like syntax (!url-loader)
    */
-  getTranspiledModule (module: Module, query: string = ''): TranspiledModule {
+  getTranspiledModule(module: Module, query: string = ''): TranspiledModule {
     const moduleObject = this.transpiledModules[module.path]
     if (!moduleObject) {
       this.addModule(module)
@@ -416,22 +416,22 @@ export default class Manager {
    * This will return all transpiled modules, with different configurations associated one module.
    * @param {*} module
    */
-  getTranspiledModulesByModule (module: Module): Array<TranspiledModule> {
+  getTranspiledModulesByModule(module: Module): Array<TranspiledModule> {
     return this.transpiledModules[module.path]
       ? values(this.transpiledModules[module.path].tModules)
       : []
   }
 
-  getTranspiledModules () {
+  getTranspiledModules() {
     return values(this.transpiledModulesByHash)
   }
 
-  removeTranspiledModule (tModule: TranspiledModule) {
+  removeTranspiledModule(tModule: TranspiledModule) {
     delete this.transpiledModulesByHash[tModule.hash]
     delete this.transpiledModules[tModule.module.path].tModules[tModule.query]
   }
 
-  removeModule (module: Module) {
+  removeModule(module: Module) {
     // Reset all cached paths because file structure changed
     this.cachedPaths = {}
 
@@ -445,12 +445,12 @@ export default class Manager {
     delete this.transpiledModules[module.path]
   }
 
-  moveModule (module: Module, newPath: string) {
+  moveModule(module: Module, newPath: string) {
     this.removeModule(module)
     this.addModule({ ...module, path: newPath })
   }
 
-  setEnvironmentVariables () {
+  setEnvironmentVariables() {
     if (this.transpiledModules['/.env'] && this.preset.hasDotEnv) {
       const envCode = this.transpiledModules['/.env'].module.code
 
@@ -471,7 +471,7 @@ export default class Manager {
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
    */
-  async transpileModules (entry: Module, isTestFile: boolean = false) {
+  async transpileModules(entry: Module, isTestFile: boolean = false) {
     this.setHmrStatus('check')
     this.setEnvironmentVariables()
     const transpiledModule = this.getTranspiledModule(entry)
@@ -489,19 +489,19 @@ export default class Manager {
     return result
   }
 
-  verifyTreeTranspiled () {
+  verifyTreeTranspiled() {
     return Promise.all(
       this.getTranspiledModules()
         .filter(tModule => tModule.shouldTranspile())
-        .map(tModule => tModule.transpile(this))
+        .map(tModule => tModule.transpile(this)),
     )
   }
 
-  clearCompiledCache () {
+  clearCompiledCache() {
     this.getTranspiledModules().map(tModule => tModule.resetCompilation())
   }
 
-  getModules (): Array<Module | ChildModule> {
+  getModules(): Array<Module | ChildModule> {
     return values(this.transpiledModules).map(t => t.module)
   }
 
@@ -519,7 +519,7 @@ export default class Manager {
    * @returns
    * @memberof Manager
    */
-  getAliasedDependencyPath (path: string, currentPath: string) {
+  getAliasedDependencyPath(path: string, currentPath: string) {
     const isDependency = /^(\w|@\w)/.test(path)
 
     if (!isDependency) {
@@ -532,16 +532,16 @@ export default class Manager {
     }
 
     const dependencyName = getDependencyName(path)
-    const previousDependencyName = getDependencyName(
-      currentPath.replace('/node_modules/', '')
+    const currentDependencyName = getDependencyName(
+      currentPath.replace('/node_modules/', ''),
     )
 
     if (
-      this.manifest.dependencyAliases[previousDependencyName] &&
-      this.manifest.dependencyAliases[previousDependencyName][dependencyName]
+      this.manifest.dependencyAliases[currentDependencyName] &&
+      this.manifest.dependencyAliases[currentDependencyName][dependencyName]
     ) {
       const aliasedDependencyName = this.manifest.dependencyAliases[
-        previousDependencyName
+        currentDependencyName
       ][dependencyName]
 
       return path.replace(dependencyName, aliasedDependencyName)
@@ -556,20 +556,18 @@ export default class Manager {
    *
    * @memberof Manager
    */
-  enableWebpackHMR () {
+  enableWebpackHMR() {
     this.webpackHMR = true
   }
 
-  getPresetAliasedPath (path: string) {
-    return this.preset
-      .getAliasedPath(path)
-      .replace(/.*\{\{sandboxRoot\}\}/, '')
+  getPresetAliasedPath(path: string) {
+    return this.preset.getAliasedPath(path).replace(/.*\{\{sandboxRoot\}\}/, '')
   }
 
-  getModuleDirectories () {
+  getModuleDirectories() {
     const baseTSCompilerConfig = [
       this.configurations.typescript,
-      this.configurations.jsconfig
+      this.configurations.jsconfig,
     ].find(config => config && config.generated !== true)
 
     const baseUrl =
@@ -579,17 +577,17 @@ export default class Manager {
       baseTSCompilerConfig.parsed.compilerOptions.baseUrl
 
     return ['node_modules', baseUrl, this.envVariables.NODE_PATH].filter(
-      Boolean
+      Boolean,
     )
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
-  async resolveModuleAsync (
+  async resolveModuleAsync(
     path: string,
     currentPath: string,
-    defaultExtensions = ['js', 'jsx', 'json']
+    defaultExtensions = ['js', 'jsx', 'json'],
   ): Promise<Module> {
-    return new Promise(resolve => {
+    return new Promise((promiseResolve, promiseReject) => {
       const dirredPath = pathUtils.dirname(currentPath)
       if (this.cachedPaths[dirredPath] === undefined) {
         this.cachedPaths[dirredPath] = {}
@@ -606,7 +604,7 @@ export default class Manager {
 
         const aliasedPath = this.getAliasedDependencyPath(
           presetAliasedPath,
-          currentPath
+          currentPath,
         )
 
         const shimmedPath = coreLibraries[aliasedPath] || aliasedPath
@@ -626,7 +624,7 @@ export default class Manager {
               isFile: this.isFile,
               readFileSync: this.readFileSync,
               packageFilter,
-              moduleDirectory: this.getModuleDirectories()
+              moduleDirectory: this.getModuleDirectories(),
             },
             (err, foundPath) => {
               if (err) {
@@ -648,7 +646,7 @@ export default class Manager {
               } else {
                 promiseResolve(this.transpiledModules[foundPath].module)
               }
-            }
+            },
           )
         } catch (e) {
           if (
@@ -690,10 +688,10 @@ export default class Manager {
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH ASYNC VERSION
-  resolveModule (
+  resolveModule(
     path: string,
     currentPath: string,
-    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+    defaultExtensions: Array<string> = ['js', 'jsx', 'json'],
   ): Module {
     const dirredPath = pathUtils.dirname(currentPath)
     if (this.cachedPaths[dirredPath] === undefined) {
@@ -711,7 +709,7 @@ export default class Manager {
 
       const aliasedPath = this.getAliasedDependencyPath(
         presetAliasedPath,
-        currentPath
+        currentPath,
       )
       const shimmedPath = coreLibraries[aliasedPath] || aliasedPath
 
@@ -727,7 +725,7 @@ export default class Manager {
           isFile: this.isFile,
           readFileSync: this.readFileSync,
           packageFilter,
-          moduleDirectory: this.getModuleDirectories()
+          moduleDirectory: this.getModuleDirectories(),
         })
 
         this.cachedPaths[dirredPath][path] = resolvedPath
@@ -784,18 +782,21 @@ export default class Manager {
     return this.transpiledModules[resolvedPath].module
   }
 
-  downloadDependency (
+  downloadDependency(
     path: string,
     currentTModule: TranspiledModule,
     query: string = '',
-    ignoredExtensions: Array<string> = this.preset.ignoredExtensions
+    ignoredExtensions: Array<string> = this.preset.ignoredExtensions,
   ): Promise<TranspiledModule> {
-    return fetchModule(path, currentTModule, this, ignoredExtensions).then(
-      module => this.getTranspiledModule(module, query)
-    )
+    return fetchModule(
+      path,
+      currentTModule,
+      this,
+      ignoredExtensions,
+    ).then(module => this.getTranspiledModule(module, query))
   }
 
-  updateModule (m: Module) {
+  updateModule(m: Module) {
     this.transpiledModules[m.path].module = m
     return this.getTranspiledModulesByModule(m).map(tModule => {
       tModule.update(m)
@@ -807,7 +808,7 @@ export default class Manager {
   resolveTranspiledModuleAsync = async (
     path: string,
     currentTModule?: TranspiledModule,
-    ignoredExtensions?: Array<string>
+    ignoredExtensions?: Array<string>,
   ): Promise<TranspiledModule> => {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']) // Get arbitrary file from root
@@ -816,8 +817,8 @@ export default class Manager {
         this.resolveTranspiledModule(
           path,
           tModule.module.path,
-          ignoredExtensions
-        )
+          ignoredExtensions,
+        ),
       )
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
@@ -826,28 +827,28 @@ export default class Manager {
           e.path,
           tModule,
           queryPath,
-          ignoredExtensions
+          ignoredExtensions,
         )
       }
 
       throw e
     }
-  };
+  }
 
   setHmrStatus = (status: HMRStatus) => {
     this.hmrStatusChangeListeners.forEach(v => {
       v(status)
     })
     this.hmrStatus = status
-  };
+  }
 
   addStatusHandler = (cb: (status: HMRStatus) => void) => {
     this.hmrStatusChangeListeners.add(cb)
-  };
+  }
 
   removeStatusHandler = (cb: (status: HMRStatus) => void) => {
     this.hmrStatusChangeListeners.delete(cb)
-  };
+  }
 
   /**
    * Resolve the transpiled module from the path, note that the path can actually
@@ -859,21 +860,21 @@ export default class Manager {
     path: string,
     currentPath: string,
     ignoredExtensions: string[],
-    async: true
-  ): Promise<TranspiledModule>;
+    async: true,
+  ): Promise<TranspiledModule>
 
   resolveTranspiledModule(
     path: string,
     currentPath: string,
     ignoredExtensions?: string[],
-    async?: false
-  ): TranspiledModule;
+    async?: false,
+  ): TranspiledModule
 
-  resolveTranspiledModule (
+  resolveTranspiledModule(
     path: string,
     currentPath: string,
     ignoredExtensions?: string[],
-    async?: boolean
+    async?: boolean,
   ): Promise<TranspiledModule> | TranspiledModule {
     if (path.startsWith('webpack:')) {
       throw new Error('Cannot resolve webpack path')
@@ -885,38 +886,38 @@ export default class Manager {
       return this.resolveModuleAsync(
         modulePath,
         currentPath,
-        ignoredExtensions || this.preset.ignoredExtensions
+        ignoredExtensions || this.preset.ignoredExtensions,
       ).then(module => this.getTranspiledModule(module, queryPath))
     }
 
     const module = this.resolveModule(
       modulePath,
       currentPath,
-      ignoredExtensions || this.preset.ignoredExtensions
+      ignoredExtensions || this.preset.ignoredExtensions,
     )
 
     return this.getTranspiledModule(module, queryPath)
   }
 
-  resolveTranspiledModulesInDirectory (
+  resolveTranspiledModulesInDirectory(
     path: string,
-    currentPath: string
+    currentPath: string,
   ): Array<TranspiledModule> {
     const { queryPath, modulePath } = splitQueryFromPath(path)
 
     const joinedPath = pathUtils.join(
       pathUtils.dirname(currentPath),
-      modulePath
+      modulePath,
     )
 
     return Object.keys(this.transpiledModules)
       .filter(p => p.startsWith(joinedPath))
       .map(m =>
-        this.getTranspiledModule(this.transpiledModules[m].module, queryPath)
+        this.getTranspiledModule(this.transpiledModules[m].module, queryPath),
       )
   }
 
-  updateConfigurations (configurations: ParsedConfigurationFiles) {
+  updateConfigurations(configurations: ParsedConfigurationFiles) {
     const configsUpdated = this.configurations
       ? JSON.stringify(configurations) !== JSON.stringify(this.configurations)
       : false
@@ -932,8 +933,8 @@ export default class Manager {
    * Find all changed, added and deleted modules. Update trees and
    * delete caches accordingly
    */
-  async updateData (modules: {
-    [path: string]: Module;
+  async updateData(modules: {
+    [path: string]: Module
   }): Promise<Array<TranspiledModule>> {
     this.transpileJobs = {}
     this.hardReload = false
@@ -976,7 +977,7 @@ export default class Manager {
 
     const modulesToUpdate: Array<Module> = uniq([
       ...addedModules,
-      ...updatedModules
+      ...updatedModules,
     ])
 
     // We eagerly transpile changed files,
@@ -996,12 +997,12 @@ export default class Manager {
     })
     const flattenedTModulesToUpdate = (flattenDeep([
       tModulesToUpdate,
-      modulesWithWErrors
+      modulesWithWErrors,
     ]) as unknown) as TranspiledModule[]
 
     const allModulesToUpdate = uniq(flattenedTModulesToUpdate)
     const transpiledModulesToUpdate = allModulesToUpdate.filter(
-      m => !m.isTestFile
+      m => !m.isTestFile,
     )
 
     // Reset test files, but don't transpile. We want to do that in the test runner
@@ -1013,21 +1014,21 @@ export default class Manager {
       })
 
     debug(
-      `Generated update diff, updating ${
-        transpiledModulesToUpdate.length
-      } modules.`,
-      transpiledModulesToUpdate
+      `Generated update diff, updating ${transpiledModulesToUpdate.length} modules.`,
+      transpiledModulesToUpdate,
     )
 
-    const transpilationResults = await Promise.all(transpiledModulesToUpdate
-      .map(tModule => {
-        if (tModule.shouldTranspile()) {
-          return tModule.transpile(this)
-        }
+    const transpilationResults = await Promise.all(
+      transpiledModulesToUpdate
+        .map(tModule => {
+          if (tModule.shouldTranspile()) {
+            return tModule.transpile(this)
+          }
 
-        return Promise.resolve(false)
-      })
-      .filter(Boolean) as Array<Promise<TranspiledModule>>)
+          return Promise.resolve(false)
+        })
+        .filter(Boolean) as Array<Promise<TranspiledModule>>,
+    )
 
     return transpilationResults
   }
@@ -1036,18 +1037,18 @@ export default class Manager {
    * Mark that the next evaluation should first have a location.reload() before
    * continuing
    */
-  markHardReload () {
+  markHardReload() {
     this.setHmrStatus('fail')
     this.hardReload = true
   }
 
-  async serialize (
+  async serialize(
     {
       entryPath,
-      optimizeForSize
+      optimizeForSize,
     }: { entryPath?: string; optimizeForSize: boolean } = {
-      optimizeForSize: true
-    }
+      optimizeForSize: true,
+    },
   ) {
     const serializedTModules: { [id: string]: SerializedTranspiledModule } = {}
 
@@ -1066,13 +1067,13 @@ export default class Manager {
               ) {
                 // Only save modules that are not precomputed
                 serializedTModules[tModule.getId()] = await tModule.serialize(
-                  optimizeForSize
+                  optimizeForSize,
                 )
               }
-            }
-          )
-        )
-      )
+            },
+          ),
+        ),
+      ),
     )
 
     const dependenciesQuery = this.getDependencyQuery()
@@ -1092,11 +1093,11 @@ export default class Manager {
       configurations: this.configurations,
       entry: entryPath,
       meta,
-      dependenciesQuery
+      dependenciesQuery,
     }
   }
 
-  getDependencyQuery () {
+  getDependencyQuery() {
     if (!this.manifest || !this.manifest.dependencies) {
       return ''
     }
@@ -1110,7 +1111,7 @@ export default class Manager {
     return dependenciesToQuery(normalizedDependencies)
   }
 
-  async load (data: any) {
+  async load(data: any) {
     try {
       if (data) {
         // don't clear cache
@@ -1123,15 +1124,15 @@ export default class Manager {
           version,
           configurations,
           dependenciesQuery,
-          meta
+          meta,
         }: {
-          transpiledModules: { [id: string]: SerializedTranspiledModule };
-          cachedPaths: { [path: string]: { [path: string]: string } };
-          version: string;
-          timestamp: number;
-          configurations: any;
-          dependenciesQuery: string;
-          meta: any;
+          transpiledModules: { [id: string]: SerializedTranspiledModule }
+          cachedPaths: { [path: string]: { [path: string]: string } }
+          version: string
+          timestamp: number
+          configurations: any
+          dependenciesQuery: string
+          meta: any
         } = data
 
         // Only use the cache if the cached version was cached with the same
@@ -1163,7 +1164,7 @@ export default class Manager {
 
             const tModule = this.addTranspiledModule(
               sTModule.module,
-              sTModule.query
+              sTModule.query,
             )
             tModules[id] = tModule
           })
@@ -1176,7 +1177,9 @@ export default class Manager {
           console.log(`Loaded cache.`)
           // debug(`Loaded cache.`);
         } else {
-          console.log(`Cache was not loaded into page. Wrong SCRIPT_VERSION or dependencies`)
+          console.log(
+            `Cache was not loaded into page. Wrong SCRIPT_VERSION or dependencies`,
+          )
         }
       }
     } catch (e) {
@@ -1188,7 +1191,7 @@ export default class Manager {
     // this.clearCache();
   }
 
-  dispose () {
+  dispose() {
     if (this.preset) {
       this.preset.transpilers.forEach(t => {
         if (t.dispose) {
@@ -1202,12 +1205,12 @@ export default class Manager {
     }
   }
 
-  deleteAPICache () {
+  deleteAPICache() {
     ignoreNextCache()
     return deleteAPICache(this.id)
   }
 
-  async clearCache () {
+  async clearCache() {
     try {
       await clearIndexedDBCache()
     } catch (ex) {
@@ -1220,15 +1223,15 @@ export default class Manager {
   /**
    * Get information about all transpilers currently registered for this manager
    */
-  async getTranspilerContext () {
+  async getTranspilerContext() {
     const info = {}
 
     const data = await Promise.all(
       Array.from(this.preset.transpilers).map(t =>
         t
           .getTranspilerContext(this)
-          .then(context => ({ name: t.name, data: context }))
-      )
+          .then(context => ({ name: t.name, data: context })),
+      ),
     )
 
     data.forEach(t => {
