@@ -1,9 +1,11 @@
 import React from 'react'
 
 import Button from '@material-ui/core/Button'
+import { useTheme } from '@material-ui/core/styles'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import UserStateEnum from '../const'
-// import { handleContinueClick } from '../postIframeMessages'
+
 import {
   continueMessage,
   saveDataMessage,
@@ -17,17 +19,26 @@ interface CheckContinueProps {
   currentMaterial: object
   editMode: boolean
   disabledCheck: boolean
-  userReactionState: string // todo enum?
+  // userReactionState: string // todo enum?
+  // TODO see src/models/material.ts in https://github.com/studyhub-co/components-library
+  userReactionResult: any
 }
 
 const CheckContinueButton: React.FC<CheckContinueProps> = props => {
   const { currentMaterial, editMode, disabledCheck, userReactionResult } = props
 
+  const theme = useTheme()
+  const matchesWideScreen = useMediaQuery(theme.breakpoints.up('sm'))
+  console.log(matchesWideScreen)
+
   return (
     <div style={{ textAlign: 'center' }}>
       {currentMaterial && editMode ? (
         <Button
-          style={checkSaveButtonStyle}
+          style={{
+            width: matchesWideScreen ? '60%' : '90%',
+            ...checkSaveButtonStyle,
+          }}
           variant="contained"
           color="primary"
           onClick={saveDataMessage}
@@ -37,9 +48,12 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
       ) : (
         <Button
           disabled={disabledCheck}
-          style={
-            disabledCheck ? checkSaveButtonStyleDisabled : checkSaveButtonStyle
-          }
+          style={{
+            width: matchesWideScreen ? '60%' : '90%',
+            ...(disabledCheck
+              ? checkSaveButtonStyleDisabled
+              : checkSaveButtonStyle),
+          }}
           variant="contained"
           color="primary"
           onClick={

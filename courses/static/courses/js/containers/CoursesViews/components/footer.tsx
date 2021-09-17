@@ -10,22 +10,16 @@ import Button from 'react-bootstrap/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import ButtonUI from '@material-ui/core/Button'
 import CloseIcon from '@material-ui/icons/Close'
+// import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 
 import ThreadComponent from '@studyhub.co/react-comments-django-client/lib/ThreadComponent'
 
 import history from '../../../history'
 
-// fixme copied from studyhub components library, todo remove unnecessary code
-// import { Material } from '../../models/'
-// import { checkSaveButtonStyle, checkSaveButtonStyleDisabled } from './style';
-// import * as materialActionCreators from '../../redux/modules/material'
-// import { QAData as IQAData } from '../qaChoices/IData/index'
 import CheckContinueButton from './checkContinueButton'
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
-// import history from '../../../history'
 import UserStateEnum from '../const'
 import { calculateProgress } from '../utils'
-// import { handleContinueClick } from '../postIframeMessages'
 import { continueMessage } from '../../../utils/iframe/postMessages'
 
 // fixme copied from studyhub components library, todo remove unnecessary code
@@ -46,7 +40,8 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'rgb(219, 219, 219)',
     borderColor: '#979797',
     color: '#4c4c4c',
-    padding: '0.5rem 2rem',
+    minWidth: 0,
+    // padding: '0.5rem 2rem',
     borderRadius: '12rem',
   },
   exitButton: {
@@ -116,17 +111,6 @@ const Footer: React.FC<FooterProps> = props => {
     return () => window.removeEventListener('message', messageListener)
   }, [])
 
-  // console.log(currentMaterial);
-
-  // const calculateProgress = (currentPercent: number) => {
-  //   if (currentMaterial.lesson?.complete_boundary) {
-  //     // shrink boundary to 100%
-  //     return (currentPercent * 100) / currentMaterial.lesson.complete_boundary
-  //   } else {
-  //     return currentPercent
-  //   }
-  // }
-
   let backgroundColor = '#dbdbdb'
   let reactionResultIcon = (
     <FaCheckCircle
@@ -187,28 +171,31 @@ const Footer: React.FC<FooterProps> = props => {
       id="footer"
       style={{
         backgroundColor: backgroundColor,
-        padding: '1rem 0 0 0',
+        // padding: '1rem 0 0 0',
         // fixme do we need this?
-        position: window.IS_IOS && window.IS_MOBILE_APP ? 'relative' : 'fixed',
+        // position: window.IS_IOS && window.IS_MOBILE_APP ? 'relative' : 'fixed',
       }}
     >
       <Container fluid>
         {userReactionResult.state === UserStateEnum.checked ? (
-          <Row className="justify-content-md-center">
+          <Row
+            className="justify-content-md-center"
+            style={{ padding: '0.5rem' }}
+          >
             <Col
-              md={6}
+              xs={6}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingBottom: '0.5rem',
+                // paddingBottom: '0.5rem',
               }}
             >
               {reactionResultIcon}
-              <span style={{ padding: '0.5rem 2rem' }}>{correctMessage}</span>
+              <span style={{ marginLeft: '0.5rem' }}>{correctMessage}</span>
             </Col>
             <Col
-              md={6}
+              xs={6}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -221,7 +208,7 @@ const Footer: React.FC<FooterProps> = props => {
                   backgroundColor: '#8d33d9',
                   borderColor: '#8d33d9',
                   borderBottomColor: '#8d33d9',
-                  padding: '0.5rem 2rem',
+                  // padding: '0.5rem 2rem',
                   borderRadius: '12rem',
                 }}
               >
@@ -229,18 +216,63 @@ const Footer: React.FC<FooterProps> = props => {
               </Button>
             </Col>
           </Row>
-        ) : (
-          <Row className="justify-content-md-center">
-            <Col
-              xs={6}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+        ) : null}
+        {/*( */}
+        {/*  <Row className="justify-content-md-center">*/}
+        {/*    <Col*/}
+        {/*      xs={6}*/}
+        {/*      style={{*/}
+        {/*        display: 'flex',*/}
+        {/*        alignItems: 'center',*/}
+        {/*        justifyContent: 'center',*/}
+        {/*      }}*/}
+        {/*    >*/}
+        {/*      <ButtonUI*/}
+        {/*        title={'Exit'}*/}
+        {/*        onClick={e => {*/}
+        {/*          e.preventDefault()*/}
+        {/*          history.push(*/}
+        {/*            `/courses/modules/${currentMaterial.lesson.module}`,*/}
+        {/*          )*/}
+        {/*        }}*/}
+        {/*        className={classes.exitButton}*/}
+        {/*      >*/}
+        {/*        <CloseIcon />*/}
+        {/*      </ButtonUI>*/}
+        {/*    </Col>*/}
+        {/*    <Col*/}
+        {/*      xs={6}*/}
+        {/*      style={{*/}
+        {/*        display: 'flex',*/}
+        {/*        alignItems: 'center',*/}
+        {/*        justifyContent: 'center',*/}
+        {/*      }}*/}
+        {/*    >*/}
+        {/*      <ButtonUI*/}
+        {/*        onClick={continueMessage}*/}
+        {/*        variant="contained"*/}
+        {/*        className={classes.skipButton}*/}
+        {/*      >*/}
+        {/*        Skip*/}
+        {/*      </ButtonUI>*/}
+        {/*    </Col>*/}
+        {/*  </Row>*/}
+        {/*)}*/}
+        {commentsModal}
+        <Row style={{ padding: '2vh 0' }}>
+          <Col
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'nowrap',
+              justifyContent: 'space-between',
+              padding: '0 2rem',
+            }}
+          >
+            <div style={{ flexShrink: 2, flexGrow: 0 }}>
               <ButtonUI
                 title={'Exit'}
+                variant="text"
                 onClick={e => {
                   e.preventDefault()
                   history.push(
@@ -248,60 +280,44 @@ const Footer: React.FC<FooterProps> = props => {
                   )
                 }}
                 className={classes.exitButton}
-                // style={{
-                //   backgroundColor: 'rgb(219, 219, 219)',
-                //   borderColor: '#979797',
-                //   padding: '0.5rem 2rem',
-                //   borderRadius: '12rem',
-                // }}
               >
                 <CloseIcon />
               </ButtonUI>
-            </Col>
-            <Col
-              xs={6}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            </div>
+            <div style={{ flexGrow: 6 }}>
+              <CheckContinueButton
+                // moveToNextComponent={moveToNextComponent}
+                editMode={editMode ? true : false}
+                // componentData={componentData}
+                // checkUserMaterialReaction={checkUserMaterialReaction}
+                currentMaterial={currentMaterial}
+                disabledCheck={disabledCheck}
+                // updateMaterial={updateMaterial}
+                userReactionResult={userReactionResult}
+              />
+            </div>
+            <div style={{ flexShrink: 2, flexGrow: 0 }}>
               <ButtonUI
                 onClick={continueMessage}
+                title={'Skip'}
                 variant="contained"
                 className={classes.skipButton}
-                // style={{
-                //   backgroundColor: 'rgb(219, 219, 219)',
-                //   borderColor: '#979797',
-                //   color: '#4c4c4c',
-                //   padding: '0.5rem 2rem',
-                //   borderRadius: '12rem',
-                // }}
               >
                 Skip
               </ButtonUI>
-            </Col>
-          </Row>
-        )}
-        {commentsModal}
-        <Row>
-          <Col md="12">
-            <CheckContinueButton
-              // moveToNextComponent={moveToNextComponent}
-              editMode={editMode}
-              // componentData={componentData}
-              // checkUserMaterialReaction={checkUserMaterialReaction}
-              currentMaterial={currentMaterial}
-              disabledCheck={disabledCheck}
-              // updateMaterial={updateMaterial}
-              userReactionResult={userReactionResult}
-            />
+            </div>
           </Col>
         </Row>
-        <Row>
-          <Col md="12">
+        <Row style={{ padding: '0 2vw 2vh 2vw' }}>
+          <Col
+          // style={{
+          //   display: 'flex',
+          //   alignItems: 'center',
+          //   justifyContent: 'center',
+          // }}
+          >
             <ProgressBar
-              style={{ height: '2rem' }}
+              style={{ height: '1rem' }}
               now={percentCompleted}
               // label={`${percentCompleted}%`}
             />

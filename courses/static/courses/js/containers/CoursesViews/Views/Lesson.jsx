@@ -227,7 +227,9 @@ const Lesson = props => {
             !currentMaterialState.isFetching &&
             currentMaterialState.material_problem_type &&
             state.iframeUrl && (
-              <div style={{ paddingBottom: showFooter ? '20rem' : '0' }}>
+              // <div style={{ paddingBottom: showFooter ? '20rem' : '0' }}>
+              // marginBottom should be equal min-height of #footer + height of header
+              <div style={{ paddingBottom: '131px' }}>
                 <StyledIframe
                   // height='100%' width='100%'
                   // style={{marginBottom: document.getElementById('student_view_iframe').style.height}}
