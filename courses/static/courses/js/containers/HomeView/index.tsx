@@ -82,13 +82,19 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
               id="navbarNavDropdown"
             >
               <ul className="navbar-nav ml-auto">
-                <li className="navbutton">
-                  <NavLink className="navlink" to="/s/about">
+                <li
+                  className="navbutton"
+                  onClick={() => {
+                    history.push('/s/about')
+                  }}
+                >
+                  <NavLink
+                    className="navlink"
+                    to="/s/about"
+                    style={{ width: '100%' }}
+                  >
                     About Us
                   </NavLink>
-                  {/*<a href="" className="navlink">*/}
-                  {/*  About Us*/}
-                  {/*</a>*/}
                 </li>
                 {/*<li className="navbutton">*/}
                 {/*  <a href="" className="navlink">*/}
@@ -100,12 +106,9 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   id="loginButton"
                   data-toggle="modal"
                   data-target="#signup-modal"
+                  onClick={handleLogInModalOpen}
                 >
-                  <a
-                    onClick={handleLogInModalOpen}
-                    className="navlink"
-                    style={{ cursor: 'pointer' }}
-                  >
+                  <a className="navlink" style={{ cursor: 'pointer' }}>
                     Login / Signup
                   </a>
                   <ModalLogIn
