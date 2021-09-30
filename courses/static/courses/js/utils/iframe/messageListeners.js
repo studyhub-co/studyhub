@@ -7,7 +7,7 @@ export const getUserProfileListener = event => {
   if (Object.prototype.hasOwnProperty.call(data, 'type')) {
     if (data.type === 'get_user_profile') {
       const profile = store.getState().profile?.me
-      console.log(profile)
+      // console.log(profile)
       /* send userProfileMessage to the iframe */
       userProfileMessage(profile)
     }

@@ -1,25 +1,30 @@
-import { isStandalone, dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
-import { flatten } from 'lodash';
-import { absolute } from '@codesandbox/common/lib/utils/path';
+import {
+  isStandalone,
+  dispatch,
+  reattach,
+  clearErrorTransformers,
+} from 'codesandbox-api'
+import { flatten } from 'lodash'
+import { absolute } from '@codesandbox/common/lib/utils/path'
 // import _debug from '@codesandbox/common/lib/utils/debug';
-import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
-import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
-import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
-import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
+import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse'
+import initializeErrorTransformers from 'sandbox-hooks/errors/transformers'
+import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay'
+import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7'
+import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template'
 import getDefinition, {
   TemplateType,
-} from '@codesandbox/common/lib/templates/index';
+} from '@codesandbox/common/lib/templates/index'
 
-import getPreset from './eval';
-import Manager, { Manifest } from './eval/manager';
+import getPreset from './eval'
+import Manager, { Manifest } from './eval/manager'
 
-import { resetScreen } from './status-screen';
+import { resetScreen } from './status-screen'
 
-import createCodeSandboxOverlay from './codesandbox-overlay';
-import handleExternalResources from './external-resources';
+import createCodeSandboxOverlay from './codesandbox-overlay'
+import handleExternalResources from './external-resources'
 
-import defaultBoilerplates from './boilerplates/default-boilerplates';
+import defaultBoilerplates from './boilerplates/default-boilerplates'
 
 import {
   getBoilerplates,
@@ -27,67 +32,67 @@ import {
   findBoilerplate,
 } from './boilerplates'; // eslint-disable-line
 
-import { loadDependencies } from './npm';
-import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
+import { loadDependencies } from './npm'
+import { consumeCache, saveCache, deleteAPICache } from './eval/cache'
 
-import { showRunOnClick } from './status-screen/run-on-click';
-import { Module } from './eval/entities/module';
-import TranspiledModule from './eval/transpiled-module';
+import { showRunOnClick } from './status-screen/run-on-click'
+import { Module } from './eval/entities/module'
+import TranspiledModule from './eval/transpiled-module'
 
-let initializedResizeListener = false;
-let manager: Manager | null = null;
-let actionsEnabled = false;
+let initializedResizeListener = false
+let manager: Manager | null = null
+let actionsEnabled = false
 
 // const debug = _debug('cs:compiler');
 
 export function areActionsEnabled() {
-  return actionsEnabled;
+  return actionsEnabled
 }
 
 export function getCurrentManager(): Manager | null {
-  return manager;
+  return manager
 }
 
 export function getHTMLParts(html: string) {
   if (html.includes('<body>')) {
-    const bodyMatcher = /<body>([\s\S]*)<\/body>/m;
-    const headMatcher = /<head>([\s\S]*)<\/head>/m;
+    const bodyMatcher = /<body>([\s\S]*)<\/body>/m
+    const headMatcher = /<head>([\s\S]*)<\/head>/m
 
-    const headMatch = html.match(headMatcher);
-    const bodyMatch = html.match(bodyMatcher);
-    const head = headMatch && headMatch[1] ? headMatch[1] : '';
-    const body = bodyMatch && bodyMatch[1] ? bodyMatch[1] : html;
+    const headMatch = html.match(headMatcher)
+    const bodyMatch = html.match(bodyMatcher)
+    const head = headMatch && headMatch[1] ? headMatch[1] : ''
+    const body = bodyMatch && bodyMatch[1] ? bodyMatch[1] : html
 
-    return { body, head };
+    return { body, head }
   }
 
-  return { head: '', body: html };
+  return { head: '', body: html }
 }
 
 function sendTestCount(
   givenManager: Manager,
-  modules: { [path: string]: Module }
+  modules: { [path: string]: Module },
 ) {
-  const { testRunner } = givenManager;
-  const tests = testRunner.findTests(modules);
+  const { testRunner } = givenManager
+  const tests = testRunner.findTests(modules)
 
   dispatch({
     type: 'test',
     event: 'test_count',
     count: tests.length,
-  });
+  })
 }
 
-let firstLoad = true;
-let hadError = false;
-let lastHeadHTML = null;
-let lastBodyHTML = null;
-let lastHeight = 0;
-let changedModuleCount = 0;
+let firstLoad = true
+let hadError = false
+let lastHeadHTML = null
+let lastBodyHTML = null
+let lastHeight = 0
+let changedModuleCount = 0
 
 const DEPENDENCY_ALIASES = {
   '@vue/cli-plugin-babel': '@vue/babel-preset-app',
-};
+}
 
 // TODO make devDependencies lazy loaded by the packager
 const WHITELISTED_DEV_DEPENDENCIES = [
@@ -99,7 +104,7 @@ const WHITELISTED_DEV_DEPENDENCIES = [
   'react-addons-test-utils',
   'react-test-renderer',
   'identity-obj-proxy',
-];
+]
 
 const BABEL_DEPENDENCIES = [
   'babel-preset-env',
@@ -113,7 +118,7 @@ const BABEL_DEPENDENCIES = [
   'babel-preset-stage-1',
   'babel-preset-stage-2',
   'babel-preset-stage-3',
-];
+]
 
 // Dependencies that we actually don't need, we will replace this by a dynamic
 // system in the future
@@ -201,58 +206,58 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-plugin-transform-vue-jsx',
   'flow-bin',
   ...BABEL_DEPENDENCIES,
-];
+]
 
 function getDependencies(parsedPackage, templateDefinition, configurations) {
   const {
     dependencies: d = {},
     peerDependencies = {},
     devDependencies = {},
-  } = parsedPackage;
+  } = parsedPackage
 
-  let returnedDependencies = { ...peerDependencies };
+  let returnedDependencies = { ...peerDependencies }
 
-  const foundWhitelistedDevDependencies = [...WHITELISTED_DEV_DEPENDENCIES];
+  const foundWhitelistedDevDependencies = [...WHITELISTED_DEV_DEPENDENCIES]
 
   // Add all babel plugins/presets to whitelisted dependencies
   if (configurations && configurations.babel && configurations.babel.parsed) {
     flatten(configurations.babel.parsed.presets || [])
       .filter(p => typeof p === 'string')
       .forEach((p: string) => {
-        const [first, ...parts] = p.split('/');
+        const [first, ...parts] = p.split('/')
         const prefixedName = p.startsWith('@')
           ? first + '/babel-preset-' + parts.join('/')
-          : `babel-preset-${p}`;
+          : `babel-preset-${p}`
 
-        foundWhitelistedDevDependencies.push(p);
-        foundWhitelistedDevDependencies.push(prefixedName);
-      });
+        foundWhitelistedDevDependencies.push(p)
+        foundWhitelistedDevDependencies.push(prefixedName)
+      })
 
     flatten(configurations.babel.parsed.plugins || [])
       .filter(p => typeof p === 'string')
       .forEach((p: string) => {
-        const [first, ...parts] = p.split('/');
+        const [first, ...parts] = p.split('/')
         const prefixedName = p.startsWith('@')
           ? first + '/babel-plugin-' + parts.join('/')
-          : `babel-plugin-${p}`;
+          : `babel-plugin-${p}`
 
-        foundWhitelistedDevDependencies.push(p);
-        foundWhitelistedDevDependencies.push(prefixedName);
-      });
+        foundWhitelistedDevDependencies.push(p)
+        foundWhitelistedDevDependencies.push(prefixedName)
+      })
   }
 
   Object.keys(d).forEach(dep => {
-    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
+    const usedDep = DEPENDENCY_ALIASES[dep] || dep
 
     if (dep === 'reason-react') {
-      return; // is replaced
+      return // is replaced
     }
 
-    returnedDependencies[usedDep] = d[dep];
-  });
+    returnedDependencies[usedDep] = d[dep]
+  })
 
   Object.keys(devDependencies).forEach(dep => {
-    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
+    const usedDep = DEPENDENCY_ALIASES[dep] || dep
 
     if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
       if (
@@ -261,53 +266,53 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
       ) {
         // Native modules got added in 3.7.0, we need to hardcode to latest
         // working version of the babel plugin as a fix. https://twitter.com/notphanan/status/1122475053633941509
-        returnedDependencies[usedDep] = '3.6.0';
-        return;
+        returnedDependencies[usedDep] = '3.6.0'
+        return
       }
 
-      returnedDependencies[usedDep] = devDependencies[dep];
+      returnedDependencies[usedDep] = devDependencies[dep]
     }
-  });
+  })
 
   const sandpackConfig =
     (configurations.customTemplate &&
       configurations.customTemplate.parsed &&
       configurations.customTemplate.parsed.sandpack) ||
-    {};
+    {}
 
   const preinstalledDependencies =
     sandpackConfig.preInstalledDependencies == null
       ? PREINSTALLED_DEPENDENCIES
-      : sandpackConfig.preInstalledDependencies;
+      : sandpackConfig.preInstalledDependencies
 
   if (templateDefinition.name === 'reason') {
     returnedDependencies = {
       ...returnedDependencies,
       '@jaredly/bs-core': '3.0.0-alpha.2',
       '@jaredly/reason-react': '0.3.4',
-    };
+    }
   }
 
   // Always include this, because most sandboxes need this with babel6 and the
   // packager will only include the package.json for it.
   if (isBabel7(d, devDependencies)) {
     returnedDependencies['@babel/runtime'] =
-      returnedDependencies['@babel/runtime'] || '7.3.1';
+      returnedDependencies['@babel/runtime'] || '7.3.1'
   } else {
     returnedDependencies['babel-runtime'] =
-      returnedDependencies['babel-runtime'] || '6.26.0';
+      returnedDependencies['babel-runtime'] || '6.26.0'
   }
 
   // This is used for cache busting
-  returnedDependencies.csbbust = '1.0.0';
+  returnedDependencies.csbbust = '1.0.0'
 
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {
-      delete returnedDependencies[dep];
+      delete returnedDependencies[dep]
     }
-  });
+  })
 
-  return returnedDependencies;
+  return returnedDependencies
 }
 
 async function updateManager(
@@ -317,98 +322,98 @@ async function updateManager(
   manifest: Manifest,
   configurations: ParsedConfigurationFiles,
   isNewCombination: boolean,
-  hasFileResolver: boolean
+  hasFileResolver: boolean,
 ): Promise<TranspiledModule[]> {
-  let newManager = false;
+  let newManager = false
   if (!manager || manager.id !== sandboxId) {
-    newManager = true;
+    newManager = true
     manager = new Manager(sandboxId, getPreset(template), managerModules, {
       hasFileResolver,
-    });
+    })
   }
 
   if (isNewCombination || newManager) {
-    manager.setManifest(manifest);
+    manager.setManifest(manifest)
   }
 
   if (firstLoad && newManager) {
-    console.log('consume Cache');
+    console.log('consume Cache')
     // We save the state of transpiled modules, and load it here again. Gives
     // faster initial loads.
-    await consumeCache(manager);
+    await consumeCache(manager)
   }
 
-  manager.updateConfigurations(configurations);
-  await manager.preset.setup(manager);
+  manager.updateConfigurations(configurations)
+  await manager.preset.setup(manager)
   return manager.updateData(managerModules).then(x => {
-    changedModuleCount = x.length;
-    return x;
-  });
+    changedModuleCount = x.length
+    return x
+  })
 }
 
 function getDocumentHeight() {
-  const { body } = document;
-  const html = document.documentElement;
+  const { body } = document
+  const html = document.documentElement
 
   return Math.max(
     body.scrollHeight,
     body.offsetHeight,
     html.clientHeight,
     html.scrollHeight,
-    html.offsetHeight
-  );
+    html.offsetHeight,
+  )
 }
 
 function sendResize() {
-  const height = getDocumentHeight();
+  const height = getDocumentHeight()
 
   if (lastHeight !== height) {
     if (document.body) {
       dispatch({
         type: 'resize',
         height,
-      });
+      })
     }
   }
 
-  lastHeight = height;
+  lastHeight = height
 }
 
 function initializeResizeListener() {
-  setInterval(sendResize, 5000);
+  setInterval(sendResize, 5000)
 
-  initializedResizeListener = true;
+  initializedResizeListener = true
 }
 
 function overrideDocumentClose() {
-  const oldClose = window.document.close;
+  const oldClose = window.document.close
 
   window.document.close = function close(...args) {
     try {
-      oldClose.call(document, args);
+      oldClose.call(document, args)
     } finally {
-      inject();
-      reattach();
+      inject()
+      reattach()
     }
-  };
+  }
 }
 
-overrideDocumentClose();
+overrideDocumentClose()
 
-inject();
+inject()
 
 interface CompileOptions {
-  sandboxId: string;
-  modules: { [path: string]: Module };
-  externalResources: string[];
-  hasActions?: boolean;
-  isModuleView?: boolean;
-  template: TemplateType;
-  entry: string;
-  showOpenInCodeSandbox?: boolean;
-  skipEval?: boolean;
-  hasFileResolver?: boolean;
-  disableDependencyPreprocessing?: boolean;
+  sandboxId: string
+  modules: { [path: string]: Module }
+  externalResources: string[]
+  hasActions?: boolean
+  isModuleView?: boolean
+  template: TemplateType
+  entry: string
+  showOpenInCodeSandbox?: boolean
+  skipEval?: boolean
+  hasFileResolver?: boolean
+  disableDependencyPreprocessing?: boolean
 }
 
 async function compile({
@@ -426,80 +431,78 @@ async function compile({
 }: CompileOptions) {
   dispatch({
     type: 'start',
-  });
+  })
 
-  const startTime = Date.now();
+  const startTime = Date.now()
   try {
-    inject();
-    clearErrorTransformers();
-    initializeErrorTransformers();
-    unmount(manager && manager.webpackHMR ? true : hadError);
+    inject()
+    clearErrorTransformers()
+    initializeErrorTransformers()
+    unmount(manager && manager.webpackHMR ? true : hadError)
   } catch (e) {
-    console.error(e);
+    console.error(e)
   }
 
-  hadError = false;
+  hadError = false
 
-  actionsEnabled = hasActions;
+  actionsEnabled = hasActions
 
-  let managerModuleToTranspile = null;
+  let managerModuleToTranspile = null
   try {
-    const templateDefinition = getDefinition(template);
+    const templateDefinition = getDefinition(template)
     const configurations = parseConfigurations(
       template,
       templateDefinition.configurationFiles,
-      path => modules[path]
-    );
+      path => modules[path],
+    )
 
     const errors = Object.keys(configurations)
       .map(c => configurations[c])
-      .filter(x => x.error);
+      .filter(x => x.error)
 
     if (errors.length) {
       const e = new Error(
-        `We weren't able to parse: '${errors[0].path}': ${
-          errors[0].error.message
-        }`
-      );
+        `We weren't able to parse: '${errors[0].path}': ${errors[0].error.message}`,
+      )
 
       // @ts-ignore
-      e.fileName = errors[0].path;
+      e.fileName = errors[0].path
 
-      throw e;
+      throw e
     }
 
-    const packageJSON = modules['/package.json'];
+    const packageJSON = modules['/package.json']
 
     if (!packageJSON) {
-      throw new Error('Could not find package.json');
+      throw new Error('Could not find package.json')
     }
 
-    const parsedPackageJSON = configurations.package.parsed;
+    const parsedPackageJSON = configurations.package.parsed
 
-    dispatch({ type: 'status', status: 'installing-dependencies' });
+    dispatch({ type: 'status', status: 'installing-dependencies' })
 
     const dependencies = getDependencies(
       parsedPackageJSON,
       templateDefinition,
-      configurations
-    );
+      configurations,
+    )
 
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       {
         disableExternalConnection: disableDependencyPreprocessing,
         resolutions: parsedPackageJSON.resolutions,
-      }
-    );
+      },
+    )
 
     if (isNewCombination && !firstLoad) {
       // Just reset the whole manager if it's a new combination
       if (manager) {
-        manager.dispose();
+        manager.dispose()
       }
-      manager = null;
+      manager = null
     }
-    const t = Date.now();
+    const t = Date.now()
 
     const updatedModules =
       (await updateManager(
@@ -509,43 +512,41 @@ async function compile({
         manifest,
         configurations,
         isNewCombination,
-        hasFileResolver
-      )) || [];
+        hasFileResolver,
+      )) || []
 
-    const possibleEntries = templateDefinition.getEntries(configurations);
+    const possibleEntries = templateDefinition.getEntries(configurations)
 
     const foundMain = isModuleView
       ? entry
-      : possibleEntries.find(p => Boolean(modules[p]));
+      : possibleEntries.find(p => Boolean(modules[p]))
 
     if (!foundMain) {
       throw new Error(
-        `Could not find entry file: ${
-          possibleEntries[0]
-        }. You can specify one in package.json by defining a \`main\` property.`
-      );
+        `Could not find entry file: ${possibleEntries[0]}. You can specify one in package.json by defining a \`main\` property.`,
+      )
     }
 
-    const main = absolute(foundMain);
-    managerModuleToTranspile = modules[main];
+    const main = absolute(foundMain)
+    managerModuleToTranspile = modules[main]
 
     // TODO: make this a separate lifecycle
     // await manager.preset.setup(manager);
 
-    dispatch({ type: 'status', status: 'transpiling' });
-    manager.setStage('transpilation');
+    dispatch({ type: 'status', status: 'transpiling' })
+    manager.setStage('transpilation')
 
-    await manager.verifyTreeTranspiled();
-    await manager.transpileModules(managerModuleToTranspile);
+    await manager.verifyTreeTranspiled()
+    await manager.transpileModules(managerModuleToTranspile)
 
-    console.log(`Transpilation time ${Date.now() - t}ms`);
+    console.log(`Transpilation time ${Date.now() - t}ms`)
     // debug(`Transpilation time ${Date.now() - t}ms`);
 
-    dispatch({ type: 'status', status: 'evaluating' });
-    manager.setStage('evaluation');
+    dispatch({ type: 'status', status: 'evaluating' })
+    manager.setStage('evaluation')
 
     if (!skipEval) {
-      resetScreen();
+      resetScreen()
 
       try {
         // We set it as a time value for people that run two sandboxes on one computer
@@ -556,37 +557,37 @@ async function compile({
           localStorage.getItem('running') &&
           Date.now() - +localStorage.getItem('running') > 8000
         ) {
-          localStorage.removeItem('running');
-          showRunOnClick();
-          return;
+          localStorage.removeItem('running')
+          showRunOnClick()
+          return
         }
 
-        localStorage.setItem('running', '' + Date.now());
+        localStorage.setItem('running', '' + Date.now())
       } catch (e) {
         /* no */
       }
 
-      manager.preset.preEvaluate(manager, updatedModules);
+      manager.preset.preEvaluate(manager, updatedModules)
 
       if (!manager.webpackHMR) {
         const htmlModulePath = templateDefinition
           .getHTMLEntries(configurations)
-          .find(p => Boolean(modules[p]));
-        const htmlModule = modules[htmlModulePath];
+          .find(p => Boolean(modules[p]))
+        const htmlModule = modules[htmlModulePath]
 
         const { head, body } = getHTMLParts(
           htmlModule && htmlModule.code
             ? htmlModule.code
             : template === 'vue-cli'
             ? '<div id="app"></div>'
-            : '<div id="root"></div>'
-        );
+            : '<div id="root"></div>',
+        )
 
         if (lastHeadHTML && lastHeadHTML !== head) {
-          document.location.reload();
+          document.location.reload()
         }
         if (manager && lastBodyHTML && lastBodyHTML !== body) {
-          manager.clearCompiledCache();
+          manager.clearCompiledCache()
         }
 
         if (
@@ -596,26 +597,28 @@ async function compile({
         ) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run.
-          document.body.innerHTML = body;
+          document.body.innerHTML = body
         }
-        lastBodyHTML = body;
-        lastHeadHTML = head;
+        lastBodyHTML = body
+        lastHeadHTML = head
       }
 
-      const extDate = Date.now();
-      await handleExternalResources(externalResources);
-      console.log('Loaded external resources in ' + (Date.now() - extDate) + 'ms')
+      const extDate = Date.now()
+      await handleExternalResources(externalResources)
+      console.log(
+        'Loaded external resources in ' + (Date.now() - extDate) + 'ms',
+      )
       // debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
 
-      const tt = Date.now();
-      const oldHTML = document.body.innerHTML;
+      const tt = Date.now()
+      const oldHTML = document.body.innerHTML
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
-      });
+      })
       // debug(`Evaluation time: ${Date.now() - tt}ms`);
       console.log(`Evaluation time: ${Date.now() - tt}ms`)
       const domChanged =
-        !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
+        !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML
 
       if (
         isModuleView &&
@@ -624,97 +627,97 @@ async function compile({
       ) {
         const isReact =
           managerModuleToTranspile.code &&
-          managerModuleToTranspile.code.includes('React');
+          managerModuleToTranspile.code.includes('React')
 
         if (isReact && evalled) {
           // initiate boilerplates
           if (getBoilerplates().length === 0) {
             try {
-              await evalBoilerplates(defaultBoilerplates);
+              await evalBoilerplates(defaultBoilerplates)
             } catch (e) {
               // eslint-disable-next-line no-console
-              console.log("Couldn't load all boilerplates: " + e.message);
+              console.log("Couldn't load all boilerplates: " + e.message)
             }
           }
 
-          const boilerplate = findBoilerplate(managerModuleToTranspile);
+          const boilerplate = findBoilerplate(managerModuleToTranspile)
 
           if (boilerplate) {
             try {
-              boilerplate.module.default(evalled);
+              boilerplate.module.default(evalled)
             } catch (e) {
-              console.error(e);
+              console.error(e)
             }
           }
         }
       }
     }
 
-    await manager.preset.teardown(manager, updatedModules);
+    await manager.preset.teardown(manager, updatedModules)
 
     if (!initializedResizeListener && !manager.preset.htmlDisabled) {
-      initializeResizeListener();
+      initializeResizeListener()
     }
 
     if (showOpenInCodeSandbox) {
-      createCodeSandboxOverlay(modules);
+      createCodeSandboxOverlay(modules)
     }
 
-    console.log(`Total time: ${Date.now() - startTime}ms`);
+    console.log(`Total time: ${Date.now() - startTime}ms`)
     // debug(`Total time: ${Date.now() - startTime}ms`);
 
     dispatch({
       type: 'success',
-    });
+    })
 
     saveCache(
       sandboxId,
       managerModuleToTranspile,
       manager,
       changedModuleCount,
-      !isStandalone // do not save API cache in standalone student mode
+      !isStandalone, // do not save API cache in standalone student mode
       //firstLoad
-    );
+    )
 
     setTimeout(() => {
       try {
-        sendTestCount(manager, modules);
+        sendTestCount(manager, modules)
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
-          console.error('Test error', e);
+          console.error('Test error', e)
         }
       }
-    }, 600);
+    }, 600)
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.log('Error in sandbox:');
-    console.error(e);
+    console.log('Error in sandbox:')
+    console.error(e)
 
     if (manager) {
-      manager.clearCache();
+      manager.clearCache()
 
       if (firstLoad && changedModuleCount === 0) {
-        await deleteAPICache(manager.id);
+        await deleteAPICache(manager.id)
       }
     }
 
     if (firstLoad) {
-      inject();
+      inject()
     }
 
-    const event = new Event('error');
+    const event = new Event('error')
     // @ts-ignore
-    event.error = e;
+    event.error = e
 
-    window.dispatchEvent(event);
+    window.dispatchEvent(event)
 
-    hadError = true;
+    hadError = true
   } finally {
     try {
       setTimeout(() => {
         // Set a timeout so there's a chance that we also catch runtime errors
-        localStorage.removeItem('running');
-      }, 600);
+        localStorage.removeItem('running')
+      }, 600)
     } catch (e) {
       /* no */
     }
@@ -722,40 +725,40 @@ async function compile({
     if (manager) {
       const managerState = {
         ...(await manager.serialize({ optimizeForSize: false })),
-      };
-      delete managerState.cachedPaths;
+      }
+      delete managerState.cachedPaths
       managerState.entry = managerModuleToTranspile
         ? managerModuleToTranspile.path
-        : null;
+        : null
 
       dispatch({
         type: 'state',
         state: managerState,
-      });
+      })
     }
   }
-  firstLoad = false;
+  firstLoad = false
 
-  dispatch({ type: 'status', status: 'idle' });
-  dispatch({ type: 'done', compilatonError: hadError });
+  dispatch({ type: 'status', status: 'idle' })
+  dispatch({ type: 'done', compilatonError: hadError })
 
   if (typeof (window as any).__puppeteer__ === 'function') {
-    (window as any).__puppeteer__('done');
+    ;(window as any).__puppeteer__('done')
   }
 }
 
-const tasks: CompileOptions[] = [];
-let runningTask = false;
+const tasks: CompileOptions[] = []
+let runningTask = false
 
 async function executeTaskIfAvailable() {
   if (tasks.length) {
-    const task = tasks.pop();
+    const task = tasks.pop()
 
-    runningTask = true;
-    await compile(task);
-    runningTask = false;
+    runningTask = true
+    await compile(task)
+    runningTask = false
 
-    executeTaskIfAvailable();
+    executeTaskIfAvailable()
   }
 }
 
@@ -766,9 +769,9 @@ async function executeTaskIfAvailable() {
  * latest version.
  */
 export default function queueTask(data: CompileOptions) {
-  tasks[0] = data;
+  tasks[0] = data
 
   if (!runningTask) {
-    executeTaskIfAvailable();
+    executeTaskIfAvailable()
   }
 }

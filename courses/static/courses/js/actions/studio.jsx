@@ -291,12 +291,12 @@ export function removeCourseFromDashboard(uuid) {
 }
 
 export function coursesLoaded(data) {
-  var units = extractAll(data, 'units')
-  var modules = extractAll(units, 'modules')
+  const units = extractAll(data.results, 'units')
+  const modules = extractAll(units, 'modules')
 
   return {
     type: ActionTypes.COURSES_LOADED,
-    courses: data,
+    courses: data.results,
     units: units,
     modules: modules,
   }
@@ -567,8 +567,8 @@ export function loadSearchMaterials(searchString, nextPageUrl) {
 }
 
 export function courseLoaded(data) {
-  var units = extract(data, 'units')
-  var modules = extractAll(units, 'modules')
+  const units = extract(data, 'units')
+  const modules = extractAll(units, 'modules')
   return {
     type: ActionTypes.COURSE_LOADED,
     course: data,

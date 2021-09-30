@@ -14,10 +14,14 @@ const host = '' // the same host for now
 const MAX_CACHE_SIZE = 1024 * 1024 * 10
 let APICacheUsed = false
 
-function getCookie (name) {
-  var matches = document.cookie.match(new RegExp(
-    '(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
-  ))
+function getCookie(name) {
+  var matches = document.cookie.match(
+    new RegExp(
+      '(?:^|; )' +
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
+        '=([^;]*)',
+    ),
+  )
   return matches ? decodeURIComponent(matches[1]) : undefined
 }
 
@@ -26,7 +30,7 @@ try {
     name: 'CodeSandboxApp',
     storeName: 'sandboxes', // Should be alphanumeric, with underscores.
     description:
-      'Cached transpilations of the sandboxes, for faster initialization time.'
+      'Cached transpilations of the sandboxes, for faster initialization time.',
   })
 
   // Prewarm store
@@ -36,7 +40,7 @@ try {
   console.warn(e)
 }
 
-function shouldSaveOnlineCache (firstRun: boolean, changes: number) {
+function shouldSaveOnlineCache(firstRun: boolean, changes: number) {
   if (!firstRun || changes > 0) {
     return false
   }
@@ -48,16 +52,16 @@ function shouldSaveOnlineCache (firstRun: boolean, changes: number) {
   return false
 }
 
-export function clearIndexedDBCache () {
+export function clearIndexedDBCache() {
   return localforage.clear()
 }
 
-export async function saveCache (
+export async function saveCache(
   sandboxId: string,
   managerModuleToTranspile: any,
   manager: Manager,
   changes: number,
-  firstRun: boolean
+  firstRun: boolean,
 ) {
   if (!sandboxId) {
     return Promise.resolve(false)
@@ -68,8 +72,8 @@ export async function saveCache (
       entryPath: managerModuleToTranspile
         ? managerModuleToTranspile.path
         : null,
-      optimizeForSize: true
-    }))
+      optimizeForSize: true,
+    })),
   }
 
   try {
@@ -79,7 +83,8 @@ export async function saveCache (
       console.log(
         'Saving cache of ' +
           (JSON.stringify(managerState).length / 1024).toFixed(2) +
-          'kb to indexedDB')
+          'kb to indexedDB',
+      )
     }
     await localforage.setItem(manager.id, managerState)
   } catch (e) {
@@ -103,34 +108,40 @@ export async function saveCache (
     console.log(
       'Saving cache of ' +
         (stringifiedManagerState.length / 1024).toFixed(2) +
-        'kb to StudyHub API')
+        'kb to StudyHub API',
+    )
 
-    return window
-      // .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
-      .fetch(`${host}/api/v1/studio/material-problem-type/${sandboxId}/cache/`, {
-        method: 'POST',
-        body: JSON.stringify({
-          version: SCRIPT_VERSION,
-          data: stringifiedManagerState
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken') || ''
-        }
-      })
-      .then(x => x.json())
-      .catch(e => {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('Something went wrong while saving cache.')
-          console.error(e)
-        }
-      })
+    return (
+      window
+        // .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
+        .fetch(
+          `${host}/api/v1/studio/material-problem-type/${sandboxId}/cache/`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              version: SCRIPT_VERSION,
+              data: stringifiedManagerState,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken') || '',
+            },
+          },
+        )
+        .then(x => x.json())
+        .catch(e => {
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Something went wrong while saving cache.')
+            console.error(e)
+          }
+        })
+    )
   }
 
   return Promise.resolve(false)
 }
 
-export function deleteAPICache (sandboxId: string): Promise<any> {
+export function deleteAPICache(sandboxId: string): Promise<any> {
   return Promise.resolve(false)
   // not sure we need to remove API cache
   // if (APICacheUsed) {
@@ -157,7 +168,7 @@ export function deleteAPICache (sandboxId: string): Promise<any> {
   // return Promise.resolve(false)
 }
 
-function findCacheToUse (cache1, cache2) {
+function findCacheToUse(cache1, cache2) {
   if (!cache1 && !cache2) {
     return null
   }
@@ -173,7 +184,7 @@ function findCacheToUse (cache1, cache2) {
   return cache2.timestamp > cache1.timestamp ? cache2 : cache1
 }
 
-export function ignoreNextCache () {
+export function ignoreNextCache() {
   try {
     localStorage.setItem('ignoreCache', 'true')
   } catch (e) {
@@ -181,31 +192,38 @@ export function ignoreNextCache () {
   }
 }
 
-async function loadCacheFromAPI (sandboxId) {
-  return window
-    .fetch(`${host}/api/v1/courses/material-problem-type/${sandboxId}/cache/?script-version=${SCRIPT_VERSION}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-        // 'X-CSRFToken': getCookie('csrftoken') || ''
-      }
-    })
-    // .then(x => x.json())
-    .then(x => {
-      return x.json()
-    })
-    .catch(e => {
-      console.log('Error while load mtp cache:')
-      console.log(e)
-    })
+async function loadCacheFromAPI(sandboxId) {
+  return (
+    window
+      .fetch(
+        `${host}/api/v1/courses/material-problem-type/${sandboxId}/cache/?script-version=${SCRIPT_VERSION}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            // 'X-CSRFToken': getCookie('csrftoken') || ''
+          },
+        },
+      )
+      // .then(x => x.json())
+      .then(x => {
+        return x.json()
+      })
+      .catch(e => {
+        console.log('Error while load mtp cache:')
+        console.log(e)
+      })
+  )
 }
 
-async function downloadMediaJSONFile (url) {
-  return window.fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }})
+async function downloadMediaJSONFile(url) {
+  return window
+    .fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
     .then(x => {
       return x.json()
     })
@@ -215,7 +233,7 @@ async function downloadMediaJSONFile (url) {
     })
 }
 
-export async function consumeCache (manager: Manager) {
+export async function consumeCache(manager: Manager) {
   try {
     const shouldIgnoreCache = localStorage.getItem('ignoreCache')
     if (shouldIgnoreCache) {
@@ -247,13 +265,16 @@ export async function consumeCache (manager: Manager) {
           {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json'
-            }
-          })
-        .then(x => { return x.json() })
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .then(x => {
+          return x.json()
+        })
         .then(apiTimestamp => {
           if (apiTimestamp > cache.timestamp) {
-            // if backend API hve a newer version
+            // if backend API have a newer version
             // remove IndexedDB cache of mtp to load for next time the new one
             localforage.removeItem(manager.id)
           }
@@ -270,9 +291,6 @@ export async function consumeCache (manager: Manager) {
     if (cache) {
       const version = SCRIPT_VERSION
 
-      // console.log(cache.version)
-      // console.log(SCRIPT_VERSION)
-
       if (cache.version === version) {
         // if (cache === localData) {
         //   APICacheUsed = false
@@ -284,9 +302,9 @@ export async function consumeCache (manager: Manager) {
         //   `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
         //   cache
         // )
-        console.log(`Loading cache from ${!APICacheUsed ? 'localStorage' : 'API'}`)
-        // console.log(`Loading cache from ${cache === localData ? 'localStorage' : 'API'}`)
-
+        console.log(
+          `Loading cache from ${!APICacheUsed ? 'localStorage' : 'API'}`,
+        )
         await manager.load(cache)
 
         return true

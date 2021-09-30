@@ -20,6 +20,11 @@ CORS_ORIGIN_ALLOW_ALL = True
 #     'http://localhost:3000',
 # )
 
+# ALLOW cookie to work with components library cross site request in dev mode
+# fixme not work until django 3.1
+# SESSION_COOKIE_SAMESITE = 'None'
+# CSRF_COOKIE_SAMESITE = 'None'
+
 # debug_toolbar
 # + https://django-extensions.readthedocs.io/en/latest/graph_models.html
 INSTALLED_APPS.extend(['debug_toolbar', 'django_extensions'])

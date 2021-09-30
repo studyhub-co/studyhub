@@ -408,7 +408,6 @@ class MaterialProblemTypeCacheViewSet(ModelViewSet):
             # timestamp is model field now
             timestamp = mpt_cache.timestamp
             if timestamp:
-                # return Response(timestamp)
                 return Response(int(timestamp.timestamp() * 1000))  # JsTimestamp value
 
         serializer = self.get_serializer(mpt_cache)

@@ -32,7 +32,6 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
 
 
-# TODO add pagination to api views! or block load listview for Units/Lessons at least
 class TagAddRemoveViewMixin(object):
     # @action(methods=['POST', 'DELETE'],
     #         detail=True,
@@ -57,6 +56,7 @@ class TagAddRemoveViewMixin(object):
 class CourseViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrCollaboratorBase)    
     serializer_class = CourseSerializer
+    pagination_class = StandardResultsSetPagination
     lookup_field = 'uuid'
 
     def get_queryset(self):
@@ -87,6 +87,7 @@ class CourseViewSet(ModelViewSet, TagAddRemoveViewMixin):
 class UnitViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsUnitOwnerOrCollaborator)
     serializer_class = UnitSerializer
+    pagination_class = StandardResultsSetPagination
     lookup_field = 'uuid'
 
     def create(self, request, *args, **kwargs):
@@ -114,6 +115,7 @@ class UnitViewSet(ModelViewSet, TagAddRemoveViewMixin):
     
 class ModuleViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsModuleOwnerOrCollaborator)
+    pagination_class = StandardResultsSetPagination
     serializer_class = ModuleSerializer
     lookup_field = 'uuid'
 
@@ -141,6 +143,7 @@ class ModuleViewSet(ModelViewSet, TagAddRemoveViewMixin):
     
 class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsLessonOwnerOrCollaborator)
+    pagination_class = StandardResultsSetPagination
     serializer_class = LessonSerializer
     lookup_field = 'uuid'
 
@@ -169,10 +172,12 @@ class LessonViewSet(ModelViewSet, TagAddRemoveViewMixin):
             # .prefetch_related('questions__tags', 'questions__vectors')\
 
 
-class MaterialViewSet(ModelViewSet, TagAddRemoveViewMixin, SeparateListObjectSerializerMixin):
+# SeparateListObjectSerializerMixin should be first
+class MaterialViewSet(SeparateListObjectSerializerMixin, ModelViewSet, TagAddRemoveViewMixin):
     permission_classes = (permissions.IsAuthenticated, IsMaterialOwnerOrCollaborator)
     serializer_class = MaterialSerializer
     list_serializer_class = MaterialListSerializer
+    pagination_class = StandardResultsSetPagination
     lookup_field = 'uuid'
 
     def create(self, request, *args, **kwargs):
@@ -234,29 +239,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
                          'directories',
                          'modules'
                          ).all()
-    # permission_classes = [IsAuthenticated|ReadOnly]
     lookup_field = 'uuid'
-
-    # def create_new_from_json(self, request, *args, **kwargs):
-    #     data = json.loads(SANDOX_TEMPLATE_REACT_JSON_STRING, strict=False)
-    #     from pib_auth.models import User
-    #     superuser = User.objects.filter(is_superuser=True).first()
-    #     if superuser:
-    #         author = superuser.profile
-    #     else:
-    #         author = request.user.profile
-    #
-    #     # data['name'] = 'Material problem type name'
-    #     # fixme - not good, if we remove object with 'new' slug,
-    #     #  this will create new objects with new-2, new-3, etc...
-    #     #   create fixtures
-    #     data['name'] = 'New'  # don't chage 'new' slug!
-    #
-    #     serializer = self.serializer_class(data=data)
-    #     if serializer.is_valid(raise_exception=True):
-    #         instance = serializer.save_from_tree_data(author=author,
-    #                                                   official=True)
-    #         return instance
 
     # override RetrieveModelMixin
     def retrieve(self, request, *args, **kwargs):
@@ -303,7 +286,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
 
             new_old_dir_pks[old_dir_pk] = new_dir_pk
 
-        # resave parent
+        # re-save parent
         for directory in initial_sandbox.directories.all():
             if directory.directory:
                 directory.directory_id = new_old_dir_pks[directory.directory_id]
@@ -351,8 +334,6 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
         if not json_data:
             raise ValidationError('data field not found')
 
-        # from django.core.files.base import ContentFile
-        # data_file = ContentFile(json_data)
         buff = StringIO(json_data)
 
         buff.seek(0, 2)
@@ -362,7 +343,6 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
         # if type(json_data) is str:
         #     json_data = json.loads(json_data)
 
-        # data = {'data': json_data, 'version': version}
         data = {'data': file_data, 'version': version}
 
         try:
@@ -382,7 +362,6 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
 
 
 # material JSONData media store
-# class JsonDataImageViewSet(ModelViewSet):
 class JsonDataImageViewSet(mixins.CreateModelMixin, GenericViewSet):
     queryset = JsonDataImage.objects.all()
     serializer_class = JsonDataImageSerializer

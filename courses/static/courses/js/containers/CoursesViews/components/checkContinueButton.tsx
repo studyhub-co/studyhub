@@ -29,7 +29,7 @@ const CheckContinueButton: React.FC<CheckContinueProps> = props => {
 
   const theme = useTheme()
   const matchesWideScreen = useMediaQuery(theme.breakpoints.up('sm'))
-  console.log(matchesWideScreen)
+  // console.log(matchesWideScreen)
 
   return (
     <div style={{ textAlign: 'center' }}>
