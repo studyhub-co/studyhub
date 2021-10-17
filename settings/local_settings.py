@@ -27,7 +27,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # debug_toolbar
 # + https://django-extensions.readthedocs.io/en/latest/graph_models.html
-INSTALLED_APPS.extend(['debug_toolbar', 'django_extensions'])
+INSTALLED_APPS.extend(['debug_toolbar', 'django_extensions', 'django_celery_results'])
 MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 INTERNAL_IPS = ALLOWED_HOSTS
 
@@ -78,4 +78,3 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 #         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
 #     }
 # }
-

@@ -271,6 +271,27 @@ export const forkSandboxClicked: AsyncAction = async ({
   })
 }
 
+export const publishSandboxClicked: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  // TODO check user have rights to publish sanbox
+  // if (
+  //   state.editor.currentSandbox.owned &&
+  //   !effects.browser.confirm('Do you want to fork your own sandbox?')
+  // ) {
+  //   return
+  // }
+
+  // todo add check publishing result
+  alert('Sandbox publish process started, please wait...')
+
+  await actions.editor.internal.publishSandbox({
+    sandboxId: state.editor.currentId,
+  })
+}
+
 export const likeSandboxToggled: AsyncAction<{
   id: string
 }> = async ({ state, effects }, { id }) => {

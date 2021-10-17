@@ -9,6 +9,7 @@ import {
   IDirectoryAPIResponse,
   IModuleAPIResponse,
   SandboxAPIResponse,
+  ISandboxPublishTaskAPIResponse,
 } from './types'
 
 import {
@@ -35,12 +36,21 @@ export default {
     // We need to add client side properties for tracking
     return transformSandbox(camelizeKeys(sandbox))
   },
-
   async forkSandbox(id: string, body?: unknown): Promise<Sandbox> {
     const url = `/studio/material-problem-type/${id}/fork/`
 
     const sandbox = await api.post<SandboxAPIResponse>(url, body || {})
     return transformSandbox(sandbox)
+  },
+  async publishSandbox(id: string, body?: unknown): Promise<{ state: String }> {
+    const url = `/studio/material-problem-type/${id}/publish/`
+
+    const response = await api.post<ISandboxPublishTaskAPIResponse>(
+      url,
+      body || {},
+    )
+    // TODO websocket connection?
+    return response
   },
   saveModuleCode(sandboxId: string, module: Module): Promise<Module> {
     return api

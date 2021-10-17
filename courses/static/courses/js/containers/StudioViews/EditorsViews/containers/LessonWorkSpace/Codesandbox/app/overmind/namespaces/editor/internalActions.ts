@@ -332,6 +332,13 @@ export const forkSandbox: AsyncAction<{
   state.editor.isForkingSandbox = false
 }
 
+export const publishSandbox: AsyncAction<{
+  sandboxId: string
+  body?: { collectionId: string | undefined }
+}> = async ({ state, effects, actions }, { sandboxId: id, body }) => {
+  await effects.api.publishSandbox(id, body)
+}
+
 export const setCurrentModule: Action<Module> = ({ state }, module) => {
   state.editor.currentTabId = null
 

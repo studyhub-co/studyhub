@@ -27,8 +27,8 @@ import {
 } from './elements'
 import Tags from '../Tags'
 
-const getScreenshot = (id: string) =>
-  `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`
+// const getScreenshot = (id: string) =>
+//   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`
 
 /* eslint-disable camelcase */
 export interface Sandbox {

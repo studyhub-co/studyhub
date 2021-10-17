@@ -142,7 +142,8 @@ ADMIN_REORDER = (
                                   )},
     {'app': 'curricula', 'models': ('curricula.Curriculum', 'curricula.Unit', 'curricula.Module',
                                     'curricula.Lesson', 'curricula.Question')},
-    'moderation',  'classroom', 'account', 'auth', 'djeddit', 'react_comments_django', 'pib_auth', 'profiles', 'sites', 'socialaccount', 'resources'
+    'moderation',  'classroom', 'account', 'auth', 'djeddit', 'react_comments_django', 'pib_auth', 'profiles',
+    'sites', 'socialaccount', 'resources', 'django_celery_results'
 )
 
 ROOT_URLCONF = 'settings.urls'
@@ -171,7 +172,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'settings.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -380,3 +380,9 @@ CURRICULA_SQL_PROBLEM_TYPE_USER_PASSWORD = os.getenv('CURRICULA_SQL_PROBLEM_TYPE
 MYSQL_PROBLEM_TYPE_HOST = os.getenv('MYSQL_PROBLEM_TYPE_HOST')
 MYSQL_PROBLEM_TYPE_USER = os.getenv('MYSQL_PROBLEM_TYPE_USER')
 MYSQL_PROBLEM_TYPE_USER_PASSWORD = os.getenv('MYSQL_PROBLEM_TYPE_USER_PASSWORD')
+
+# TODO make it configurable
+CELERY_BROKER_URL = "amqp://myuser:mypassword@localhost:5672/myvhost"
+# save task result in django cache
+# CELERY_RESULT_BACKEND = 'django-cache'
+CELERY_RESULT_BACKEND = 'django-db'

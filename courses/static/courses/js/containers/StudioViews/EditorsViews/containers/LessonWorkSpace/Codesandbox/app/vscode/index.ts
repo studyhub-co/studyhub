@@ -95,6 +95,16 @@ class VSCodeManager {
     })
 
     this.addWorkbenchAction({
+      id: 'codesandbox.sandbox.publish',
+      label: 'Publish Sandbox',
+      category: 'Sandbox',
+      run: () => {
+        // console.log('Publish')
+        this.controller.getSignal('editor.publishSandboxClicked')()
+      },
+    })
+
+    this.addWorkbenchAction({
       id: 'codesandbox.sandbox.exportzip',
       label: 'Export To ZIP',
       category: 'Sandbox',
@@ -165,6 +175,14 @@ class VSCodeManager {
       command: {
         id: 'codesandbox.sandbox.fork',
         title: '&&Fork Sandbox',
+      },
+    })
+    this.appendMenuItem(MenuId.MenubarFileMenu, {
+      group: '4_zsandbox',
+      order: 1,
+      command: {
+        id: 'codesandbox.sandbox.publish',
+        title: 'Publish Sandbox',
       },
     })
 

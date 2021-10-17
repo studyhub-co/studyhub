@@ -1,12 +1,8 @@
-from io import StringIO
-
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Q, Count
 
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import permissions, status, mixins, viewsets
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError, NotFound
 from rest_framework.parsers import MultiPartParser, JSONParser
@@ -14,22 +10,19 @@ from rest_framework.parsers import MultiPartParser, JSONParser
 from utils.drf.views_set_mixins import SeparateListObjectSerializerMixin
 
 from courses.models import Course, Unit, Module, Lesson, Material, MaterialProblemType, \
-    MaterialProblemTypeSandboxCache, JsonDataImage
-    # SANDOX_TEMPLATE_REACT_JSON_STRING,
+    JsonDataImage
 
-from ..serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
-    LessonSerializer, MaterialSerializer, MaterialProblemTypeSerializer, \
-    MaterialProblemTypeSandboxCacheSerializer, MaterialProblemTypeSandboxModuleSerializer, \
-    MaterialListSerializer, JsonDataImageSerializer
+from ...serializers import CourseSerializer, UnitSerializer, ModuleSerializer, \
+    LessonSerializer, MaterialSerializer, MaterialListSerializer, JsonDataImageSerializer
 
 
-from ..permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
-    IsModuleOwnerOrCollaborator, IsLessonOwnerOrCollaborator, IsMaterialOwnerOrCollaborator,\
-    IsMaterialProblemTypeAuthor
+from ...permissions import IsOwnerOrCollaboratorBase, IsUnitOwnerOrCollaborator, \
+    IsModuleOwnerOrCollaborator, IsLessonOwnerOrCollaborator, IsMaterialOwnerOrCollaborator
 
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 10
+from .material_problem_type import MaterialProblemTypeViewSet
+
+from .pagination import StandardResultsSetPagination
 
 
 class TagAddRemoveViewMixin(object):
@@ -217,148 +210,6 @@ class MaterialViewSet(SeparateListObjectSerializerMixin, ModelViewSet, TagAddRem
         return Material.objects.filter(Q(lesson__module__unit__course__author=self.request.user.profile) |
                                        Q(lesson__module__unit__course__collaborators=self.request.user.profile)).\
                                 distinct()
-
-
-# class MaterialProblemTypeViewSet(ModelViewSet):
-class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
-                                 mixins.UpdateModelMixin,
-                                 mixins.ListModelMixin,
-                                 mixins.DestroyModelMixin,
-                                 # MaterialTypeModulesMixin,
-                                 viewsets.GenericViewSet,
-                                 ):
-    parser_classes = [MultiPartParser, JSONParser]
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsMaterialProblemTypeAuthor)
-    pagination_class = StandardResultsSetPagination
-    serializer_class = MaterialProblemTypeSerializer
-    serializer_class_cache = MaterialProblemTypeSandboxCacheSerializer
-    # serializer_class_module = MaterialProblemTypeSandboxModuleSerializer
-    queryset = MaterialProblemType.objects.\
-        select_related('author__user__profile'). \
-        prefetch_related('modules__author__user__profile',
-                         'directories',
-                         'modules'
-                         ).all()
-    lookup_field = 'uuid'
-
-    # override RetrieveModelMixin
-    def retrieve(self, request, *args, **kwargs):
-        if 'uuid' in kwargs and kwargs['uuid'] == 'new':
-            # get or create 'new' sandbox skeleton
-            try:
-                instance = self.queryset.get(slug='new')
-            except MaterialProblemType.DoesNotExist:
-                assert False, 'You need to create a sanbdox with "new" slug berofe using this app! ' \
-                              '(manage.py loaddata from fixtures)'
-                # instance = self.create_new_from_json(request)
-        else:
-            # regular instance
-            instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
-    # @transaction.atomic
-    # TODO rewrite with SQL
-    def clone_sandbox(self):
-        # clone sandbox
-        initial_sandbox = self.get_object()
-
-        initial_modules = initial_sandbox.modules.all()
-        initial_directories = initial_sandbox.directories.all()
-
-        # clone sandbox
-        # based on https://docs.djangoproject.com/en/2.2/topics/db/queries/#copying-model-instances
-        initial_sandbox.pk = None
-        initial_sandbox.uuid = None
-        initial_sandbox.official = False
-        initial_sandbox.save()
-
-        new_old_dir_pks = {}
-
-        # clone directories
-        for directory in initial_directories:
-            old_dir_pk = directory.pk
-
-            directory.pk = None
-            directory.sandbox = initial_sandbox
-            directory.save()
-            new_dir_pk = directory.pk
-
-            new_old_dir_pks[old_dir_pk] = new_dir_pk
-
-        # re-save parent
-        for directory in initial_sandbox.directories.all():
-            if directory.directory:
-                directory.directory_id = new_old_dir_pks[directory.directory_id]
-                directory.save()
-
-        # clone modules
-        for module in initial_modules:
-            module.pk = None
-            module.sandbox = initial_sandbox
-
-            if module.directory:
-                module.directory_id = new_old_dir_pks[module.directory_id]
-
-            module.save()
-
-        return initial_sandbox
-
-    # fork sandbox/MaterialProblemType
-    @action(methods=['POST'],
-            detail=True,
-            permission_classes=[permissions.IsAuthenticated, ], )
-    def fork(self, request, *args, **kwargs):
-
-        forked_material_problem_type = self.clone_sandbox()
-
-        serializer = self.get_serializer(forked_material_problem_type)
-        return Response(serializer.data)
-
-    @action(methods=['POST'],
-            detail=True,
-            permission_classes=[permissions.IsAuthenticated, ], )
-    # TODO check problem type owner permission
-    def cache(self, request, *args, **kwargs):
-        # save transpiled data
-
-        # get version
-        version = request.data.get('version', None)
-        if not version:
-            raise ValidationError('version field not found')
-
-        sandbox = self.get_object()
-
-        json_data = request.data.get('data', None)
-
-        if not json_data:
-            raise ValidationError('data field not found')
-
-        buff = StringIO(json_data)
-
-        buff.seek(0, 2)
-        file_data = InMemoryUploadedFile(buff, 'data', 'file_name', None, buff.tell(), None)
-
-        # FIXME why we need to check is str?
-        # if type(json_data) is str:
-        #     json_data = json.loads(json_data)
-
-        data = {'data': file_data, 'version': version}
-
-        try:
-            # try to get existing cache
-            cache = MaterialProblemTypeSandboxCache.objects.get(
-                version=version,
-                sandbox=sandbox
-            )
-            serializer = self.serializer_class_cache(cache, data=data)
-        except MaterialProblemTypeSandboxCache.DoesNotExist:
-            serializer = self.serializer_class_cache(data=data)
-
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(sandbox=sandbox)
-
-        return Response(serializer.data)
 
 
 # material JSONData media store
