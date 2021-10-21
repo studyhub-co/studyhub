@@ -1,9 +1,9 @@
-import { ConfigurationFile } from '../types';
+import { ConfigurationFile } from '../types'
 
 const JSX_PRAGMA = {
   react: 'React.createElement',
   preact: 'h',
-};
+}
 
 const config: ConfigurationFile = {
   title: 'tsconfig.json',
@@ -13,7 +13,7 @@ const config: ConfigurationFile = {
 
   getDefaultCode: (
     template: string,
-    resolveModule: (path: string) => { code: string } | undefined
+    resolveModule: (path: string) => { code: string } | undefined,
   ) => {
     if (template === 'create-react-app-typescript') {
       return JSON.stringify(
@@ -47,8 +47,8 @@ const config: ConfigurationFile = {
           ],
         },
         null,
-        2
-      );
+        2,
+      )
     }
 
     if (template === 'parcel') {
@@ -64,33 +64,33 @@ const config: ConfigurationFile = {
           rootDir: 'src',
           moduleResolution: 'node',
         },
-      };
+      }
 
-      const packageJSONModule = resolveModule('/package.json');
+      const packageJSONModule = resolveModule('/package.json')
 
       if (packageJSONModule) {
         try {
-          const parsed = JSON.parse(packageJSONModule.code);
+          const parsed = JSON.parse(packageJSONModule.code)
 
-          let pragma = null;
+          let pragma = null
           Object.keys(JSX_PRAGMA).forEach(dep => {
             if (
               (parsed.dependencies && parsed.dependencies[dep]) ||
               (parsed.devDependencies && parsed.devDependencies[dep])
             ) {
-              pragma = JSX_PRAGMA[dep];
+              pragma = JSX_PRAGMA[dep]
             }
-          });
+          })
 
           if (pragma !== null) {
-            tsconfig.compilerOptions.jsx = 'react';
-            tsconfig.compilerOptions.jsxFactory = pragma;
+            tsconfig.compilerOptions.jsx = 'react'
+            tsconfig.compilerOptions.jsxFactory = pragma
           }
         } catch (e) {
           /* do nothing */
         }
       }
-      return JSON.stringify(tsconfig, null, 2);
+      return JSON.stringify(tsconfig, null, 2)
     }
 
     if (template === 'nest') {
@@ -112,8 +112,8 @@ const config: ConfigurationFile = {
           },
         },
         null,
-        2
-      );
+        2,
+      )
     }
 
     if (template === '@dojo/cli-create-app') {
@@ -142,7 +142,7 @@ const config: ConfigurationFile = {
           strict: true,
           target: 'es5',
         },
-      });
+      })
     }
 
     return JSON.stringify(
@@ -167,14 +167,14 @@ const config: ConfigurationFile = {
         },
       },
       null,
-      2
-    );
+      2,
+    )
   },
 
   schema:
     'https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/tsconfig.json',
 
   partialSupportDisclaimer: `Only \`compilerOptions\` field is supported.`,
-};
+}
 
-export default config;
+export default config
