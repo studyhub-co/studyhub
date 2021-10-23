@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     # configuration of studyhub instance
     'configuration',
+    'django_celery_results',
     # Nested admin
     'nested_admin',
     'django_gravatar',
@@ -281,7 +282,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_SIGNUP_FORM_CLASS = 'pib_auth.forms.SignupForm'
 # Note however that following only works when confirming the email address immediately after signing up,
-# assuming users didn’t close their browser or used some sort of private browsing mode.
+# assuming users didnt close their browser or used some sort of private browsing mode.
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_ADAPTER = 'pib_auth.adapters.AccountAdapter'
@@ -292,8 +293,8 @@ SOCIALACCOUNT_ADAPTER = 'pib_auth.adapters.SocialAccountAdapter'
 
 # DJANGO login settings
 # LOGIN_REDIRECT_URL = 'pib_auth:login-next'
-LOGIN_REDIRECT_URL = '{}courses/'.format(SPA_ROOT_URL) # TODO add next-url
-LOGIN_URL = '{}login/'.format(SPA_ROOT_URL) # TODO add next url
+LOGIN_REDIRECT_URL = '{}courses/'.format(SPA_ROOT_URL)  # TODO add next-url
+LOGIN_URL = '{}login/'.format(SPA_ROOT_URL)  # TODO add next url
 
 USER_LAST_ACTIVITY_INTERVAL_SECS = 120
 
@@ -381,8 +382,16 @@ MYSQL_PROBLEM_TYPE_HOST = os.getenv('MYSQL_PROBLEM_TYPE_HOST')
 MYSQL_PROBLEM_TYPE_USER = os.getenv('MYSQL_PROBLEM_TYPE_USER')
 MYSQL_PROBLEM_TYPE_USER_PASSWORD = os.getenv('MYSQL_PROBLEM_TYPE_USER_PASSWORD')
 
-# TODO make it configurable
-CELERY_BROKER_URL = "amqp://myuser:mypassword@localhost:5672/myvhost"
+CELERY_BROKER_URL = os.getenv(
+    'CELERY_BROKER_URL',
+    'amqp://myuser:mypassword@localhost:5672/myvhost'
+)
+
 # save task result in django cache
 # CELERY_RESULT_BACKEND = 'django-cache'
+# we have no so many build publish tasks, so we can store results in DB now
 CELERY_RESULT_BACKEND = 'django-db'
+
+RUN_CODE_SERVER_URL = os.getenv('RUN_CODE_SERVER_URL')
+RUN_CODE_SERVER_ACCESS_TOKEN = os.getenv('RUN_CODE_SERVER_ACCESS_TOKEN')
+

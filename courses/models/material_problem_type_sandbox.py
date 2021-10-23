@@ -181,11 +181,13 @@ class MaterialProblemTypeSandboxDirectory(BaseItemModel):
     class Meta:
         unique_together = [['sandbox', 'shortid']]
 
+
 @receiver(pre_save, sender=MaterialProblemTypeSandboxDirectory)
 def directory_will_change(sender, instance, **kwargs):
     # generate only is not exist
     if not instance.shortid:
         instance.shortid = MaterialProblemTypeSandboxDirectory.get_short_uuid(instance.sandbox.uuid)
+
 
 class MaterialProblemTypeSandboxModule(BaseItemModel):
     code = models.TextField(blank=True)
@@ -301,6 +303,7 @@ class MaterialProblemTypeSandboxCache(models.Model):
 
     class Meta:
         unique_together = [['sandbox', 'version']]
+
 
 # These two auto-delete files from filesystem when they are unneeded:
 @receiver(models.signals.post_delete, sender=MaterialProblemTypeSandboxCache)

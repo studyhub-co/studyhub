@@ -107,7 +107,7 @@ db.sqlite3
 /media/
 
 # npm
-node_modules/
+**node_modules/
 
 # webpack # we can ignore for git but not for ebs - used by django-webpack
 # webpack-stats.json
@@ -126,6 +126,10 @@ node_modules/
 
 # exclude source of SPA
 /courses/static/courses/js/
+# this can be commented after the 1st deploy
+!courses/static/courses/js/codesandbox-apps/
+courses/static/courses/js/codesandbox-apps/**/node_modules/
+courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions.zip
 
 # Update: amazon fixed eb deploy script and it's seem it's works fine now
 # seems above it's not so effective whith eb deploy, so steps are:
@@ -137,7 +141,7 @@ node_modules/
 
 # exclude source of eval project
 /courses/sandbox-eval-project/
-!/courses/sandbox-eval-project/www/
+!courses/sandbox-eval-project/www/
 
 /tmp_src/
 
