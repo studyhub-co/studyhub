@@ -18,5 +18,8 @@ urlpatterns = [
     path('evaluation/<uuid:pt_uuid>/<uuid:material_uuid>/<uuid:lesson_uuid>/',
          TemplateView.as_view(template_name='codesandbox-apps/eval/frame.html'),
          name='material-frame'),
+    # path('run/<uuid:pt_uuid>/<uuid:material_uuid>/',
+    #      TemplateView.as_view(template_name='codesandbox-apps/eval/frame.html'),
+    #      name='material-frame'),
     re_path(r'^(.*?)/?', TemplateView.as_view(template_name='courses/courses.html'), name='courses'),
 ]

@@ -306,6 +306,10 @@ AWS_S3_PUBLIC_URL
 AWS_S3_BUCKET_NAME_STATIC
 AWS_S3_PUBLIC_URL_STATIC
 RAVEN_DSN
+CELERYD_LOG_FILE=/var/log/celery/%n%I.log
+CELERYD_PID_FILE=/var/run/celery/%n.pid
+CELERY_APP=settings.celery:app
+CELERY_BIN=/var/app/venv/staging-LQM1lest/bin/celery
 ```
 
 * run `eb init` (you'll need the access id/key)
