@@ -243,6 +243,7 @@ export default class MountableFileSystem extends BaseFileSystem implements FileS
         return fs1rv.fs.renameSync(fs1rv.path, fs2rv.path);
       } catch (e) {
         this.standardizeError(this.standardizeError(e, fs1rv.path, oldPath), fs2rv.path, newPath);
+        // this will throw to sentry
         throw e;
       }
     }

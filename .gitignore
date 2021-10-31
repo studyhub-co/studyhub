@@ -139,4 +139,4 @@ pip-selfcheck.json
 yarn-error.log
 
 # extensions dir
-/courses/static/courses/js/codesandbox-apps/vscode-extensions/extensions/
+/courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions/

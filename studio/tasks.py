@@ -4,12 +4,39 @@ import base64
 import io
 import tarfile
 
+from functools import wraps
+
 from celery import shared_task
 
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from courses.models import MaterialProblemType
+
+
+# https://docs.celeryproject.org/en/latest/tutorials/task-cookbook.html#ensuring-a-task-is-only-executed-one-at-a-time
+def skip_if_running(f):
+    task_name = f'{f.__module__}.{f.__name__}'
+
+    @wraps(f)
+    def wrapped(self, *args, **kwargs):
+        workers = self.app.control.inspect().active()
+
+        for worker, tasks in workers.items():
+            for task in tasks:
+                # if (task_name == task['name'] and
+                #         tuple(args) == tuple(task['args']) and
+                #         kwargs == task['kwargs'] and
+                #         self.request.id != task['id']):
+                #     return f'task {task_name} ({args}, {kwargs}) is running on {worker}, skipping'
+
+                # ensure that we have only one task of any deploying at time
+                if task_name == task['name'] and self.request.id != task['id']:
+                    return f'task {task_name} is running on {worker}, skipping'
+
+        return f(self, *args, **kwargs)
+
+    return wrapped
 
 
 def recursive_delete(full_path):
@@ -22,8 +49,9 @@ def recursive_delete(full_path):
         recursive_delete(new_dir)
 
 
-@shared_task
-def build_sandbox(material_type_uuid, sandbox_type='create_react_app'):
+@shared_task(bind=True)
+@skip_if_running
+def build_sandbox(self, material_type_uuid, sandbox_type='create_react_app'):
     if sandbox_type == 'create_react_app':
         # TODO build and save built on S3
         mpt = MaterialProblemType.objects.get(uuid=material_type_uuid)
