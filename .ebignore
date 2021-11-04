@@ -127,10 +127,10 @@ db.sqlite3
 # exclude source of SPA
 /courses/static/courses/js/
 # this can be commented after the 1st deploy
-!courses/static/courses/js/codesandbox-apps/
-courses/static/courses/js/codesandbox-apps/**/node_modules/
-courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions.zip
-!courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions/node_modules/
+#!courses/static/courses/js/codesandbox-apps/
+#courses/static/courses/js/codesandbox-apps/**/node_modules/
+#courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions.zip
+#!courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions/**/node_modules/
 
 # Update: amazon fixed eb deploy script and it's seem it's works fine now
 # seems above it's not so effective whith eb deploy, so steps are:

@@ -193,10 +193,10 @@ const Lesson = props => {
 
   // see js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/index.jsx#mptEvalUrl
   const materialEvalUrl = material => {
-    return `${window.location.origin}/evaluation/${material.material_problem_type}/${material.uuid}/${match.params.lessonUuid}/?standalone`
+    // e - this is url for built problem types
+    // we can not use entry point here - nginx will serve index.html by default
+    return `${window.location.origin}/e/${material.material_problem_type}/${material.uuid}/${match.params.lessonUuid}/?standalone`
   }
-
-  // console.log(currentMaterialState)
 
   return (
     <React.Fragment>

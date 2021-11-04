@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
@@ -68,9 +68,35 @@ urlpatterns = [
 
 if settings.DEBUG:
     import debug_toolbar
+    import urllib
     from django.views.generic import RedirectView
+    from django.http import HttpResponse
+
+    def proxy_view(request, pt_uuid, material_uuid, lesson_uuid, path):
+        remoteurl = f'{request.scheme}://{request.get_host()}/media/mpt_builds/{pt_uuid}/build/' + path
+        body = None
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+        request = urllib.request.Request(remoteurl, body, headers)
+        try:
+            response = urllib.request.urlopen(request)
+            response_body = response.read()
+            status = response.getcode()
+        except urllib.error.HTTPError as e:
+            status = e.code
+            response_body = e.msg
+
+        return HttpResponse(response_body, status=status)
 
     urlpatterns = [
+        # use only in debug mode, use nginx rewrite in production
+        # see for details
+        # .platform/nginx/conf.d/elasticbeanstalk/00_application.conf
+        # todo create regex for path string with slashed
+        # path(r'e/<uuid:pt_uuid>/<uuid:material_uuid>/<uuid:lesson_uuid>/<path>',
+        #     proxy_view, name='eval-production'),
+        re_path(r'e/(?P<pt_uuid>[^/]*)/(?P<material_uuid>[^/]*)/(?P<lesson_uuid>[^/]*)/(?P<path>.*)',
+             proxy_view, name='eval-production'),
         url(r'^__debug__/', include(debug_toolbar.urls)),
         url(r'^favicon.ico$',
             RedirectView.as_view(url='/static/curricula/images/favicon/favicon.ico')),

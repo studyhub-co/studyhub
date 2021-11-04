@@ -233,7 +233,6 @@ const Lesson = props => {
     }
   }
 
-  // TODO make it reusable
   // Fixme replace mpt with currentMaterial.material_problem_type?
   const mptEvalUrl = mpt => {
     if (mpt && mpt.hasOwnProperty('id')) {
