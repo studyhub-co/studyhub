@@ -1,12 +1,14 @@
 from django.urls import path, include
 from rest_framework import routers
-from django.views.generic import TemplateView
-
+# from django.views.generic import TemplateView
+from dj_rest_auth.views import (
+    PasswordResetView
+)
 
 from .apis import ProfileViewSet, ProfileViewSetMe, find_user, logout, Login, SignUpUserView
 
 
-app_name = 'profiles'  # ????
+app_name = 'profiles'  # namespace for reverse urls
 
 router = routers.DefaultRouter()
 
@@ -18,9 +20,6 @@ router.register(r'', ProfileViewSet, basename='profiles')
 # class GoogleConnect(SocialConnectView):
 #     adapter_class = GoogleOAuth2Adapter
 
-from dj_rest_auth.views import (
-    PasswordResetView
-)
 
 urlpatterns = [
     path('me/', ProfileViewSetMe.as_view({'get': 'retrieve', 'patch': 'partial_update'})),
@@ -40,7 +39,7 @@ urlpatterns = [
     # we use some of dj_rest_auth urls, so exclude unnecessary and use dj_rest_auth directly
     # only password reset for now
     # path('rest-auth/', include('dj_rest_auth.urls')),
-    path('password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
+    path('rest-auth/password/reset/', PasswordResetView.as_view(), name='rest_password_reset'),
     # path('rest-auth/google/connect/', GoogleConnect.as_view(), name='google_connect'),
     # Attention. Serializer of SignUp defined in settings.REST_AUTH_REGISTER_SERIALIZERS
     path('rest-auth/signup/', include('dj_rest_auth.registration.urls'))

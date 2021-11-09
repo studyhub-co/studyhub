@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 // import DialogContentText from '@material-ui/core/DialogContentText'
 import TextField from '@material-ui/core/TextField'
-import Box from '@material-ui/core/Box'
+// import Box from '@material-ui/core/Box'
 // import Button from '@material-ui/core/Button'
 
 interface ILogInProps {
@@ -19,8 +19,9 @@ export default function LogIn(props: ILogInProps) {
 
   return (
     <React.Fragment>
-      Forgotten your password? Enter your e-mail address below, and we'll send
-      you an e-mail allowing you to reset it.
+      Forgotten your password? Enter your e-mail address below, and we&apos;ll
+      send you an e-mail allowing you to reset it.
+      {/*<form>*/}
       <TextField
         autoFocus
         variant="outlined"
@@ -31,10 +32,12 @@ export default function LogIn(props: ILogInProps) {
         id="id_login"
         label="Email Address"
         placeholder={'Email'}
+        required
         type="email"
         onChange={onChangeEmail}
         fullWidth
       />
+      {/*</form>*/}
       Please contact us if you have any trouble resetting your password.
     </React.Fragment>
   )

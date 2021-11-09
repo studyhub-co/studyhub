@@ -36,7 +36,8 @@ interface IModalLogInProps {
     password1: string,
     password2: string,
   ): void
-  loginIncorrect?: object
+  // loginIncorrect?: object what is this?
+  loginIncorrectLogin?: boolean
   loginSuccess?: void
   loginProcessRequesting?: void
   signUpFormErrors?: object
@@ -72,6 +73,9 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   const sPassword1Ref = React.useRef('')
   const sPassword2Ref = React.useRef('')
 
+  // password reset
+  const [validEmailReset, setvalidEmailReset] = useState(false)
+
   const classes = useStyles()
 
   const onLoginDataChange = (email: string, password: string) => {
@@ -82,6 +86,12 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
   }
 
   const onPasswordResetDataChange = (email: string) => {
+    // todo: add correct email validation (it is better to work with input tag)
+    if (!email) {
+      setvalidEmailReset(false)
+    } else {
+      setvalidEmailReset(true)
+    }
     emailRef.current = email
   }
 
@@ -149,6 +159,8 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
       // setOpenSnack(true)
     }
   }, [props.signUpSuccess])
+
+  console.log(validEmailReset)
 
   return (
     <div>
@@ -278,6 +290,7 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
             )}
             {modalType == 'passwordReset' && (
               <Button
+                disabled={!validEmailReset}
                 fullWidth
                 onClick={onPasswordResetClick}
                 color="primary"
@@ -291,7 +304,7 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
             <Divider />
             {modalType == 'login' && (
               <span>
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <a
                   className="navlink"
                   style={{ cursor: 'pointer' }}
@@ -321,7 +334,7 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
             )}
             {modalType == 'passwordReset' && (
               <span>
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <a
                   className="navlink"
                   style={{ cursor: 'pointer' }}

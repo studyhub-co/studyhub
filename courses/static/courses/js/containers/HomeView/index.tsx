@@ -52,16 +52,13 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
   //   setLoginModalOpen(!loginModalOpen)
   // }
 
-  const openLogInModal = () => {
+  const handleOpenLogInModal = () => {
     setLoginModalOpen(true)
   }
 
-  const loginModalClose = () => {
-    console.log('close')
+  const handleCloseLoginModal = () => {
     setLoginModalOpen(false)
   }
-
-  console.log(loginModalOpen)
 
   return (
     !props.userProfile?.hasOwnProperty('id') && (
@@ -117,7 +114,7 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   id="loginButton"
                   data-toggle="modal"
                   data-target="#signup-modal"
-                  onClick={openLogInModal}
+                  onClick={handleOpenLogInModal}
                 >
                   <a className="navlink" style={{ cursor: 'pointer' }}>
                     Login / Signup
@@ -127,8 +124,8 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
               <ModalLogIn
                 history={history}
                 open={loginModalOpen}
-                handleClose={loginModalClose}
-                loginIncorrect={props.loginIncorrectLogin}
+                handleClose={handleCloseLoginModal}
+                loginIncorrectLogin={props.loginIncorrectLogin}
                 loginSuccess={props.loginSuccess}
                 loginProcessRequesting={props.loginProcessRequesting}
                 signUpFormErrors={props.signUpFormErrors}
