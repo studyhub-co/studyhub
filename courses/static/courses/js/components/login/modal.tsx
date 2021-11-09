@@ -101,7 +101,8 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
 
   const onLoginClick = () => {
     props.login(emailRef.current, passwordRef.current)
-    // TODO close if we have profile loaded - else show error
+    // Window closed if we have profile loaded (due url redirection) -
+    // else we need to show login error insdie login modal
     // props.handleClose()
   }
 

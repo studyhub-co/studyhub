@@ -1,11 +1,11 @@
 import io
-import asyncio
-import threading
+# import asyncio
+# import threading
 
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse
-from django.core import files
+# from django.core import files
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -24,43 +24,43 @@ def get_mock_png():
 
     return img
 
-
-async def get_screen(screenshot_url):
-    browser = await launch(
-        handleSIGINT=False,
-        handleSIGTERM=False,
-        handleSIGHUP=False,
-        headless=True,
-        timeout=0,
-        args=['--no-sandbox', '--disable-setuid-sandbox'],  # disable Chrome sandbox
-        # args=['--disable-dev-shm-usage', ] - docker setting
-    )
-    page = await browser.newPage()
-    try:
-        await page.goto(screenshot_url, {'waitUntil': 'networkidle2', 'timeout': 20000})
-        await page.waitForSelector('#root')
-    except errors.TimeoutError:
-        return get_mock_png()
-
-    screen = await page.screenshot()
-    await page.close()
-    await browser.close()
-
-    return screen
-
-
-def save_img(screenshot_url, mpt):
-    # run
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    screenshot = loop.run_until_complete(get_screen(screenshot_url))
-
-    import tempfile
-    lf = tempfile.NamedTemporaryFile()
-    # Write image block to temporary file
-    lf.write(screenshot)
-
-    mpt.screenshot_url.save(str(mpt.uuid)+'.png', files.File(lf))
+# we using image from front end now
+# async def get_screen(screenshot_url):
+#     browser = await launch(
+#         handleSIGINT=False,
+#         handleSIGTERM=False,
+#         handleSIGHUP=False,
+#         headless=True,
+#         timeout=0,
+#         args=['--no-sandbox', '--disable-setuid-sandbox'],  # disable Chrome sandbox
+#         # args=['--disable-dev-shm-usage', ] - docker setting
+#     )
+#     page = await browser.newPage()
+#     try:
+#         await page.goto(screenshot_url, {'waitUntil': 'networkidle2', 'timeout': 20000})
+#         await page.waitForSelector('#root')
+#     except errors.TimeoutError:
+#         return get_mock_png()
+#
+#     screen = await page.screenshot()
+#     await page.close()
+#     await browser.close()
+#
+#     return screen
+#
+#
+# def save_img(screenshot_url, mpt):
+#     # run
+#     loop = asyncio.new_event_loop()
+#     asyncio.set_event_loop(loop)
+#     screenshot = loop.run_until_complete(get_screen(screenshot_url))
+#
+#     import tempfile
+#     lf = tempfile.NamedTemporaryFile()
+#     # Write image block to temporary file
+#     lf.write(screenshot)
+#
+#     mpt.screenshot_url.save(str(mpt.uuid)+'.png', files.File(lf))
 
 
 def get_sandbox_image(request, pt_uuid):

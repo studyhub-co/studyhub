@@ -2,6 +2,8 @@
 from django.urls import path, re_path
 from django.views.generic.base import TemplateView
 from .views import get_sandbox_image
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 
 app_name = 'courses'
 
@@ -19,5 +21,7 @@ urlpatterns = [
     path('evaluation/<uuid:pt_uuid>/<uuid:material_uuid>/<uuid:lesson_uuid>/',
          TemplateView.as_view(template_name='codesandbox-apps/eval/frame.html'),
          name='material-frame'),
-    re_path(r'^(.*?)/?', TemplateView.as_view(template_name='courses/courses.html'), name='courses'),
+    re_path(r'^(.*?)/?',
+            ensure_csrf_cookie(TemplateView.as_view(template_name='courses/courses.html')),
+            name='courses'),
 ]

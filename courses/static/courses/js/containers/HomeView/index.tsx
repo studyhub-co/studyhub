@@ -48,9 +48,20 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
     }
   }, [props.userProfile])
 
-  const handleLogInModalOpen = () => {
-    setLoginModalOpen(!loginModalOpen)
+  // const handleLogInModalOpen = () => {
+  //   setLoginModalOpen(!loginModalOpen)
+  // }
+
+  const openLogInModal = () => {
+    setLoginModalOpen(true)
   }
+
+  const loginModalClose = () => {
+    console.log('close')
+    setLoginModalOpen(false)
+  }
+
+  console.log(loginModalOpen)
 
   return (
     !props.userProfile?.hasOwnProperty('id') && (
@@ -106,27 +117,27 @@ const HomeIndexView = (props: IHomeIndexViewProps) => {
                   id="loginButton"
                   data-toggle="modal"
                   data-target="#signup-modal"
-                  onClick={handleLogInModalOpen}
+                  onClick={openLogInModal}
                 >
                   <a className="navlink" style={{ cursor: 'pointer' }}>
                     Login / Signup
                   </a>
-                  <ModalLogIn
-                    history={history}
-                    open={loginModalOpen}
-                    handleClose={handleLogInModalOpen}
-                    loginIncorrectLogin={props.loginIncorrectLogin}
-                    loginSuccess={props.loginSuccess}
-                    loginProcessRequesting={props.loginProcessRequesting}
-                    signUpFormErrors={props.signUpFormErrors}
-                    signUpSuccess={props.signUpSuccess}
-                    passwordReset={props.profileActions.passwordReset}
-                    signUpProcessRequesting={props.signUpProcessRequesting}
-                    login={props.profileActions.login}
-                    signUp={props.profileActions.signUp}
-                  />
                 </li>
               </ul>
+              <ModalLogIn
+                history={history}
+                open={loginModalOpen}
+                handleClose={loginModalClose}
+                loginIncorrect={props.loginIncorrectLogin}
+                loginSuccess={props.loginSuccess}
+                loginProcessRequesting={props.loginProcessRequesting}
+                signUpFormErrors={props.signUpFormErrors}
+                signUpSuccess={props.signUpSuccess}
+                passwordReset={props.profileActions.passwordReset}
+                signUpProcessRequesting={props.signUpProcessRequesting}
+                login={props.profileActions.login}
+                signUp={props.profileActions.signUp}
+              />
             </div>
           </nav>
           <div className="jumbotron">
