@@ -42,11 +42,11 @@ def copy_module(unit, module):
     from django.contrib.contenttypes.models import ContentType
     module_content_type = ContentType.objects.get_for_model(module.__class__)
     notifications = Notification.objects.filter(action_object_content_type=module_content_type,
-                                                action_object_id=module.id)
+                                                action_object_object_id=module.id)
 
     new_module_content_type = ContentType.objects.get_for_model(new_module.__class__)
     notifications.update(action_object_content_type=new_module_content_type,
-                         action_object=new_module)
+                         action_object_object_id=new_module.pk)  # uuid here
 
     # copy tags
     tags = module.tags.names()

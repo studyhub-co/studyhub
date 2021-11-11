@@ -98,9 +98,27 @@ SELECT content,
 
     # copy users votes
     for djvote in DJUserPostVote.objects.all():
-        new_vote = UserPostVote.objects.create(val=djvote.val,
+        UserPostVote.objects.create(val=djvote.val,
                                                post=Post.objects.get(uid=djvote.post_id),
                                                user=djvote.user)
+
+    # replace djeddit notification for posts
+    # replace notification target object
+    from notifications.models import Notification
+    from django.contrib.contenttypes.models import ContentType
+    # action Post
+    post_content_type = ContentType.objects.get_for_model(DJPost)
+    notifications_post_ct = Notification.objects.filter(action_object_content_type=post_content_type)
+
+    new_post_content_type = ContentType.objects.get_for_model(Post)
+    notifications_post_ct.update(action_object_content_type=new_post_content_type)
+
+    # target Thread
+    thread_content_type = ContentType.objects.get_for_model(DJThread)
+    notifications_post_ct = Notification.objects.filter(target_object_content_type=thread_content_type)
+
+    new_thread_content_type = ContentType.objects.get_for_model(Thread)
+    notifications_post_ct.update(target_object_content_type=new_thread_content_type)
 
 
 class Command(BaseCommand):

@@ -160,8 +160,6 @@ const ModalLogIn: React.FC<IModalLogInProps> = props => {
     }
   }, [props.signUpSuccess])
 
-  console.log(validEmailReset)
-
   return (
     <div>
       {/*<Snackbar*/}

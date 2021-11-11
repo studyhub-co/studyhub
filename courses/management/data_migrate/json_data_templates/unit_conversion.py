@@ -3,7 +3,7 @@ import json
 
 from pint import UnitRegistry
 
-from .utils import mq
+# from .utils import mq
 
 
 def populate_json_data(**kwargs):
@@ -18,13 +18,13 @@ def populate_json_data(**kwargs):
     # we use mathjax in questions, so no escaping
     question_text = json.dumps(kwargs['question_text'])
     question_hint = json.dumps(kwargs['question_hint'])
-    question_image = json.dumps(mq(kwargs['question_image']))
+    question_image = json.dumps(kwargs['question_image'])
 
     question_step_number = json.dumps(kwargs['question_step_number'])
-    question_step_unit = json.dumps(mq(kwargs['question_step_unit']))
+    question_step_unit = json.dumps(kwargs['question_step_unit'])
     question_step_si = json.dumps(kwargs['question_step_si'])
     answer_step_number = json.dumps(kwargs['answer_step_number'])
-    answer_step_unit = json.dumps(mq(kwargs['answer_step_unit']))
+    answer_step_unit = json.dumps(kwargs['answer_step_unit'])
     answer_step_si = json.dumps(kwargs['answer_step_si'])
     conversion_steps = json.dumps(kwargs['conversion_steps'])
     conversion_type = json.dumps(kwargs['conversion_type'])

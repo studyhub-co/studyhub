@@ -18,6 +18,6 @@ export default () => {
   }
   // TODO dev/prod url
   // return 'http://pib-dev.us-east-1.elasticbeanstalk.com'
-  return 'https://dev.physicsisbeautiful.com'
-  // return 'https://physicsisbeautiful.com/';
+  return 'https://prod-v2.physicsisbeautiful.com';
+  // return 'https://physicsisbeautiful.com';
 };

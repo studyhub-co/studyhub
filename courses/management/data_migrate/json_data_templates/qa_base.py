@@ -1,7 +1,7 @@
 import os
 import json
 
-from .utils import mq, get_evaluated_from_js_api
+from .utils import get_evaluated_from_js_api
 
 
 def populate_json_data(**kwargs):
@@ -15,10 +15,10 @@ def populate_json_data(**kwargs):
     # question_text = json.dumps(mq(kwargs['question_text']))
     # we use mathjax in questions, so no escaping
     question_text = json.dumps(kwargs['question_text'])
-    answer_text = json.dumps(mq(kwargs['answer_text']))
+    answer_text = json.dumps(kwargs['answer_text'])
     answer_evaluated_math_text = json.dumps(kwargs['answer_evaluated_math_text'])
     question_hint = json.dumps(kwargs['question_hint'])
-    question_image = json.dumps(mq(kwargs['question_image']))
+    question_image = json.dumps(kwargs['question_image'])
 
     result = data.format(question_text=question_text,
                          answer_text=answer_text,

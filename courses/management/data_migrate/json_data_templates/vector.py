@@ -1,7 +1,7 @@
 import os
 import json
 
-from .utils import mq
+# from .utils import mq
 
 ## this version works only with static vars in template
 # populate dict with known values
@@ -67,7 +67,7 @@ def populate_json_data(**kwargs):
     answer_nullable_vector = json.dumps(kwargs['answer_nullable_vector'])
     answer_vector_is_null = json.dumps(kwargs['answer_vector_is_null'])
     question_hint = json.dumps(kwargs['question_hint'])
-    question_image = json.dumps(mq(kwargs['question_image']))
+    question_image = json.dumps(kwargs['question_image'])
     result = data.format(question_text=question_text,
                          question_vectors=question_vectors,
                          answer_text_only=answer_text_only,

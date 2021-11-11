@@ -195,7 +195,8 @@ const Lesson = props => {
   const materialEvalUrl = material => {
     // e - this is url for built problem types
     // we can not use entry point here - nginx will serve index.html by default
-    return `${window.location.origin}/e/${material.material_problem_type}/${material.uuid}/${match.params.lessonUuid}/?standalone`
+    // (update. this is works randomly, so add fixed index.html)
+    return `${window.location.origin}/e/${material.material_problem_type}/${material.uuid}/${match.params.lessonUuid}/index.html?standalone`
   }
 
   return (

@@ -130,7 +130,8 @@ class AssignmentProgressManager(models.Manager):
             student_completed_lessons = CoursesLesson.objects.filter(
                     courses_lessons_progress__profile=assignment_progress.student,
                     courses_lessons_progress__status=30)
-            need_complete_lessons = assignment_progress.assignment.lessons.all()
+            # need_complete_lessons = assignment_progress.assignment.lessons.all()
+            need_complete_lessons = assignment_progress.assignment.courses_lessons.all()
 
             if need_complete_lessons.difference(student_completed_lessons).count() == 0:
                 # student already passed all lessons
@@ -164,7 +165,12 @@ class AssignmentProgressManager(models.Manager):
 
     def recalculate_status_by_lesson(self, lesson, user):
         # from classroom.models import Assignment, AssignmentProgress
-        assignments = Assignment.objects.filter(lessons=lesson)
+        if isinstance(lesson, Lesson):
+            assignments = Assignment.objects.filter(lessons=lesson)
+
+        if isinstance(lesson, CoursesLesson):
+            assignments = Assignment.objects.filter(courses_lessons=lesson)
+
         assignment_progress_list = AssignmentProgress.objects.filter(assignment__in=assignments,
                                                                      student__user=user,
                                                                      completed_on__isnull=True)

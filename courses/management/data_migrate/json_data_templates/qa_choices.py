@@ -2,7 +2,7 @@ import os
 import json
 import uuid
 
-from .utils import mq
+# from .utils import mq
 from ....models import JsonDataImage
 
 
@@ -19,7 +19,7 @@ def populate_json_data(**kwargs):
     question_text = json.dumps(kwargs['question_text'])
     choices_list = json.dumps(kwargs['choices_list'])
     question_hint = json.dumps(kwargs['question_hint'])
-    question_image = json.dumps(mq(kwargs['question_image']))
+    question_image = json.dumps(kwargs['question_image'])
     multi_select_mode = json.dumps(kwargs['multi_select_mode'])
 
     result = data.format(question_text=question_text,
@@ -84,7 +84,8 @@ def get_qa_choices_json_data(question, material_question_image_path, new_materia
         choices_list.append({
             "content": {
                 "image": choice_image_path,
-                "text": mq(choice.content.text)
+                "text": choice.content.text
+                # "text": mq(choice.content.text)
             },
             "selected": choice.is_correct,
             "hiddenFields": {

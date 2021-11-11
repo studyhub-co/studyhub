@@ -1,7 +1,7 @@
 import os
 
-from djeddit.models import Thread as DJThread
-from react_comments_django.models import Thread
+# from djeddit.models import Thread as DJThread
+# from react_comments_django.models import Thread
 
 from ...models import Material, MaterialProblemType, JsonDataImage
 
@@ -9,6 +9,7 @@ from .json_data_templates.vector import get_vector_json_data
 from .json_data_templates.qa_base import get_qa_base_json_data
 from .json_data_templates.unit_conversion import get_unit_conversion_json_data
 from .json_data_templates.qa_choices import get_qa_choices_json_data
+from .json_data_templates.mysql import get_mysql_json_data
 
 
 def copy_question(lesson, question):
@@ -91,6 +92,10 @@ def copy_question(lesson, question):
     elif question.answer_type_name in ('MULTIPLE_CHOICE', 'MULTISELECT_CHOICE'):
         new_material.data = get_qa_choices_json_data(question, material_question_image_path, new_material)
         mpt = MaterialProblemType.objects.filter(name='Q&A Choices official').first()
+        new_material.material_problem_type = mpt
+    elif question.answer_type_name in ('MYSQL',):
+        new_material.data = get_mysql_json_data(question, material_question_image_path)
+        mpt = MaterialProblemType.objects.filter(name='MySQL official').first()
         new_material.material_problem_type = mpt
     elif question.answer_type_name == 'UNDEFINED':
         new_material.delete()

@@ -47,11 +47,11 @@ def copy_lesson(module, lesson):
     from django.contrib.contenttypes.models import ContentType
     lesson_content_type = ContentType.objects.get_for_model(lesson.__class__)
     notifications = Notification.objects.filter(action_object_content_type=lesson_content_type,
-                                                action_object_id=lesson.id)
+                                                action_object_object_id=lesson.id)
 
     new_lesson_content_type = ContentType.objects.get_for_model(new_lesson.__class__)
     notifications.update(action_object_content_type=new_lesson_content_type,
-                         action_object=new_lesson)
+                         action_object_object_id=new_lesson.pk)
 
     # copy tags
     tags = lesson.tags.names()

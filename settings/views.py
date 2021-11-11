@@ -14,7 +14,7 @@ import urllib
 
 def codesandbox_static_proxy_view(request, path):
     # TODO prod/dev TODO replace with relative paths
-    remoteurl = 'https://assets-dev.physicsisbeautiful.com/courses/js/codesandbox-apps/' + path
+    remoteurl = 'https://assets-v2.physicsisbeautiful.com/courses/js/codesandbox-apps/' + path
     body = None
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}

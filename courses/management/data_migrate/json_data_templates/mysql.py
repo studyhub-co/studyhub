@@ -1,7 +1,7 @@
 import os
 import json
 
-from .utils import mq
+# from .utils import mq
 
 
 def populate_json_data(**kwargs):
@@ -16,11 +16,11 @@ def populate_json_data(**kwargs):
     # we use mathjax in questions, so no escaping
     question_text = json.dumps(kwargs['question_text'])
     question_hint = json.dumps(kwargs['question_hint'])
-    question_image = json.dumps(mq(kwargs['question_image']))
-    expected_output = json.dumps(mq(kwargs['expected_output']))
-    expected_output_json = json.dumps(mq(kwargs['expected_output_json']))
-    sql_query = json.dumps(mq(kwargs['sql_query']))
-    sql_schema = json.dumps(mq(kwargs['sql_schema']))
+    question_image = json.dumps(kwargs['question_image'])
+    expected_output = json.dumps(kwargs['expected_output'])
+    expected_output_json = json.dumps(kwargs['expected_output_json'])
+    sql_query = json.dumps(kwargs['sql_query'])
+    sql_schema = json.dumps(kwargs['sql_schema'])
 
     result = data.format(question_text=question_text,
                          question_hint=question_hint,
@@ -36,7 +36,7 @@ def populate_json_data(**kwargs):
     # return insert_values(json_dict, args_dict)
 
 
-def get_qa_base_json_data(question, material_question_image_path):
+def get_mysql_json_data(question, material_question_image_path):
     """
     Get data from Json template with variables
 
@@ -52,4 +52,8 @@ def get_qa_base_json_data(question, material_question_image_path):
             'question_text': question.text,
             'question_hint': question.hint,
             'question_image': material_question_image_path,
+            'expected_output': answer.text,
+            'expected_output_json': answer.expected_output_json,
+            'sql_query': answer.query_SQL,
+            'sql_schema': answer.schema_SQL
         })
