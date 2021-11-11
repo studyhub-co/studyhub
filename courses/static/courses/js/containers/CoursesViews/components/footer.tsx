@@ -217,47 +217,6 @@ const Footer: React.FC<FooterProps> = props => {
             </Col>
           </Row>
         ) : null}
-        {/*( */}
-        {/*  <Row className="justify-content-md-center">*/}
-        {/*    <Col*/}
-        {/*      xs={6}*/}
-        {/*      style={{*/}
-        {/*        display: 'flex',*/}
-        {/*        alignItems: 'center',*/}
-        {/*        justifyContent: 'center',*/}
-        {/*      }}*/}
-        {/*    >*/}
-        {/*      <ButtonUI*/}
-        {/*        title={'Exit'}*/}
-        {/*        onClick={e => {*/}
-        {/*          e.preventDefault()*/}
-        {/*          history.push(*/}
-        {/*            `/courses/modules/${currentMaterial.lesson.module}`,*/}
-        {/*          )*/}
-        {/*        }}*/}
-        {/*        className={classes.exitButton}*/}
-        {/*      >*/}
-        {/*        <CloseIcon />*/}
-        {/*      </ButtonUI>*/}
-        {/*    </Col>*/}
-        {/*    <Col*/}
-        {/*      xs={6}*/}
-        {/*      style={{*/}
-        {/*        display: 'flex',*/}
-        {/*        alignItems: 'center',*/}
-        {/*        justifyContent: 'center',*/}
-        {/*      }}*/}
-        {/*    >*/}
-        {/*      <ButtonUI*/}
-        {/*        onClick={continueMessage}*/}
-        {/*        variant="contained"*/}
-        {/*        className={classes.skipButton}*/}
-        {/*      >*/}
-        {/*        Skip*/}
-        {/*      </ButtonUI>*/}
-        {/*    </Col>*/}
-        {/*  </Row>*/}
-        {/*)}*/}
         {commentsModal}
         <Row style={{ padding: '2vh 0' }}>
           <Col
@@ -297,14 +256,16 @@ const Footer: React.FC<FooterProps> = props => {
               />
             </div>
             <div style={{ flexShrink: 2, flexGrow: 0 }}>
-              <ButtonUI
-                onClick={continueMessage}
-                title={'Skip'}
-                variant="contained"
-                className={classes.skipButton}
-              >
-                Skip
-              </ButtonUI>
+              {userReactionResult.state !== UserStateEnum.checked && (
+                <ButtonUI
+                  onClick={continueMessage}
+                  title={'Skip'}
+                  variant="contained"
+                  className={classes.skipButton}
+                >
+                  Skip
+                </ButtonUI>
+              )}
             </div>
           </Col>
         </Row>
