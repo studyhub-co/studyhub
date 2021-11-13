@@ -27,28 +27,28 @@ export const cliMounted: AsyncAction = withLoadApp(
   }
 );
 
-export const notificationAdded: Action<{
-  title: string;
-  notificationType: NotificationType;
-  timeAlive?: number;
-}> = ({ effects }, { title, notificationType, timeAlive = 1 }) => {
-  effects.notificationToast.add({
-    message: title,
-    status: convertTypeToStatus(notificationType),
-    timeAlive: timeAlive * 1000,
-  });
-};
-
-export const notificationRemoved: Action<{
-  id: number;
-}> = ({ state }, { id }) => {
-  const { notifications } = state;
-  const notificationToRemoveIndex = notifications.findIndex(
-    notification => notification.id === id
-  );
-
-  state.notifications.splice(notificationToRemoveIndex, 1);
-};
+// export const notificationAdded: Action<{
+//   title: string;
+//   notificationType: NotificationType;
+//   timeAlive?: number;
+// }> = ({ effects }, { title, notificationType, timeAlive = 1 }) => {
+//   effects.notificationToast.add({
+//     message: title,
+//     status: convertTypeToStatus(notificationType),
+//     timeAlive: timeAlive * 1000,
+//   });
+// };
+//
+// export const notificationRemoved: Action<{
+//   id: number;
+// }> = ({ state }, { id }) => {
+//   const { notifications } = state;
+//   const notificationToRemoveIndex = notifications.findIndex(
+//     notification => notification.id === id
+//   );
+//
+//   state.notifications.splice(notificationToRemoveIndex, 1);
+// };
 
 export const forceRender: Action = ({ state }) => {
   state.editor.forceRender++;
@@ -75,7 +75,9 @@ type ModalName =
   | 'privacyServerWarning'
   | 'share'
   | 'searchDependencies'
+  | 'publishStatus'
   | 'signInForTemplates';
+
 export const modalOpened: Action<{ modal: ModalName; message?: string }> = (
   { state, effects },
   { modal, message }
@@ -109,25 +111,25 @@ export const signInCliClicked: AsyncAction = async ({ state, actions }) => {
   }
 };
 
-export const addNotification: Action<{
-  message: string;
-  type: NotificationType;
-  timeAlive: number;
-}> = ({ effects }, { message, type, timeAlive }) => {
-  effects.notificationToast.add({
-    message,
-    status: effects.notificationToast.convertTypeToStatus(type),
-    timeAlive: timeAlive * 1000,
-  });
-};
-
-export const removeNotification: Action<number> = ({ state }, id) => {
-  const notificationToRemoveIndex = state.notifications.findIndex(
-    notification => notification.id === id
-  );
-
-  state.notifications.splice(notificationToRemoveIndex, 1);
-};
+// export const addNotification: Action<{
+//   message: string;
+//   type: NotificationType;
+//   timeAlive: number;
+// }> = ({ effects }, { message, type, timeAlive }) => {
+//   effects.notificationToast.add({
+//     message,
+//     status: effects.notificationToast.convertTypeToStatus(type),
+//     timeAlive: timeAlive * 1000,
+//   });
+// };
+//
+// export const removeNotification: Action<number> = ({ state }, id) => {
+//   const notificationToRemoveIndex = state.notifications.findIndex(
+//     notification => notification.id === id
+//   );
+//
+//   state.notifications.splice(notificationToRemoveIndex, 1);
+// };
 
 export const signInZeitClicked: AsyncAction = async ({
   state,
@@ -229,8 +231,11 @@ export const refetchSandboxInfo: AsyncAction = async ({
     sandbox.title = updatedSandbox.title;
     sandbox.team = updatedSandbox.team;
     sandbox.roomId = updatedSandbox.roomId;
+    sandbox.publishStatus = updatedSandbox.publishStatus;
 
-    await actions.editor.internal.initializeLiveSandbox(sandbox);
+    // console.log(sandbox)
+
+    // await actions.editor.internal.initializeLiveSandbox(sandbox);
   }
 };
 

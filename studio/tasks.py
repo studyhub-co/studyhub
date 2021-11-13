@@ -40,7 +40,11 @@ def skip_if_running(f):
 
 
 def recursive_delete(full_path):
-    dirs, files = default_storage.listdir(full_path)
+    try:
+        dirs, files = default_storage.listdir(full_path)
+    except FileNotFoundError:
+        return
+
     for file in files:
         filepath = f'{full_path}{file}'
         default_storage.delete(filepath)

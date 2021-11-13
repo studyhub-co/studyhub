@@ -276,19 +276,31 @@ export const publishSandboxClicked: AsyncAction = async ({
   effects,
   actions,
 }) => {
-  // TODO check user have rights to publish sanbox
-  // if (
-  //   state.editor.currentSandbox.owned &&
-  //   !effects.browser.confirm('Do you want to fork your own sandbox?')
-  // ) {
-  //   return
-  // }
-
+  // TODO check user have rights to publish sandbox
   // todo add check publishing result
-  alert('Sandbox publish process started, please wait...')
+  // alert('Sandbox publish process started, please wait...')
+  actions.modalOpened({
+    modal: 'publishStatus',
+  })
 
   await actions.editor.internal.publishSandbox({
     sandboxId: state.editor.currentId,
+  })
+}
+
+export const publishSandboxStatusClicked: AsyncAction = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  // now working now (new version of codesandbox)
+  // await actions.modals.alertModal.open({
+  //   title: 'Status of publishing',
+  //   message: `Publish in process`,
+  //   type: 'primary',
+  // });
+  actions.modalOpened({
+    modal: 'publishStatus',
   })
 }
 

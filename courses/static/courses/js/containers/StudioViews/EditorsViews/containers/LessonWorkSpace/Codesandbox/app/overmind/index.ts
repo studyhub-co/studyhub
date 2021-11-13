@@ -9,6 +9,7 @@ import {
 import { createHook } from 'overmind-react'
 import { merge, namespaced } from 'overmind/config'
 
+// codesandbox actions
 import * as actions from './actions'
 import { createConnect } from './createConnect'
 import * as effects from './effects'

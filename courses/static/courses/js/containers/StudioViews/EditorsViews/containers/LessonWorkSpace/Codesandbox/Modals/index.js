@@ -29,6 +29,8 @@ import { templateColor } from '../app/utils/template-color'
 // import PrivacyServerWarning from './PrivacyServerWarning';
 // import PRModal from './PRModal';
 import SearchDependenciesModal from './SearchDependenciesModal'
+import PublishStatusModal from './PublishStatusModal'
+// import { GenericAlertModal } from './GenericAlertModal'
 // import { SelectSandboxModal } from './SelectSandboxModal';
 // import ShareModal from './ShareModal';
 // import SignInForTemplates from './SignInForTemplates';
@@ -41,122 +43,126 @@ import SearchDependenciesModal from './SearchDependenciesModal'
 // );
 //
 const modals = {
-//  preferences: {
-//     Component: PreferencesModal,
-//     width: 900,
-//   },
-//   newSandbox: {
-//     Component: NewSandbox,
-//     width: 925,
-//   },
-//   share: {
-//     Component: ShareModal,
-//     width: 1200,
-//   },
-//   deployment: {
-//     Component: DeploymentModal,
-//     width: 750,
-//   },
-//   exportGithub: {
-//     Component: ExportGitHubModal,
-//     width: 400,
-//   },
-//   commit: {
-//     Component: CommitModal,
-//     width: 400,
-//   },
-//   signInForTemplates: {
-//     Component: SignInForTemplates,
-//     width: 400,
-//   },
-//   pr: {
-//     Component: PRModal,
-//     width: 400,
-//   },
-//   netlifyLogs: {
-//     Component: NetlifyLogs,
-//     width: 750,
-//   },
-//   deleteDeployment: {
-//     Component: DeleteDeploymentModal,
-//     width: 400,
-//   },
-//   deleteSandbox: {
-//     Component: DeleteSandboxModal,
-//     width: 400,
-//   },
-//   pickSandbox: {
-//     Component: PickSandboxModal,
-//     width: 600,
-//   },
-//   deleteProfileSandbox: {
-//     Component: DeleteProfileSandboxModal,
-//     width: 400,
-//   },
-//   emptyTrash: {
-//     Component: EmptyTrash,
-//     width: 400,
-//   },
-//   selectSandbox: {
-//     Component: SelectSandboxModal,
-//     width: 600,
-//   },
+  //  preferences: {
+  //     Component: PreferencesModal,
+  //     width: 900,
+  //   },
+  //   newSandbox: {
+  //     Component: NewSandbox,
+  //     width: 925,
+  //   },
+  //   share: {
+  //     Component: ShareModal,
+  //     width: 1200,
+  //   },
+  //   deployment: {
+  //     Component: DeploymentModal,
+  //     width: 750,
+  //   },
+  //   exportGithub: {
+  //     Component: ExportGitHubModal,
+  //     width: 400,
+  //   },
+  //   commit: {
+  //     Component: CommitModal,
+  //     width: 400,
+  //   },
+  //   signInForTemplates: {
+  //     Component: SignInForTemplates,
+  //     width: 400,
+  //   },
+  //   pr: {
+  //     Component: PRModal,
+  //     width: 400,
+  //   },
+  //   netlifyLogs: {
+  //     Component: NetlifyLogs,
+  //     width: 750,
+  //   },
+  //   deleteDeployment: {
+  //     Component: DeleteDeploymentModal,
+  //     width: 400,
+  //   },
+  //   deleteSandbox: {
+  //     Component: DeleteSandboxModal,
+  //     width: 400,
+  //   },
+  //   pickSandbox: {
+  //     Component: PickSandboxModal,
+  //     width: 600,
+  //   },
+  //   deleteProfileSandbox: {
+  //     Component: DeleteProfileSandboxModal,
+  //     width: 400,
+  //   },
+  //   emptyTrash: {
+  //     Component: EmptyTrash,
+  //     width: 400,
+  //   },
+  //   selectSandbox: {
+  //     Component: SelectSandboxModal,
+  //     width: 600,
+  //   },
   searchDependencies: {
     Component: SearchDependenciesModal,
-    width: 600
-  }
-//   liveSessionEnded: {
-//     Component: LiveSessionEnded,
-//     width: 600,
-//   },
-//   liveVersionMismatch: {
-//     Component: LiveSessionVersionMismatch,
-//     width: 600,
-//   },
-//   uploading: {
-//     Component: UploadModal,
-//     width: 600,
-//   },
-//   storageManagement: {
-//     Component: StorageManagementModal,
-//     width: 800,
-//   },
-//   forkServerModal: {
-//     Component: ForkServerModal,
-//     width: 500,
-//   },
-//   privacyServerWarning: {
-//     Component: PrivacyServerWarning,
-//     width: 400,
-//   },
-//   moveSandbox: {
-//     Component: MoveSandboxFolderModal,
-//     width: 350,
-//   },
-//   feedback: {
-//     Component: FeedbackModal,
-//     width: 450,
-//   },
-//   userSurvey: {
-//     Component: SurveyModal,
-//     width: 850,
-//    },
+    width: 600,
+  },
+  publishStatus: {
+    Component: PublishStatusModal,
+    width: 500,
+  },
+  //   liveSessionEnded: {
+  //     Component: LiveSessionEnded,
+  //     width: 600,
+  //   },
+  //   liveVersionMismatch: {
+  //     Component: LiveSessionVersionMismatch,
+  //     width: 600,
+  //   },
+  //   uploading: {
+  //     Component: UploadModal,
+  //     width: 600,
+  //   },
+  //   storageManagement: {
+  //     Component: StorageManagementModal,
+  //     width: 800,
+  //   },
+  //   forkServerModal: {
+  //     Component: ForkServerModal,
+  //     width: 500,
+  //   },
+  //   privacyServerWarning: {
+  //     Component: PrivacyServerWarning,
+  //     width: 400,
+  //   },
+  //   moveSandbox: {
+  //     Component: MoveSandboxFolderModal,
+  //     width: 350,
+  //   },
+  //   feedback: {
+  //     Component: FeedbackModal,
+  //     width: 450,
+  //   },
+  //   userSurvey: {
+  //     Component: SurveyModal,
+  //     width: 850,
+  //    },
 }
 
 class Modals extends Component {
   state = {
     theme: {
       colors: {},
-      vscodeTheme: codesandbox
+      vscodeTheme: codesandbox,
     },
-    customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme
-  };
+    customVSCodeTheme: this.props.store.preferences.settings.customVSCodeTheme,
+  }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadTheme()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (
       this.props.store.preferences.settings.customVSCodeTheme !==
       this.state.customVSCodeTheme
@@ -174,9 +180,9 @@ class Modals extends Component {
     } catch (e) {
       console.error(e)
     }
-  };
+  }
 
-  render () {
+  render() {
     const { signals, store } = this.props
     const sandbox = store.editor.currentSandbox
     const templateDef = sandbox && getTemplateDefinition(sandbox.template)
@@ -188,7 +194,7 @@ class Modals extends Component {
         theme={{
           templateColor: templateColor(sandbox, templateDef),
           templateBackgroundColor: templateDef && templateDef.backgroundColor,
-          ...this.state.theme
+          ...this.state.theme,
         }}
       >
         <Modal
@@ -198,10 +204,12 @@ class Modals extends Component {
         >
           {modal
             ? React.createElement(modal.Component, {
-              closeModal: () => signals.modalClosed({ isKeyDown: false })
-            })
+                closeModal: () => signals.modalClosed({ isKeyDown: false }),
+              })
             : null}
         </Modal>
+        {/* new version of sandbox - too much new code */}
+        {/*{stateModals.alertModal.isCurrent && <GenericAlertModal />}*/}
       </ThemeProvider>
     )
   }

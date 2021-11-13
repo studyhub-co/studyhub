@@ -284,6 +284,7 @@ export type Sandbox = {
   likeCount: number;
   forkCount: number;
   userLiked: boolean;
+  publishStatus: string;
   modules: Module[];
   directories: Directory[];
   collection?: {

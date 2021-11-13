@@ -108,17 +108,17 @@ SELECT content,
     from django.contrib.contenttypes.models import ContentType
     # action Post
     post_content_type = ContentType.objects.get_for_model(DJPost)
-    notifications_post_ct = Notification.objects.filter(action_object_content_type=post_content_type)
+    notifications_action_posts = Notification.objects.filter(action_object_content_type=post_content_type)
 
     new_post_content_type = ContentType.objects.get_for_model(Post)
-    notifications_post_ct.update(action_object_content_type=new_post_content_type)
+    notifications_action_posts.update(action_object_content_type=new_post_content_type)
 
     # target Thread
     thread_content_type = ContentType.objects.get_for_model(DJThread)
-    notifications_post_ct = Notification.objects.filter(target_object_content_type=thread_content_type)
+    notifications_target_threads = Notification.objects.filter(target_content_type=thread_content_type)
 
     new_thread_content_type = ContentType.objects.get_for_model(Thread)
-    notifications_post_ct.update(target_object_content_type=new_thread_content_type)
+    notifications_target_threads.update(target_content_type=new_thread_content_type)
 
 
 class Command(BaseCommand):

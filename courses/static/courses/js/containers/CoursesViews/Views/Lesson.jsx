@@ -234,6 +234,7 @@ const Lesson = props => {
                 <StyledIframe
                   // height='100%' width='100%'
                   // style={{marginBottom: document.getElementById('student_view_iframe').style.height}}
+                  allow={'autoplay'}
                   id={'student_view_iframe'}
                   ref={setFrameRef}
                   src={state.iframeUrl}

@@ -99,8 +99,16 @@ class VSCodeManager {
       label: 'Publish Sandbox',
       category: 'Sandbox',
       run: () => {
-        // console.log('Publish')
         this.controller.getSignal('editor.publishSandboxClicked')()
+      },
+    })
+
+    this.addWorkbenchAction({
+      id: 'codesandbox.sandbox.publish_status',
+      label: 'Publishing status',
+      category: 'Sandbox',
+      run: () => {
+        this.controller.getSignal('editor.publishSandboxStatusClicked')()
       },
     })
 
@@ -185,6 +193,21 @@ class VSCodeManager {
         title: 'Publish Sandbox',
       },
     })
+
+    this.appendMenuItem(MenuId.MenubarFileMenu, {
+      group: '4_zsandbox',
+      order: 1,
+      command: {
+        id: 'codesandbox.sandbox.publish_status',
+        title: 'Publishing Status...',
+      },
+    })
+
+    // menu append twice TODO
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line
+      console.log(this);
+    }
 
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '4_zsandbox',

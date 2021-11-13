@@ -335,6 +335,7 @@ class MaterialProblemTypeSerializer(BaseSerializer):
     title = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
     owned = serializers.SerializerMethodField()
+    publish_status = serializers.SerializerMethodField()
 
     def get_owned(self, obj):
         if hasattr(self.context['request'].user, 'profile') and \
@@ -343,6 +344,20 @@ class MaterialProblemTypeSerializer(BaseSerializer):
             return True
         else:
             return False
+
+    def get_publish_status(self, obj):
+        from django_celery_results.models import TaskResult
+        from django.contrib.postgres.search import SearchVector
+        last = TaskResult.objects.annotate(
+                 search=SearchVector('task_args',),
+             ).filter(search=str(obj.uuid)).last()
+        message_publish_state = 'Last publishing status for this sandbox not found. ' \
+                                'Try to refresh status in 3-5 minutes.'
+        if last:
+            message_publish_state = f'Date of last completed of the publish task: ' \
+                                    f'{last.date_done.strftime("%Y-%m-%d %H:%M:%S")}. ' \
+                                    f'Result: {last.result}'
+        return message_publish_state
 
     def get_id(self, obj):
         return obj.uuid

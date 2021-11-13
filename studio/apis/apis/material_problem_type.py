@@ -48,7 +48,7 @@ class MaterialProblemTypeViewSet(mixins.RetrieveModelMixin,
             try:
                 instance = self.queryset.get(slug='new')
             except MaterialProblemType.DoesNotExist:
-                assert False, 'You need to create a sanbdox with "new" slug berofe using this app! ' \
+                assert False, 'You need to create a sandbox with "new" slug before using this app! ' \
                               '(manage.py loaddata from fixtures)'
                 # instance = self.create_new_from_json(request)
         else:
