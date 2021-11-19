@@ -95,7 +95,7 @@ if settings.DEBUG:
         # todo create regex for path string with slashed
         # path(r'e/<uuid:pt_uuid>/<uuid:material_uuid>/<uuid:lesson_uuid>/<path>',
         #     proxy_view, name='eval-production'),
-        re_path(r'e/(?P<pt_uuid>[^/]*)/(?P<material_uuid>[^/]*)/(?P<lesson_uuid>[^/]*)/(?P<path>.*)',
+        re_path(r'^e/(?P<pt_uuid>[^/]*)/(?P<material_uuid>[^/]*)/(?P<lesson_uuid>[^/]*)/(?P<path>.*)',
              proxy_view, name='eval-production'),
         url(r'^__debug__/', include(debug_toolbar.urls)),
         url(r'^favicon.ico$',

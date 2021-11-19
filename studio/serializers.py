@@ -350,7 +350,7 @@ class MaterialProblemTypeSerializer(BaseSerializer):
         from django.contrib.postgres.search import SearchVector
         last = TaskResult.objects.annotate(
                  search=SearchVector('task_args',),
-             ).filter(search=str(obj.uuid)).last()
+             ).filter(search=str(obj.uuid)).order_by('date_done').last()
         message_publish_state = 'Last publishing status for this sandbox not found. ' \
                                 'Try to refresh status in 3-5 minutes.'
         if last:
