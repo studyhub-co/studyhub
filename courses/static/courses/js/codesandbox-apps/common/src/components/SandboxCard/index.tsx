@@ -37,7 +37,7 @@ export interface Sandbox {
   tags: string[]
   id: string
   screenshot_url: string
-  publish_status: string
+  publish_status?: string
   template: TemplateType
   view_count: number
   fork_count: number

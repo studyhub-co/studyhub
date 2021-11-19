@@ -4,26 +4,12 @@
 
 ### Backend
 
-Requires [Python 3.8.*](https://www.python.org/downloads/), git ([Windows](https://git-scm.com/download/win), [macOS](https://git-scm.com/download/mac)).
-If you are using Windows and WSL, python requires inside WSL instance (see below) and Win OS (Requires by node-gyp in vscode-textmate application) both.
-Install Visual C++ Build Environment: [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools) (using "Visual C++ build tools" workload).    
-
-#### Interpreter environment
-
-Instead of the console, you can use your favorite IDE to cover the next steps. All commands run from the project's root directory.
-
-**Windows**
-
-Python py-mini-racer application do not support Windows. So recommended running in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Steps to install [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual). Once you have distribution installed don't forget to run it from Start menu for the first time to complete your newly installed Linux distribution is to create an account, including a User Name and Password.
-Also, add "c:\Program Files\Git\usr\bin\" to PATH environment variable (needs for some npm packages).  
-
-**macOS**
-
-Recommended to run in a [virtual environment](https://docs.python.org/3.8/library/venv.html)
-
-```
-python -m venv venv
-```
+Requires [Python 3.8.*](https://www.python.org/downloads/), git ([Windows](https://git-scm.com/download/win), 
+[macOS](https://git-scm.com/download/mac)). 
+If you are using Windows and WSL, python required inside the WSL instance (see below) 
+and Windows OS (Requires by node-gyp in vscode-textmate application) both. 
+Install Visual C++ Build Environment: 
+[Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools) (using "Visual C++ build tools" workload).    
 
 #### Get source code
 
@@ -32,22 +18,22 @@ git clone https://github.com/studyhub-co/studyhub.git
 cd studyhub
 ```
 
-#### Install requirements
+#### Interpreter environment
+
+Instead of the console, you can use your favorite IDE to cover the next steps. All commands run from the project's root directory.
+OS versions: Windows 10, macOS BigSur.
 
 **Windows**
 
-```commandline
-wsl sudo apt -y update
-wsl sudo apt -y upgrade
-wsl sudo apt -y install python3-pip python3.8 python3.8-dev libmysqlclient-dev
-wsl python3.8 -m pip install --upgrade pip
-wsl python3.8 -m pip install -r requirements.dev.txt
-```
+Python py-mini-racer application do not support Windows. So recommended running in a [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (Windows Subsystem for Linux). Steps to install [here](https://docs.microsoft.com/en-us/windows/wsl/install-win10). Recommended [Ubuntu 18.04 LTS](https://aka.ms/wsl-ubuntu-1804) image to [install](https://docs.microsoft.com/en-us/windows/wsl/install-manual). Once you have distribution installed don't forget to run it from Start menu for the first time to complete your newly installed Linux distribution is to create an account, including a User Name and Password.
+Also, add "c:\Program Files\Git\usr\bin\" to PATH environment variable (needs for some npm packages).
 
 **macOS**
 
-```commandline
-pip install -r requirements.dev.txt
+Recommended running in a [virtual environment](https://docs.python.org/3.8/library/venv.html)
+
+```
+python3 -m venv venv
 ```
 
 #### Database
@@ -60,14 +46,20 @@ pip install -r requirements.dev.txt
 
 - Download installer from: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 - Install (You can install PgAdmin to manage database with this installer).
-- Add "c:\Program Files\PostgreSQL\{version}\bin\" to PATH environment variable ({version} = your version of PostrgreSQL installed)
+- Add "c:\Program Files\PostgreSQL\{version}\bin\" to PATH environment variable
+  ({version} = your version of PostgreSQL installed)
 
 **macOS**
 
 Install postgresql and pgadmin4 (optional). 
 
 ```
+brew up date
+brew doctor
 brew install postgresql
+brew services restart postgresql
+createuser -s postgres
+brew services restart postgresql
 brew install --cask pgadmin4
 ```
 
@@ -86,44 +78,34 @@ studyhub# CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 studyhub# \q
 ```
 
-4. Activate your virtual environment variables
-
-**Windows**
-
-```
-copy scripts\set_env_vars.cmd scripts\set_env_vars.local.cmd
-notepad scripts\set_env_vars.local.cmd
-```
-
-**macOS**
-
-TODO
-
-5. create database schema
-
-**Windows**
-
-```commandline
-scripts\wsl_manage_py.cmd migrate
-```
-
-**macOS**
-
-```commandline
-./manage.py migrate
-```
-
-6. Import initial problems types source code data.
-
-TODO 
-
 ##### Requires [Mysql](https://dev.mysql.com/downloads/installer/) (>= 5.7)
 
 Mysql problem type requires Mysql database instance. 
 
-1) Download and choose Developer type due installation process.
+###### Install mysql
+
+**Windows**
+
+Download and choose Developer type due installation process.
 Select "Use Legacy Authentication Method". 
-2) Create Mysql problem type database:
+
+**macOS**
+
+```commandline
+brew install mysql
+brew services restart mysql
+mysql_secure_installation
+brew install --cask mysql-shell
+brew install mysql-shell
+echo 'export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"' >> ~/.zshrc
+echo 'export LDFLAGS="-L/opt/homebrew/opt/mysql-client/lib"' >> ~/.zshrc
+echo 'export LDFLAGS="-L/opt/homebrew/Cellar/zstd/1.5.0/lib"' >> ~/.zshrc
+echo 'export CFLAGS="-I/opt/homebrew/opt/mysql-client/include"' >> ~/.zshrc
+source ~/.zshrc
+
+```
+
+###### Create Mysql problem type database:
 
 ```commandline
 mysqlsh
@@ -135,23 +117,66 @@ MySQL SQL> GRANT ALL PRIVILEGES ON studyhub.* TO 'studyhub'@'localhost';
 MySQL SQL> \q
 ```
 
-3) Edit Mysql settings environment variables 
+#### Activate your virtual environment variables
 
 **Windows**
 
 ```commandline
+copy scripts\set_env_vars.cmd scripts\set_env_vars.local.cmd
 notepad scripts\set_env_vars.local.cmd
 ```
 
 **macOS**
 
-...
+```commandline
+cp scripts/env_vars scripts/env_vars.local
+vim scripts/env_vars.local
+```
+
+#### Install requirements
+
+**Windows**
+
+```commandline
+wsl sudo apt -y update
+wsl sudo apt -y upgrade
+wsl sudo apt -y install python3-pip python3.8 python3.8-dev libmysqlclient-dev
+wsl python3.8 -m pip install --upgrade pip
+wsl python3.8 -m pip install -r requirements.dev.txt
+```
+
+**macOS**
+
+```commandline
+source venv/bin/activate
+source scripts/env_vars.local
+(venv)% pip3 install -r requirements.dev.txt
+```
+
+#### Create database schema
+
+**Windows**
+
+```commandline
+scripts\wsl_manage_py.cmd migrate
+```
+
+**macOS**
+
+```commandline
+(venv)% python3 manage.py migrate
+```
 
 ***
 
 ### Front-end
 
 1. Install [Node.js](https://nodejs.org/en/download/) + npm v6 (included)
+
+**macOS**
+```commandline
+brew install node
+```
 
 2. Install yarn.
 
@@ -173,13 +198,13 @@ npm install -g yarn
 unzip courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions.zip  -d courses/static/courses/js/codesandbox-apps/vscode-extensions/out/
 ```
 
-* install lerna
+4. install lerna
 
 ```commandline
 npm install -g lerna
 ```
 
-* get npm packages in every yarn workspace, remove duplicated react typescript types.
+5. get npm packages in every yarn workspace, remove duplicated react typescript types.
 
 ```commandline
 lerna bootstrap --npm-client=yarn && yarn clear_types
@@ -188,7 +213,7 @@ lerna bootstrap --npm-client=yarn && yarn clear_types
 * build all workspace modules
 
 ```commandline
-lerna run build
+yarn workspace @codesandbox/common run build && lerna run build
 lerna run dist
 ```
 

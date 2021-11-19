@@ -46,7 +46,7 @@
   "dependencies": {
     "@appsignal/nodejs": "^1.0.1",
     "@koa/router": "^9.4.0",
-    "@sentry/node": "5.13.2",
+    "@sentry/node": "^6.13.3",
     "acorn": "^5.1.2",
     "acorn-dynamic-import": "^2.0.2",
     "acorn-jsx": "^4.0.1",

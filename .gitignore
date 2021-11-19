@@ -140,3 +140,4 @@ yarn-error.log
 
 # extensions dir
 /courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions/
+/courses/static/courses/js/codesandbox-apps/codesandbox-api/compiled/

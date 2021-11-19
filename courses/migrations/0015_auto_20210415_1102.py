@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('courses', '0014_materialproblemtypesandboxcache_timestamp'),
+        ('notifications', '0006_indexes'),
         ('react_comments_django', '0001_initial')
     ]
 
