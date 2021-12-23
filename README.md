@@ -245,7 +245,7 @@ scripts\wsl_manage_py.cmd createsuperuser
 **macOS**
 
 ```commandline
-/manage.py createsuperuser
+manage.py createsuperuser
 ```
 
 * Run:
@@ -259,7 +259,13 @@ scripts\wsl_manage_py.cmd runserver
 **macOS**
 
 ```commandline
-./manage.py runserver
+(venv)% python3 manage.py runserver
+```
+
+* Run celery
+
+```commandline
+(venv)% venv/bin/celery -A settings worker -l INFO
 ```
 
 * You should find the site running on http://localhost:8000
@@ -269,7 +275,8 @@ scripts\wsl_manage_py.cmd runserver
 ## Structure
 Django apps:
 * `settings` app contains the project settings. 
-* `curricula` is the main app that produces the page at /curriculum/. The files apis.py and urls_api.py utilize the Django REST Framework to make an API for the models
+* `courses` is the main app that produces the page at /courses/. 
+  The files apis.py and urls_api.py utilize the Django REST Framework to make an API for the models.
 
 ### Models
 The model hierarchy is:
