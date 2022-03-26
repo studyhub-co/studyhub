@@ -1,2 +1,3 @@
 set_env_vars.local.cmd
 env_vars.local
+env_vars.docker

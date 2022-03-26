@@ -13,7 +13,7 @@ import {
 import EditLessonView from './containers/StudioViews/EditorsViews/editLessonLoadable'
 import DiscussionIndex from './containers/discussionIndex'
 import ResourcesIndex from './containers/ResourcesIndex/loadable'
-import ClassroomIndex from './containers/classroomIndex/loadable'
+import ClassroomIndex from './containers/ClassroomIndex/loadable'
 import UserProfileIndex from './containers/userProfileIndex'
 
 import NotFoundView from './components/NotFoundView'

@@ -1,5 +1,13 @@
 # StudyHub
 
+## Installation with docker
+
+```commandline
+cp scripts/env_vars scripts/env_vars.docker
+# edit env_var.docker
+./docker_compose_start.sh
+```
+
 ## Installation (to run locally) 
 
 ### Backend

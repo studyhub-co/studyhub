@@ -6,8 +6,8 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "courses/static/courses/js/codesandbox-apps/common",
       "courses/static/courses/js/codesandbox-apps/codesandbox-api",
+      "courses/static/courses/js/codesandbox-apps/common",
       "courses/static/courses/js/codesandbox-apps/codesandbox-browserfs",
       "courses/static/courses/js/codesandbox-apps/vscode-textmate",
       "courses/static/courses/js/containers/StudioViews/EditorsViews/containers/LessonWorkSpace/Codesandbox/node-services"
@@ -16,6 +16,7 @@
   "scripts": {
     "watch": "yarn clear && yarn dev",
     "dev": "./node_modules/.bin/webpack --config webpack.dev.js --watch --mode development",
+    "build_dev": "./node_modules/.bin/webpack --display=minimal --config webpack.dev.js --mode development",
     "clear": "rimraf ./static/js/bundles/*",
     "clear_types": "rimraf ./node_modules/@types/hoist-non-react-statics/node_modules/@types/react && rimraf ./node_modules/@types/styled-components/node_modules/@types/react && rimraf ./node_modules/@types/react-textarea-autosize/node_modules/@types/react && rimraf ./node_modules/@types/react-router/node_modules/@types/react && rimraf ./node_modules/@types/react-router-dom/node_modules/@types/react && rimraf ./node_modules/@types/react-dom/node_modules/@types/react",
     "prod": "./node_modules/.bin/webpack --config webpack.prod.js --mode production"
