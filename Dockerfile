@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 RUN pip install -r requirements.dev.txt
 COPY . /code/
 # BUILD SPA
-# RUN unzip -o courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions.zip  -d courses/static/courses/js/codesandbox-apps/vscode-extensions/out/
+RUN unzip -o courses/static/courses/js/codesandbox-apps/vscode-extensions/out/extensions.zip  -d courses/static/courses/js/codesandbox-apps/vscode-extensions/out/
 RUN npm install -g yarn
 RUN npm install -g lerna
 RUN lerna bootstrap --npm-client=yarn && yarn clear_types
