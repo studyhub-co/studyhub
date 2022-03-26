@@ -1,6 +1,8 @@
 # StudyHub
 
-## Installation with docker
+## Installation with Docker & Docker Compose
+
+Install Docker Compose, then run following commands:
 
 ```commandline
 cp scripts/env_vars scripts/env_vars.docker
