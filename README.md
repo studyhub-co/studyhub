@@ -10,6 +10,8 @@ cp scripts/env_vars scripts/env_vars.docker
 ./docker_compose_start.sh
 ```
 
+Wait for the command complete and navigate to http://127.0.0.1:8000
+
 ## Installation (to run locally) 
 
 ### Backend
