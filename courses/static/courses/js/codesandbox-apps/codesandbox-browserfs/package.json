@@ -44,7 +44,7 @@
     "buffer": "~5.1.0",
     "detect-browsers": "~2.0.0",
     "dropbox": "~4.0.9",
-    "express": "~4.16.3",
+    "express": "~4.17.3",
     "isomorphic-fetch": "~2.2.1",
     "karma": "~5.2.3",
     "karma-chrome-launcher": "^3.1.0",
