@@ -167,7 +167,7 @@
     "posthtml-parser": "^0.4.1",
     "posthtml-render": "^1.1.0",
     "qrcode.react": "^0.8.0",
-    "qs": "^6.5.0",
+    "qs": "^6.10.3",
     "querystring": "^0.2.0",
     "rc-slider": "^8.7.1",
     "react": "^16.13.1",
