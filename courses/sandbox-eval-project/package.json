@@ -269,7 +269,7 @@
     "cross-spawn": "^5.0.1",
     "css-loader": "^3.2.0",
     "detect-port": "^1.1.1",
-    "express": "^4.15.3",
+    "express": "^4.17.3",
     "file-loader": "^1.1.11",
     "filesize": "^3.5.6",
     "fs-extra": "^8.0.1",
